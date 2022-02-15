@@ -34,7 +34,7 @@
   }
   
   .body {
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 100;
     letter-spacing: -0.03em;
     line-height: 1.3333333333;
@@ -44,7 +44,7 @@
     }
   
     @media (min-width: $m) {
-      font-size: 15px;
+      font-size: 24px;
     }
   
     @media (min-width: $l) {
