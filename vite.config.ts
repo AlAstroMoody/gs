@@ -8,14 +8,18 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
   },
   css: {
-		preprocessorOptions: {
-			scss: {
-				additionalData: [`@import "@/assets/scss/fonts/fonts.scss";`,]
-			}
-		}
-	},
+    preprocessorOptions: {
+      scss: {
+        additionalData: [
+          `@import "@/assets/scss/fonts/fonts.scss"; 
+           @import "@/assets/scss/_screens.scss";
+           @import "@/assets/scss/_mixins.scss";`,
+        ],
+      },
+    },
+  },
 })
