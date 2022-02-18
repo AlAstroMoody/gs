@@ -1,55 +1,77 @@
 <template>
   <div>
-    <div class="sidebar__subtitle subtitle">фильтры</div>
-    <div class="sidebar__filters">блок с фильтрами</div>
+    <div class="filters" >
+
+      <div class="filters__name">
+        <input v-model="filterFields.name" placeholder=" " id="name" class="subtitle">
+        <label for="name">
+          поиск по названию
+        </label>
+      </div>
+
+      уровень предмета от: {{ Math.round(filterFields.level) }}
+      <div class="filters__level">
+        0
+        <app-common-slider class="filters__slider" @thumbShift="sliderThumbShift" />
+        200
+      </div>
+
+    </div>
     <div class="sidebar__body">
       <app-common-scrollbar :block-height="blockHeight" :block-transform-y="blockTransformY.value" />
       <div class="sidebar__items" ref="itemsBlock">
-        <app-item-line v-for="item in items" :key="item.id" :item="item" />
+        <app-item-line v-for="item in filteredItems" :key="item.id" :item="item" />
       </div>
+      <div v-if="!filteredItems.length" class="sidebar__items_empty">совпадений не найдено</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
 import AppCommonScrollbar from '@/components/common/AppCommonScrollbar.vue'
 import AppItemLine from '@/components/AppItemLine.vue'
-import wheelLogic from '@/utils/wheelLogic'
 
-// to pinya
-const items = reactive([
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 0 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 1 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 2 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 3 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 4 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 5 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 6 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 7 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 8 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 9 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 0 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 1 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 2 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 3 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 4 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 5 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 6 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 7 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 8 },
-  { name: 'оружие', src: './src/assets/images/armor.png', id: 9 },
-])
+import wheelLogic from '@/utils/wheelLogic'
+import { useItemsStore } from '@/stores/items'
+import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
+
+const itemsStore = useItemsStore()
+const items = computed(() => itemsStore.allItems)
+
+const filterFields = reactive({
+  name: '',
+  level: 0,
+  goblinType: null,
+})
+
+const filteredItems = computed(() => {
+  let sampleItems = items.value
+  if (filterFields.name) {
+    sampleItems = sampleItems.filter(item => item.name.includes(filterFields.name))
+  }
+  if (filterFields.level) {
+    sampleItems = sampleItems.filter(item => item.level >= filterFields.level)
+  }
+  //more filters
+  return sampleItems
+})
 
 const itemsBlock = ref<HTMLElement | null>(null)
 const blockHeight = computed(() =>
   itemsBlock.value?.scrollHeight - itemsBlock.value?.clientHeight,
 )
 
+
+// TODO make Resize & filter changes, debounce
 const blockTransformY = computed(() => itemsBlock.value?.clientHeight
-  ? wheelLogic(itemsBlock.value).currentYPosition : {},
+  ? wheelLogic(itemsBlock.value).currentYPosition : 0,
 )
+
+const sliderThumbShift = (distance) => {
+  filterFields.level = 200 * distance
+}
 
 </script>
 
@@ -64,31 +86,6 @@ const blockTransformY = computed(() => itemsBlock.value?.clientHeight
   animation-delay: 0.3s;
   overflow: hidden;
 
-  &__subtitle {
-    margin: 0 auto;
-    animation: opacity 1s ease-out forwards;
-    animation-delay: 1.3s;
-    opacity: 0;
-    width: 100%;
-    position: relative;
-    z-index: 2;
-    background: var(--color-background);
-  }
-
-  &__filters {
-    width: 100%;
-    background: var(--color-background);
-    height: 300px;
-    position: relative;
-    z-index: 2;
-    opacity: 0;
-    animation: opacity 1s ease-out forwards;
-    animation-delay: 1.6s;
-    border-radius: 16px;
-    border: 1px solid var(--color-text);
-    margin: 8px 0;
-  }
-
   &__body {
     justify-content: space-between;
     display: flex;
@@ -96,15 +93,66 @@ const blockTransformY = computed(() => itemsBlock.value?.clientHeight
     opacity: 0;
     animation: opacity 1s ease-out forwards;
     animation-delay: 1.8s;
+    height: 100%;
   }
 
   &__items {
     position: relative;
     z-index: 1;
-    max-height: 600px;
+    height: 100%;
     transition: all 1s ease-out;
     flex: 1;
     margin-left: 8px;
+
+    &_empty {
+      width: 100%;
+      text-align: center;
+    }
+  }
+}
+
+.filters {
+  width: 100%;
+  background: var(--color-background);
+  min-height: 300px;
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  animation: opacity 1s ease-out forwards;
+  animation-delay: 1.6s;
+  border-radius: 16px;
+  border: 1px solid var(--color-text);
+  margin: 8px 0;
+  padding: 8px;
+
+  &__name {
+    width: 100%;
+    padding: 12px;
+    background: var(--color-background-soft);
+    border-radius: 16px;
+    margin: 8px 0;
+    display: flex;
+
+    label {
+      position: absolute;
+      inset: 0 auto;
+      padding: 8px;
+      transition: 0.2s all ease-in-out;
+    }
+
+    input {
+      color: var(--color-text);
+      width: 100%;
+    }
+  }
+
+  &__level {
+    display: flex;
+    align-items: center;
+  }
+
+  &__slider {
+    margin: 0 4px;
   }
 }
 

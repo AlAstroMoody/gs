@@ -38,9 +38,9 @@ const gearThird = ref<HTMLElement | null>(null)
 
 const turnGears = () => {
   // maybe easy use classes
-  gearFirst.value.style.transform = isGearsTurn.value ? 'rotate(90deg)' : 'rotate(0deg)'
-  gearSecond.value.style.transform = isGearsTurn.value ? 'rotate(-55deg)' : 'rotate(30deg)'
-  gearThird.value.style.transform = isGearsTurn.value ? 'rotate(-66deg)' : 'rotate(30deg)'
+  gearFirst.value.style.transform = isGearsTurn.value ? 'rotate(0deg)' : 'rotate(90deg)'
+  gearSecond.value.style.transform = isGearsTurn.value ? 'rotate(30deg)' : 'rotate(-55deg)'
+  gearThird.value.style.transform = isGearsTurn.value ? 'rotate(30deg)' : 'rotate(-66deg)'
   isGearsTurn.value = !isGearsTurn.value
 }
 </script>
@@ -59,19 +59,50 @@ const turnGears = () => {
     &:first-child {
       position: absolute;
       inset: -18px 0 0 -18px;
+      animation: gear1 2s ease-in-out;
     }
 
     &:nth-child(2) {
       position: absolute;
       inset: -58px 0 0 78px;
       transform: rotate(30deg);
+      animation: gear2 2s ease-in-out;
     }
 
     &:last-child {
       position: absolute;
       inset: 86px 0 0 -42px;
       transform: rotate(30deg);
+      animation: gear3 2s ease-in-out;
     }
+  }
+}
+
+@keyframes gear1 {
+  from {
+    transform: rotate(190deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes gear2 {
+  from {
+    transform: rotate(-155deg);
+  }
+  to {
+
+    transform: rotate(30deg);
+  }
+}
+
+@keyframes gear3 {
+  from {
+    transform: rotate(-166deg);
+  }
+  to {
+    transform: rotate(30deg);
   }
 }
 </style>
