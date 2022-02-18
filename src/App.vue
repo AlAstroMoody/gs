@@ -1,10 +1,11 @@
 <template>
   <div>
-    <AppIconLamp />
-    <AppSidenav class="sidenav" />
+    <AppGears :event="gearEvent" />
+    <AppSidenav class="sidenav" @startGearEvent="startGearEvent" />
   </div>
 
   <div class="page">
+    <AppIconLamp class="page__lamp" @click="startGearEvent" />
     <RouterView />
     <AppUserBoard />
   </div>
@@ -16,11 +17,18 @@
 
 import AppSidebar from '@/components/layouts/AppSidebar.vue'
 import AppSidenav from '@/components/layouts/AppSidenav.vue'
-import AppIconLamp from '@/components/icons/AppIconLamp.vue'
 import AppUserBoard from '@/components/layouts/AppUserBoard.vue'
+import AppGears from '@/components/AppGears.vue'
+import { ref } from 'vue'
+import AppIconLamp from '@/components/icons/AppIconLamp.vue'
+
+const gearEvent = ref(false)
+const startGearEvent = () => {
+  gearEvent.value = !gearEvent.value
+}
 </script>
 
-<style>
+<style lang="scss">
 
 #app {
   display: flex;
@@ -29,7 +37,7 @@ import AppUserBoard from '@/components/layouts/AppUserBoard.vue'
 }
 
 .sidenav {
-  width: 200px;
+  width: fit-content;
   margin-top: 80px;
 }
 
@@ -41,6 +49,13 @@ import AppUserBoard from '@/components/layouts/AppUserBoard.vue'
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
+  position: relative;
+
+  &__lamp {
+    position: absolute;
+    z-index: 1;
+    inset: 0 0 0 85%;
+  }
 }
 
 .sidebar {
