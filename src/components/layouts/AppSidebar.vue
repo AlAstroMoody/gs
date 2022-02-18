@@ -3,7 +3,7 @@
     <div class="sidebar__subtitle subtitle">фильтры</div>
     <div class="sidebar__filters">блок с фильтрами</div>
     <div class="sidebar__body">
-      <app-common-scrollbar :block-height="blockHeight" :thumb-transform-y="thumbTransformY" />
+      <app-common-scrollbar :block-height="blockHeight" :block-transform-y="blockTransformY.value" />
       <div class="sidebar__items" ref="itemsBlock">
         <app-item-line v-for="item in items" :key="item.id" :item="item" />
       </div>
@@ -44,16 +44,12 @@ const items = reactive([
 
 const itemsBlock = ref<HTMLElement | null>(null)
 const blockHeight = computed(() =>
-  itemsBlock.value?.scrollHeight - itemsBlock.value?.clientHeight
+  itemsBlock.value?.scrollHeight - itemsBlock.value?.clientHeight,
 )
 
-const thumbTransformY = computed(() => {
-  if (itemsBlock.value?.clientHeight) {
-    return wheelLogic(itemsBlock.value).currentYPosition
-  }
-  return {}
-})
-
+const blockTransformY = computed(() => itemsBlock.value?.clientHeight
+  ? wheelLogic(itemsBlock.value).currentYPosition : {},
+)
 
 </script>
 
