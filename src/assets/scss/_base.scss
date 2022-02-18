@@ -98,6 +98,14 @@ body {
 }
 
 
+input:focus + label,
+input:not(:placeholder-shown) + label {
+  color: gray;
+  font-size: 12px;
+  transform: translate(-12px, -8px) scale(0.8);
+}
+
+
 @keyframes opacity {
   from {
     opacity: 0;
