@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="filters" >
+    <div class="filters">
 
       <div class="filters__name">
         <input v-model="filterFields.name" placeholder=" " id="name" class="subtitle">
@@ -12,15 +12,18 @@
       уровень предмета от: {{ Math.round(filterFields.level) }}
       <div class="filters__level">
         0
-        <app-common-slider class="filters__slider" @thumbShift="sliderThumbShift" />
+        <AppCommonSlider class="filters__slider" @thumbShift="sliderThumbShift" />
         200
       </div>
 
+      игровой класс:
+      <AppCommonSelect :options="goblins" @getOption="classSelection" default-value="--игровой класс--" />
+
     </div>
     <div class="sidebar__body">
-      <app-common-scrollbar :block-height="blockHeight" :block-transform-y="blockTransformY.value" />
+      <AppCommonScrollbar :block-height="blockHeight" :block-transform-y="blockTransformY.value" />
       <div class="sidebar__items" ref="itemsBlock">
-        <app-item-line v-for="item in filteredItems" :key="item.id" :item="item" />
+        <AppItemLine v-for="item in filteredItems" :key="item.id" :item="item" />
       </div>
       <div v-if="!filteredItems.length" class="sidebar__items_empty">совпадений не найдено</div>
     </div>
@@ -35,15 +38,22 @@ import AppItemLine from '@/components/AppItemLine.vue'
 
 import wheelLogic from '@/utils/wheelLogic'
 import { useItemsStore } from '@/stores/items'
+import { useGoblinsStore } from '@/stores/goblins'
 import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
+import AppCommonSelect from '@/components/common/AppCommonSelect.vue'
+
 
 const itemsStore = useItemsStore()
 const items = computed(() => itemsStore.allItems)
 
+const goblinsStore = useGoblinsStore()
+const goblins = computed(() => goblinsStore.allGoblins)
+
+
 const filterFields = reactive({
   name: '',
   level: 0,
-  goblinType: null,
+  class: null,
 })
 
 const filteredItems = computed(() => {
@@ -54,7 +64,12 @@ const filteredItems = computed(() => {
   if (filterFields.level) {
     sampleItems = sampleItems.filter(item => item.level >= filterFields.level)
   }
-  //more filters
+  if (filterFields.class) {
+    sampleItems = sampleItems.filter(item =>
+      item.class.some(c => c === filterFields.class),
+    )
+  }
+
   return sampleItems
 })
 
@@ -71,6 +86,10 @@ const blockTransformY = computed(() => itemsBlock.value?.clientHeight
 
 const sliderThumbShift = (distance) => {
   filterFields.level = 200 * distance
+}
+
+const classSelection = (value) => {
+  filterFields.class = value?.id ?  value.id : null
 }
 
 </script>

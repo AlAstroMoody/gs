@@ -1,0 +1,107 @@
+<template>
+  <div class="select">
+    <div class="select__value" @click="selectClick">
+      {{ currentValue?.name || defaultValue }}
+    </div>
+    <div class="select__options" v-if="isSelectClick">
+      <div v-for="option in filteredOptions" :key="option.id"
+           @click="selectValue(option.id)" class="select__option"
+      >
+        {{ option.name || option }}
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+
+const emit = defineEmits(['getOption'])
+const props = defineProps({
+  options: {
+    default: () => [
+      { name: '', id: 0 },
+    ],
+    type: Array,
+  },
+  defaultValue: {
+    default: 'выберите значение',
+    type: String,
+  },
+})
+
+const filteredOptions = computed(() => {
+  return [{ name: props.defaultValue }].concat(props.options)
+    .filter(option => option.name !== currentValue.value?.name)
+})
+
+const isSelectClick = ref(false)
+const changeOptionsVisibility = () => {
+  isSelectClick.value = !isSelectClick.value
+  !isSelectClick.value ? removeHandler() : null
+}
+
+const selectClick = () => isSelectClick.value ? null : addHandler()
+const selectValue = (id) => {
+  removeHandler()
+  isSelectClick.value = !isSelectClick.value
+  if (id || id === 0) {
+    currentValue.value = props.options.find(option => option.id === id)
+  } else {
+    currentValue.value = { name: props.defaultValue }
+  }
+  emit('getOption', currentValue.value)
+}
+
+const currentValue = ref<any>(null)
+
+const addHandler = () => {
+  window.addEventListener('click', changeOptionsVisibility)
+}
+const removeHandler = () => {
+  window.removeEventListener('click', changeOptionsVisibility)
+}
+
+</script>
+
+<style scoped lang="scss">
+.select {
+  border: 1px solid var(--color-background-soft);
+  color: var(--color-text);
+  background: var(--color-background-soft);
+  border-radius: 16px;
+  padding: 8px;
+
+  &__options {
+    color: var(--color-text);
+    opacity: 1;
+  }
+
+  &__value {
+    cursor: pointer;
+  }
+
+  &__option {
+    cursor: pointer;
+    width: max-content;
+
+    &:after {
+      width: 0;
+      @include transition(all);
+    }
+
+    &:hover {
+      background: var(--color-text);
+      border-radius: 4px;
+
+      &:after {
+        border-bottom: 1px solid var(--color-border-hover);
+        content: '';
+        position: absolute;
+        width: 100%;
+        inset: 4px 0;
+      }
+    }
+  }
+}
+</style>
