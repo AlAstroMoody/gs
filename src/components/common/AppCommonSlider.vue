@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
 
 const emit = defineEmits(['thumbShift'])
@@ -19,6 +19,7 @@ const travelDistance = computed(() => endX.value - startX.value)
 
 const thumbShift = computed(() => {
   const shiftValue = (travelDistance.value / (slider.value.clientWidth - thumb.value.clientWidth)).toPrecision(2)
+  console.log(shiftValue)
   return shiftValue > 0 ? shiftValue : 0
 })
 
@@ -54,9 +55,20 @@ const onSliderClick = (event: MouseEvent) => {
 
 const OnDragStart = () => false
 
-onMounted(() => {
-  // TODO resize?
+const resize = () => {
   startX.value = slider.value.getBoundingClientRect().left
+  shiftX.value = 0
+  endX.value = 0
+  thumb.value.style.left = '0'
+}
+
+onMounted(() => {
+  resize()
+  window.addEventListener('resize', resize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', resize)
 })
 </script>
 

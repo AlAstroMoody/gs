@@ -1,8 +1,8 @@
 <template>
   <div class="scrollbar" ref="scrollbar">
     <div class="scrollbar__track">
-      <div class="scrollbar__thumb"
-           :style="{ transform: `translateY(${thumbTransformY}px)`, height: `${thumbHeight}px` }"
+      <div class="scrollbar__thumb" ref="thumb"
+           :style="{ transform: `translateY(${thumbTransformY}px)`, height: `${thumbHeight}%` }"
       />
     </div>
   </div>
@@ -23,14 +23,11 @@ const props = defineProps({
 })
 
 const scrollbar = ref<HTMLElement | null>(null)
-const thumbHeight = computed(() => props.blockHeight && scrollbar.value
-  ? props.blockHeight * 100 / scrollbar.value.clientHeight : 0,
-)
+const thumb = ref<HTMLElement | null>(null)
+const thumbHeight = computed(() => 100 * scrollbar.value?.clientHeight / props.blockHeight)
 
 const thumbTransformY = computed(() =>
-  scrollbar.value && props.blockTransformY && props.blockHeight
-    ? (-scrollbar.value.clientHeight + thumbHeight.value) * props.blockTransformY / props.blockHeight
-    : 0,
+  scrollbar.value ? (-scrollbar.value.clientHeight) * props.blockTransformY / props.blockHeight : 0
 )
 
 </script>
