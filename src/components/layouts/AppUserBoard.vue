@@ -1,7 +1,7 @@
 <template>
   <div class="board">
     <div class="board__user">
-      <img src="src/assets/images/user.png" alt="logo" class="board__image">
+      <img src="/src/assets/images/user.png" alt="logo" class="board__image">
       <div class="board__bar">400 / 400</div>
       <div class="board__bar">350 / 350</div>
     </div>

@@ -19,7 +19,6 @@ const travelDistance = computed(() => endX.value - startX.value)
 
 const thumbShift = computed(() => {
   const shiftValue = (travelDistance.value / (slider.value.clientWidth - thumb.value.clientWidth)).toPrecision(2)
-  console.log(shiftValue)
   return shiftValue > 0 ? shiftValue : 0
 })
 

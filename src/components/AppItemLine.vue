@@ -1,8 +1,10 @@
 <template>
-  <div class="line">
-    <img :src="item.src" class="line__image" alt="img">
-    <div class="line__information body">{{item.name}}</div>
-  </div>
+  <router-link :to="'/item/' + item.id">
+    <div class="line">
+      <img :src="item.src" class="line__image" alt="img">
+      <div class="line__information body">{{item.name}}</div>
+    </div>
+  </router-link>
 </template>
 
 <script setup lang="ts">

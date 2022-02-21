@@ -40,6 +40,7 @@ import AppCommonSelect from '@/components/common/AppCommonSelect.vue'
 
 import { useItemsStore } from '@/stores/items'
 import { useGoblinsStore } from '@/stores/goblins'
+import { useRouter } from 'vue-router'
 
 
 const itemsStore = useItemsStore()
@@ -121,6 +122,11 @@ const addWheelHandler = () => {
 }
 const removeWheelHandler = () => {
   itemsBlock.value.removeEventListener('wheel', wheelWatcher)
+}
+
+const router = useRouter()
+const goToItemPage = (id) => {
+  router.push(`/item/${id}`)
 }
 
 const resize = () => {

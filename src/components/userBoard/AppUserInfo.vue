@@ -5,14 +5,14 @@
     <div class="info__params">
       <div class="info__sum">
         <div class="info__total">
-          <img src="src/assets/images/weapon.png" alt="weapon">
+          <img src="/src/assets/images/weapon.png" alt="weapon">
           <div>
             <span>Атака:</span>
             <div> {{ attack }}</div>
           </div>
         </div>
         <div class="info__total">
-          <img src="src/assets/images/armor.png" alt="armor">
+          <img src="/src/assets/images/armor.png" alt="armor">
           <div>
             <span>Защита:</span>
             <div> {{ defense }}</div>
@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="info__stats">
-        <img src="src/assets/images/stats.png" alt="stats">
+        <img src="/src/assets/images/stats.png" alt="stats">
         <div>
           <div class="info__stat">сила: {{ user.stats.strength }}</div>
           <div class="info__stat">ловкость: {{ user.stats.agility }}</div>
