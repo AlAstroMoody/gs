@@ -21,7 +21,7 @@
 
     </div>
     <div class="sidebar__body">
-      <AppCommonScrollbar :block-height="blockHeight" :block-transform-y="blockTransformY.value" />
+      <AppCommonScrollbar :block-height="blockHeight" :block-transform-y="currentYPosition" />
       <div class="sidebar__items" ref="itemsBlock">
         <AppItemLine v-for="item in filteredItems" :key="item.id" :item="item" />
       </div>
@@ -31,16 +31,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 
 import AppCommonScrollbar from '@/components/common/AppCommonScrollbar.vue'
 import AppItemLine from '@/components/AppItemLine.vue'
-
-import wheelLogic from '@/utils/wheelLogic'
-import { useItemsStore } from '@/stores/items'
-import { useGoblinsStore } from '@/stores/goblins'
 import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
 import AppCommonSelect from '@/components/common/AppCommonSelect.vue'
+
+import { useItemsStore } from '@/stores/items'
+import { useGoblinsStore } from '@/stores/goblins'
 
 
 const itemsStore = useItemsStore()
@@ -48,7 +47,6 @@ const items = computed(() => itemsStore.allItems)
 
 const goblinsStore = useGoblinsStore()
 const goblins = computed(() => goblinsStore.allGoblins)
-
 
 const filterFields = reactive({
   name: '',
@@ -73,25 +71,73 @@ const filteredItems = computed(() => {
   return sampleItems
 })
 
+watch(filteredItems, async (newValue) => {
+  itemsBlock.value.style.transform = 'translate(0)'
+  changeBlockHeight()
+  currentYPosition.value = 0
+})
+
 const itemsBlock = ref<HTMLElement | null>(null)
-const blockHeight = computed(() =>
-  itemsBlock.value?.scrollHeight - itemsBlock.value?.clientHeight,
-)
 
-
-// TODO make Resize & filter changes, debounce
-const blockTransformY = computed(() => itemsBlock.value?.clientHeight
-  ? wheelLogic(itemsBlock.value).currentYPosition : 0,
-)
+const changeBlockHeight = () => {
+  nextTick(() => blockHeight.value = itemsBlock.value?.scrollHeight)
+}
+const blockHeight = ref(0)
 
 const sliderThumbShift = (distance) => {
   filterFields.level = 200 * distance
 }
 
 const classSelection = (value) => {
-  filterFields.class = value?.id ?  value.id : null
+  filterFields.class = value?.id ? value.id : null
 }
 
+const currentYPosition = ref(0)
+
+const wheelWatcher = (event: WheelEvent) => {
+  const heightDifference = itemsBlock.value.scrollHeight - itemsBlock.value.clientHeight
+  if (!heightDifference) return
+
+  if (currentYPosition.value + event.deltaY < 0) {
+    if (event.deltaY > 0) {
+      currentYPosition.value += event.deltaY * 4
+    } else {
+      if (-currentYPosition.value + event.deltaY < heightDifference) {
+        currentYPosition.value = currentYPosition.value += event.deltaY * 4
+      }
+    }
+  }
+  // extremum points
+  currentYPosition.value >= 0 ? currentYPosition.value = 0 : null
+  currentYPosition.value + heightDifference < 0
+    ? currentYPosition.value = -heightDifference
+    : null
+
+  itemsBlock.value.style.transform = `translateY(${currentYPosition.value}px)`
+}
+
+const addWheelHandler = () => {
+  itemsBlock.value.addEventListener('wheel', wheelWatcher)
+}
+const removeWheelHandler = () => {
+  itemsBlock.value.removeEventListener('wheel', wheelWatcher)
+}
+
+const resize = () => {
+  changeBlockHeight()
+  currentYPosition.value = 0
+}
+
+onMounted(() => {
+  addWheelHandler()
+  changeBlockHeight()
+  window.addEventListener('resize', resize)
+})
+
+onUnmounted(() => {
+  removeWheelHandler()
+  window.removeEventListener('resize', resize)
+})
 </script>
 
 <style scoped lang="scss">
