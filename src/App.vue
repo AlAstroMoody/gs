@@ -6,7 +6,13 @@
 
   <div class="page">
     <AppIconLamp class="page__lamp" @click="startGearEvent" />
-    <RouterView />
+
+    <router-view v-slot="{ Component }">
+      <transition name="page" mode="out-in">
+        <component :is="Component" :key="$route.path" />
+      </transition>
+    </router-view>
+
     <AppUserBoard />
   </div>
 
@@ -55,6 +61,14 @@ const startGearEvent = () => {
     position: absolute;
     z-index: 1;
     inset: 0 0 0 85%;
+  }
+
+  &-enter-from, &-leave-to {
+    opacity: 0;
+  }
+
+  &-enter-active, &-leave-active {
+    transition: opacity .3s ease-out;
   }
 }
 

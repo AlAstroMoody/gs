@@ -10,4 +10,6 @@ export interface ItemsInterface {
   src: string,
   id: number,
   class: [],
+  parents: [],
+  children: [],
 }

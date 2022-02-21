@@ -2,13 +2,21 @@
   <div class="inventory">
     <div class="inventory__subtitle body">Предметы</div>
     <div class="inventory__slots">
-      <div v-for="_ in 6" :key="6" class="inventory__slot" />
+      <div v-for="i in 6" :key="6" class="inventory__slot" >
+        <img :src="inventory[i-1]?.src" alt="img" v-if="inventory[i-1]">
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useUserStore } from '@/stores/user'
+import { computed } from 'vue'
 
+const userStore = useUserStore()
+const inventory = computed(() =>
+  userStore.userInventory
+)
 </script>
 
 <style scoped lang="scss">
@@ -35,10 +43,11 @@
 
   &__slot {
     margin: 1px;
-    background-image: url("src/assets/images/slot.png");
+    background-image: url("/src/assets/images/slot.png");
     width: 66px;
     height: 66px;
     border: 1px solid var(--color-text);
+    position: relative;
   }
 }
 </style>
