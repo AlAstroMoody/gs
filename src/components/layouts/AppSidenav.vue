@@ -15,15 +15,16 @@ import { useRouter } from 'vue-router'
 const menu = reactive([
   { title: 'выбрать гоблина', link: '/goblin' },
   { title: 'подобрать снарягу', link: '/' },
-  { title: 'пункт меню 3' },
+  { title: 'дерево крафта', link: '/craft' },
 ])
 
-const emit = defineEmits(['startGearEvent'])
+const emit = defineEmits(['startGearEvent', 'closeSidebar', 'openSidebar'])
 const router = useRouter()
 
 const openPoint = (link: string) => {
   emit('startGearEvent')
   link ? router.push(link) : null
+  link !== '/' ? emit('closeSidebar') : emit('openSidebar')
 }
 
 const linkStyle = (index: number): string => {
@@ -40,6 +41,7 @@ const linkStyle = (index: number): string => {
   transform: translateX(-100%);
   animation: sidenav 1s ease-out forwards;
   animation-delay: 1s;
+  @include transition(all);
 
   &__link {
     padding: 16px 0;
@@ -48,6 +50,7 @@ const linkStyle = (index: number): string => {
     position: relative;
     transform: translateX(-600px);
     animation: shiftRight 1s ease-out forwards;
+    @include transition(all);
 
     &:hover {
       @include transition(color);

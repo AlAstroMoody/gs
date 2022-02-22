@@ -17,7 +17,12 @@ const router = createRouter({
     {
       path: '/goblin',
       name: 'goblin',
-      component: () => import('../views/ItemPage.vue'),
+      component: () => import('../views/GoblinPage.vue'),
+    },
+    {
+      path: '/craft',
+      name: 'craft',
+      component: () => import('../views/CraftPage.vue'),
     },
   ],
 })

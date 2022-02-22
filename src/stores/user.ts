@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-import type { ItemsInterface } from '@/stores/interfaces'
+import type { ItemsInterface } from '@/common/interfaces'
 
 
 export const useUserStore = defineStore({

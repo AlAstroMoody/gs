@@ -20,16 +20,11 @@ import AppUserInventory from '@/components/userBoard/AppUserInventory.vue'
 .board {
   background: var(--color-background-soft);
   border-radius: 16px 16px 0 0;
-  width: 100%;
-  height: 30%;
-  min-height: 250px;
   animation: shiftTop 1s forwards;
   transform: translateY(100%);
   animation-delay: 2s;
-  display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 900px;
   margin: 0 auto;
 
   &__user {
