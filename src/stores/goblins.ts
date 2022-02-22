@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
 
-import { goblinClass, MainParams } from './enums'
+import { goblinClass, MainParams } from '../common/enums'
 
-import type { GoblinsInterface } from '@/stores/interfaces'
+import type { GoblinsInterface } from '@/common/interfaces'
 
 
 export const useGoblinsStore = defineStore({

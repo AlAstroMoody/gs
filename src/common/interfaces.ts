@@ -16,7 +16,7 @@ export interface ItemsInterface {
   children?: number[],
 }
 
-export interface commonSelect {
+export interface CommonSelect {
   name: string,
   id?: number
 }

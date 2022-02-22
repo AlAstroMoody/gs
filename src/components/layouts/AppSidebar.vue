@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="sidebar">
     <div class="filters">
 
       <div class="filters__name">
@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, reactive, ref, toRefs, watch } from 'vue'
 
 import AppItemLine from '@/components/AppItemLine.vue'
 import AppCommonScrollbar from '@/components/common/AppCommonScrollbar.vue'
@@ -40,6 +40,35 @@ import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
 import { useGoblinsStore } from '@/stores/goblins'
 import { useItemsStore } from '@/stores/items'
 
+
+const props = defineProps({
+  isShow: {
+    default: true,
+    type: Boolean,
+  },
+})
+
+const { isShow } = toRefs(props)
+watch(isShow, async () => {
+  if (sidebar.value) {
+    // if (isShow.value) {
+    //   sidebar.value.classList.add('sidebar_show')
+    //   sidebar.value.classList.remove('sidebar_hidden')
+    // } else {
+    //   sidebar.value.classList.remove('sidebar_show')
+    //   sidebar.value.classList.add('sidebar_hidden')
+    // }
+    sidebar.value.classList.add(isShow.value ? 'sidebar_show' : 'sidebar_hidden')
+    sidebar.value.classList.remove(isShow.value ? 'sidebar_hidden' : 'sidebar_show')
+
+    // isShow.value ? sidebar.value.classList.add('sidebar_show') : null
+    // !isShow.value ? sidebar.value.classList.add('sidebar_hidden') : null
+
+    // animation: sidebar 1s ease-in forwards;
+  }
+})
+
+const sidebar = ref<HTMLElement | null>(null)
 
 const itemsStore = useItemsStore()
 const items = computed(() => itemsStore.allItems)
@@ -146,11 +175,25 @@ onUnmounted(() => {
   border-left: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
-  padding: 16px 24px;
+  padding: 8px 12px;
   transform: translateY(-100%);
   animation: sidebar 1s ease-in forwards;
   animation-delay: 0.3s;
   overflow: hidden;
+
+  @media (min-width: $l) {
+    padding: 16px 24px;
+  }
+
+  &_show {
+    animation: show 0.5s ease-in forwards;
+    transform: translateY(0);
+  }
+
+  &_hidden {
+    animation: hidden 0.5s ease-in forwards;
+    transform: translateY(0);
+  }
 
   &__body {
     justify-content: space-between;
@@ -203,7 +246,7 @@ onUnmounted(() => {
       position: absolute;
       inset: 0 auto;
       padding: 8px;
-      transition: 0.2s all ease-in-out;
+      @include transition(all)
     }
 
     input {
@@ -231,4 +274,21 @@ onUnmounted(() => {
   }
 }
 
+@keyframes show {
+  from {
+    transform: translateX(100%)
+  }
+  to {
+    transform: translateX(0)
+  }
+}
+
+@keyframes hidden {
+  from {
+    transform: translateX(0)
+  }
+  to {
+    transform: translateX(100%)
+  }
+}
 </style>

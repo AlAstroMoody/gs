@@ -57,8 +57,8 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
+import type { ItemsInterface } from '@/common/interfaces'
 import { useGoblinsStore } from '@/stores/goblins'
-import type { ItemsInterface } from '@/stores/interfaces'
 import { useItemsStore } from '@/stores/items'
 import { useUserStore } from '@/stores/user'
 
@@ -102,11 +102,15 @@ const addItem = () => {
 <style scoped lang="scss">
 .item {
   padding: 16px;
-  height: 100%;
 
   &__main {
     margin: 40px 0 16px;
     display: flex;
+
+    img {
+      width: 64px;
+      height: 64px;
+    }
   }
 
   &__requirements {
@@ -140,6 +144,7 @@ const addItem = () => {
       flex: 1;
       display: flex;
       justify-content: flex-end;
+      margin-left: 8px;
     }
   }
 
