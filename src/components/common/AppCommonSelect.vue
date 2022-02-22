@@ -16,6 +16,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
+import type { commonSelect } from '@/stores/interfaces'
+
 
 const emit = defineEmits(['getOption'])
 const props = defineProps({
@@ -42,19 +44,20 @@ const changeOptionsVisibility = () => {
   !isSelectClick.value ? removeHandler() : null
 }
 
+
 const selectClick = () => isSelectClick.value ? null : addHandler()
 const selectValue = (id: number) => {
   removeHandler()
   isSelectClick.value = !isSelectClick.value
   if (id || id === 0) {
-    currentValue.value = props.options.find(option => option.id === id)
+    currentValue.value = props.options.find(option => option?.id === id) as commonSelect
   } else {
-    currentValue.value = { name: props.defaultValue }
+    currentValue.value = { name: props.defaultValue, id: undefined }
   }
   emit('getOption', currentValue.value)
 }
 
-const currentValue = ref<{ name: string } | null>(null)
+const currentValue = ref<commonSelect>({ name: '', id: 0 })
 
 const addHandler = () => {
   window.addEventListener('click', changeOptionsVisibility)

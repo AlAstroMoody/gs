@@ -58,6 +58,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { useGoblinsStore } from '@/stores/goblins'
+import type { ItemsInterface } from '@/stores/interfaces'
 import { useItemsStore } from '@/stores/items'
 import { useUserStore } from '@/stores/user'
 
@@ -78,8 +79,8 @@ const goblinStore = useGoblinsStore()
 const goblins = goblinStore.allGoblins
 
 const itemClasses = computed(() => {
-  if (item.value.class) {
-    return goblins.filter(goblin => item.value.class.includes(goblin.id))
+  if (item.value && item.value.class) {
+    return goblins.filter(goblin => item.value?.class.includes(goblin.id))
       .map(item => item.name).toString().replace(',', ', ')
   }
 
@@ -92,7 +93,7 @@ const buttonText = computed(() =>
 )
 const addItem = () => {
   if (userStore.userInventory.length < 6) {
-    userStore.addItem(item.value)
+    userStore.addItem(item.value as ItemsInterface)
   }
 }
 

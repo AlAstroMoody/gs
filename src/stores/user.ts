@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
 
+import type { ItemsInterface } from '@/stores/interfaces'
+
 
 export const useUserStore = defineStore({
   id: 'user',
   state: () => ({
-    inventory: [
+    inventory: <ItemsInterface[]>[
 
     ],
   }),
@@ -12,7 +14,7 @@ export const useUserStore = defineStore({
     userInventory: (state) => state.inventory,
   },
   actions: {
-    addItem(item) {
+    addItem(item: ItemsInterface) {
       this.inventory.push(item)
     }
   },
