@@ -25,10 +25,12 @@ const props = defineProps({
 
 const scrollbar = ref<HTMLElement | null>(null)
 const thumb = ref<HTMLElement | null>(null)
-const thumbHeight = computed(() => 100 * scrollbar.value?.clientHeight / props.blockHeight)
+const thumbHeight = computed(() =>
+  scrollbar.value ? 100 * scrollbar.value?.clientHeight / props.blockHeight : null
+)
 
 const thumbTransformY = computed(() =>
-  scrollbar.value ? (-scrollbar.value.clientHeight) * props.blockTransformY / props.blockHeight : 0
+  scrollbar.value ? (-scrollbar.value.clientHeight) * props.blockTransformY / props.blockHeight : 0,
 )
 
 </script>

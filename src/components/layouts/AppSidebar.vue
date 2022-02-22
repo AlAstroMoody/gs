@@ -50,7 +50,7 @@ const goblins = computed(() => goblinsStore.allGoblins)
 const filterFields = reactive({
   name: '',
   level: 0,
-  class: null,
+  class: <number | null>null,
 })
 
 const filteredItems = computed(() => {
@@ -59,9 +59,9 @@ const filteredItems = computed(() => {
     sampleItems = sampleItems.filter(item => item.name.includes(filterFields.name))
   }
   if (filterFields.level) {
-    sampleItems = sampleItems.filter(item => item.level >= filterFields.level)
+    sampleItems = sampleItems.filter(item => item.level ? item.level >= filterFields.level : null)
   }
-  if (filterFields.class) {
+  if (filterFields.class || filterFields.class === 0) {
     sampleItems = sampleItems.filter(item =>
       item.class.some(c => c === filterFields.class),
     )
@@ -88,7 +88,7 @@ const sliderThumbShift = (distance: number) => {
 }
 
 const classSelection = (value: { id: number }) => {
-  filterFields.class = value?.id ? value.id : null
+  filterFields.class = value.id || value.id === 0 ? value.id : null
 }
 
 const currentYPosition = ref(0)
