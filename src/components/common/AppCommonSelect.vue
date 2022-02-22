@@ -16,6 +16,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
+
 const emit = defineEmits(['getOption'])
 const props = defineProps({
   options: {
@@ -42,7 +43,7 @@ const changeOptionsVisibility = () => {
 }
 
 const selectClick = () => isSelectClick.value ? null : addHandler()
-const selectValue = (id) => {
+const selectValue = (id: number) => {
   removeHandler()
   isSelectClick.value = !isSelectClick.value
   if (id || id === 0) {
@@ -53,7 +54,7 @@ const selectValue = (id) => {
   emit('getOption', currentValue.value)
 }
 
-const currentValue = ref<any>(null)
+const currentValue = ref<{ name: string } | null>(null)
 
 const addHandler = () => {
   window.addEventListener('click', changeOptionsVisibility)

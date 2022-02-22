@@ -12,8 +12,8 @@
 
 <script setup lang="ts">
 
-import AppUserInventory from '@/components/userBoard/AppUserInventory.vue'
 import AppUserInfo from '@/components/userBoard/AppUserInfo.vue'
+import AppUserInventory from '@/components/userBoard/AppUserInventory.vue'
 </script>
 
 <style scoped lang="scss">

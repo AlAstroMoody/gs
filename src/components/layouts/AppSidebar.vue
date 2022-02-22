@@ -33,14 +33,12 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 
-import AppCommonScrollbar from '@/components/common/AppCommonScrollbar.vue'
 import AppItemLine from '@/components/AppItemLine.vue'
-import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
+import AppCommonScrollbar from '@/components/common/AppCommonScrollbar.vue'
 import AppCommonSelect from '@/components/common/AppCommonSelect.vue'
-
-import { useItemsStore } from '@/stores/items'
+import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
 import { useGoblinsStore } from '@/stores/goblins'
-import { useRouter } from 'vue-router'
+import { useItemsStore } from '@/stores/items'
 
 
 const itemsStore = useItemsStore()
@@ -72,8 +70,8 @@ const filteredItems = computed(() => {
   return sampleItems
 })
 
-watch(filteredItems, async (newValue) => {
-  itemsBlock.value.style.transform = 'translate(0)'
+watch(filteredItems, async () => {
+  itemsBlock.value ? itemsBlock.value.style.transform = 'translate(0)' : null
   changeBlockHeight()
   currentYPosition.value = 0
 })
@@ -81,52 +79,49 @@ watch(filteredItems, async (newValue) => {
 const itemsBlock = ref<HTMLElement | null>(null)
 
 const changeBlockHeight = () => {
-  nextTick(() => blockHeight.value = itemsBlock.value?.scrollHeight)
+  nextTick(() => itemsBlock.value ? blockHeight.value = itemsBlock.value?.scrollHeight : null)
 }
 const blockHeight = ref(0)
 
-const sliderThumbShift = (distance) => {
+const sliderThumbShift = (distance: number) => {
   filterFields.level = 200 * distance
 }
 
-const classSelection = (value) => {
+const classSelection = (value: { id: number }) => {
   filterFields.class = value?.id ? value.id : null
 }
 
 const currentYPosition = ref(0)
 
 const wheelWatcher = (event: WheelEvent) => {
-  const heightDifference = itemsBlock.value.scrollHeight - itemsBlock.value.clientHeight
-  if (!heightDifference) return
+  if (itemsBlock.value) {
+    const heightDifference = itemsBlock.value.scrollHeight - itemsBlock.value.clientHeight
+    if (!heightDifference) return
 
-  if (currentYPosition.value + event.deltaY < 0) {
-    if (event.deltaY > 0) {
-      currentYPosition.value += event.deltaY * 4
-    } else {
-      if (-currentYPosition.value + event.deltaY < heightDifference) {
-        currentYPosition.value = currentYPosition.value += event.deltaY * 4
+    if (currentYPosition.value + event.deltaY < 0) {
+      if (event.deltaY > 0) {
+        currentYPosition.value += event.deltaY * 4
+      } else {
+        if (-currentYPosition.value + event.deltaY < heightDifference) {
+          currentYPosition.value = currentYPosition.value += event.deltaY * 4
+        }
       }
     }
-  }
-  // extremum points
-  currentYPosition.value >= 0 ? currentYPosition.value = 0 : null
-  currentYPosition.value + heightDifference < 0
-    ? currentYPosition.value = -heightDifference
-    : null
+    // extremum points
+    currentYPosition.value >= 0 ? currentYPosition.value = 0 : null
+    currentYPosition.value + heightDifference < 0
+      ? currentYPosition.value = -heightDifference
+      : null
 
-  itemsBlock.value.style.transform = `translateY(${currentYPosition.value}px)`
+    itemsBlock.value.style.transform = `translateY(${currentYPosition.value}px)`
+  }
 }
 
 const addWheelHandler = () => {
-  itemsBlock.value.addEventListener('wheel', wheelWatcher)
+  itemsBlock.value ? itemsBlock.value.addEventListener('wheel', wheelWatcher) : null
 }
 const removeWheelHandler = () => {
-  itemsBlock.value.removeEventListener('wheel', wheelWatcher)
-}
-
-const router = useRouter()
-const goToItemPage = (id) => {
-  router.push(`/item/${id}`)
+  itemsBlock.value ? itemsBlock.value.removeEventListener('wheel', wheelWatcher) : null
 }
 
 const resize = () => {

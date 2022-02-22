@@ -2,7 +2,7 @@
   <div class="inventory">
     <div class="inventory__subtitle body">Предметы</div>
     <div class="inventory__slots">
-      <div v-for="i in 6" :key="6" class="inventory__slot" >
+      <div v-for="i in 6" :key="i" class="inventory__slot">
         <img :src="inventory[i-1]?.src" alt="img" v-if="inventory[i-1]">
       </div>
     </div>
@@ -10,12 +10,14 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from '@/stores/user'
 import { computed } from 'vue'
+
+import { useUserStore } from '@/stores/user'
+
 
 const userStore = useUserStore()
 const inventory = computed(() =>
-  userStore.userInventory
+  userStore.userInventory,
 )
 </script>
 

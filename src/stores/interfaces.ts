@@ -9,6 +9,7 @@ export interface ItemsInterface {
   name: string,
   src: string,
   id: number,
+  level: number,
   class: [],
   parents: [],
   children: [],

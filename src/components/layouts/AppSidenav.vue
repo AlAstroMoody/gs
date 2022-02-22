@@ -1,24 +1,32 @@
 <template>
   <section class="sidenav">
     <div class="sidenav__link link" v-for="(point, index) in menu"
-         :style="linkStyle(index)" @click="openPoint">
+         :style="linkStyle(index)" @click="openPoint(point)" :key="index">
       {{ point.title }}
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
+
 
 const menu = reactive([
-  { title: 'выбрать гоблина' },
-  { title: 'подобрать снарягу' },
+  { title: 'выбрать гоблина', link: '/goblin' },
+  { title: 'подобрать снарягу', link: '/' },
   { title: 'пункт меню 3' },
 ])
 
 const emit = defineEmits(['startGearEvent'])
-const openPoint = () => {
+const router = useRouter()
+
+const openPoint = (point: { link: string }) => {
   emit('startGearEvent')
+  if (point.link) {
+    router.push(point.link)
+    // emit('')
+  }
 }
 
 const linkStyle = (index: number): string => {

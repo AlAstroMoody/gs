@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia'
-import type { GoblinsInterface } from '@/stores/interfaces'
+
 import { goblinClass, MainParams } from './enums'
+
+import type { GoblinsInterface } from '@/stores/interfaces'
 
 
 export const useGoblinsStore = defineStore({
   id: 'goblins',
   state: () => ({
-    goblins: <GoblinsInterface>[
+    goblins: <GoblinsInterface[]>[
       // temporary data, delete later
       { name: goblinClass.STALKER, src: '/src/assets/images/armor.png', id: 0, mainParam: MainParams.STRENGTH },
       { name: goblinClass.PYROMANIAC, src: '/src/assets/images/armor.png', id: 1, mainParam: MainParams.STRENGTH },
