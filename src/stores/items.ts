@@ -1,15 +1,25 @@
 import { defineStore } from 'pinia'
+
 import type { ItemsInterface } from '@/stores/interfaces'
+
 
 export const useItemsStore = defineStore({
   id: 'items',
   state: () => ({
-    items: <ItemsInterface>[
+    items: <ItemsInterface[]>[
       // temporary data, delete later
-      { name: 'щит', src: '/src/assets/images/testImages/1.png', id: 0, level: 10, class: [], parents: [2, 3], children: [2, 6], description: 'описание предмета',
-        stats: { strength: 20, agility: 20, intelligence: 20,} },
-      { name: 'меч', src: '/src/assets/images/testImages/2.png', id: 1, level: 20, class: [5], parents: [3, 0], children: [1, 3] },
-      { name: 'шлем', src: '/src/assets/images/testImages/3.png', id: 2, level: 10, class: [2], parents: [5, 6], children: [2, 7] },
+      {
+        name: 'щит', src: '/src/assets/images/testImages/1.png', id: 0, level: 10, class: [], parents: [2, 3],
+        children: [2, 6], description: 'описание предмета', stats: { strength: 20, agility: 20, intelligence: 20 },
+      },
+      {
+        name: 'меч', src: '/src/assets/images/testImages/2.png', id: 1, level: 20, class: [5], parents: [3, 0],
+        children: [1, 3],
+      },
+      {
+        name: 'шлем', src: '/src/assets/images/testImages/3.png', id: 2, level: 10, class: [2], parents: [5, 6],
+        children: [2, 7],
+      },
       { name: 'сапоги', src: '/src/assets/images/testImages/4.png', id: 3, level: 20, class: [2] },
       { name: 'перчатки', src: '/src/assets/images/testImages/5.png', id: 4, level: 10, class: [6] },
       { name: 'щит2', src: '/src/assets/images/testImages/6.png', id: 5, level: 30, class: [2] },

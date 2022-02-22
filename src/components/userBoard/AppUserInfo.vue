@@ -34,6 +34,7 @@
 <script setup lang="ts">
 import { computed, reactive } from 'vue'
 
+
 const user = reactive({
   name: 'Крягз "Ядро"',
   level: '1',

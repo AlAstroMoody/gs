@@ -20,13 +20,15 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 
+import AppGears from '@/components/AppGears.vue'
+import AppIconLamp from '@/components/icons/AppIconLamp.vue'
 import AppSidebar from '@/components/layouts/AppSidebar.vue'
 import AppSidenav from '@/components/layouts/AppSidenav.vue'
 import AppUserBoard from '@/components/layouts/AppUserBoard.vue'
-import AppGears from '@/components/AppGears.vue'
-import { ref } from 'vue'
-import AppIconLamp from '@/components/icons/AppIconLamp.vue'
+
+
 
 const gearEvent = ref(false)
 const startGearEvent = () => {

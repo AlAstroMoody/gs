@@ -21,7 +21,7 @@
 
     <div class="item__description">
       бонусы предмета:
-<!--     TODO change later, when will the api be ready-->
+      <!--     TODO change later, when will the api be ready-->
       <div v-if="item.stats?.strength">сила: {{ item.stats.strength }}</div>
       <div v-if="item.stats?.agility">ловкость: {{ item.stats.agility }}</div>
       <div v-if="item.stats?.intelligence">разум: {{ item.stats.intelligence }}</div>
@@ -29,7 +29,7 @@
 
     <div class="item__craft" v-if="item.parents?.length">
       из предмета "{{ item.name }}" можно скрафтить:
-      <span v-for="(parent, index) in item.parents" class="item__link">
+      <span v-for="(parent, index) in item.parents" class="item__link" :key="parent.id">
         <router-link :to="'/item/' + parent">
           <span class="item__name"> {{ getItemName(parent).name }} </span>
           <span v-if="index !== item.parents.length - 1">, </span>
@@ -40,7 +40,7 @@
 
     <div class="item__craft" v-if="item.children?.length">
       предмет "{{ item.name }}" крафтится из:
-      <span v-for="(child, index) in item.children" class="item__link">
+      <span v-for="(child, index) in item.children" class="item__link" :key="child.id">
         <router-link :to="'/item/' + child">
           <span class="item__name"> {{ getItemName(child).name }} </span>
           <span v-if="index !== item.children.length - 1">, </span>
@@ -50,14 +50,15 @@
     </div>
 
   </main>
-  <div v-else>такого предмета нет</div>
+  <div v-else class="item">такого предмета нет</div>
 </template>
 
 <script setup lang="ts">
-import { useItemsStore } from '@/stores/items'
-import { useGoblinsStore } from '@/stores/goblins'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+
+import { useGoblinsStore } from '@/stores/goblins'
+import { useItemsStore } from '@/stores/items'
 import { useUserStore } from '@/stores/user'
 
 
@@ -69,7 +70,7 @@ let item = computed(() =>
 )
 
 const items = computed(() => itemsStore.allItems)
-const getItemName = (id) => {
+const getItemName = (id: number) => {
   return items.value.find(item => item.id === id)
 }
 
@@ -81,12 +82,13 @@ const itemClasses = computed(() => {
     return goblins.filter(goblin => item.value.class.includes(goblin.id))
       .map(item => item.name).toString().replace(',', ', ')
   }
+
   return ''
 })
 
 const userStore = useUserStore()
 const buttonText = computed(() =>
-  userStore.userInventory.length < 6 ? 'добавить в инвентарь' : 'инвентарь переполнен'
+  userStore.userInventory.length < 6 ? 'добавить в инвентарь' : 'инвентарь переполнен',
 )
 const addItem = () => {
   if (userStore.userInventory.length < 6) {
