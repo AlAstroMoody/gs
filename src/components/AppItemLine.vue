@@ -24,6 +24,10 @@ defineProps({
   cursor: pointer;
 
   &:hover {
+    cursor:url(/src/assets/images/cursor_sword.png),auto;
+  }
+
+  &:hover {
     @include transition(all);
     background: var(--color-text);
     color: var(--color-background);

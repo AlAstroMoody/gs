@@ -22,8 +22,7 @@ import type { CommonSelect } from '@/common/interfaces'
 const emit = defineEmits(['getOption'])
 const props = defineProps({
   options: {
-    default: () => [
-      { name: '', id: 0 },
+    default: (): CommonSelect[] => [
     ],
     type: Array,
   },
@@ -82,12 +81,16 @@ const removeHandler = () => {
   }
 
   &__value {
-    cursor: pointer;
+    cursor:url(/src/assets/images/cursor_gauntlet.png),auto;
+
+    &:hover {
+      cursor:url(/src/assets/images/cursor_gauntlet2.png),auto;
+    }
   }
 
   &__option {
-    cursor: pointer;
     width: max-content;
+    cursor:url(/src/assets/images/cursor_gauntlet2.png),auto;
 
     &:after {
       width: 0;
