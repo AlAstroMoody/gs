@@ -97,7 +97,7 @@ onUnmounted(() => {
     left: 0;
     top: -5px;
     background: var(--color-text);
-    cursor: pointer;
+    cursor:url(/src/assets/images/cursor_gauntlet2.png),auto;
   }
 }
 </style>

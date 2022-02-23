@@ -131,7 +131,6 @@ const addItem = () => {
     font-size: 1.1em;
     border-radius: 16px;
     border: 1px solid var(--color-text);
-    cursor: pointer;
     padding: 8px;
     @include transition(all);
 
