@@ -1,20 +1,30 @@
 <template>
   <div class="board">
     <div class="board__user">
-      <img src="/src/assets/images/user.png" alt="logo" class="board__image">
+      <img :src="goblin.src" alt="logo" class="board__image">
       <div class="board__bar">400 / 400</div>
       <div class="board__bar">350 / 350</div>
     </div>
-    <AppUserInfo class="board__info"/>
-    <app-user-inventory class="board__inventory"/>
+    <AppUserInfo class="board__info" />
+    <AppUserInventory class="board__inventory" />
   </div>
 </template>
 
 <script setup lang="ts">
 
+import { computed } from 'vue'
+
 import AppUserInfo from '@/components/userBoard/AppUserInfo.vue'
 import AppUserInventory from '@/components/userBoard/AppUserInventory.vue'
-</script>
+import { useUserStore } from '@/stores/user'
+
+
+
+const userStore = useUserStore()
+const inventory = computed(() => userStore.inventory )
+const goblin = computed(() => userStore.userGoblin)
+
+</script> 
 
 <style scoped lang="scss">
 .board {
@@ -48,8 +58,8 @@ import AppUserInventory from '@/components/userBoard/AppUserInventory.vue'
   }
 
   &__image {
-    width: 200px;
-    border-radius: 50% 0 0 0;
+    width: 150px;
+    //border-radius: 50% 0 0 0;
     object-fit: cover;
   }
 

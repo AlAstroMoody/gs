@@ -3,7 +3,7 @@
     <div class="inventory__subtitle body">Предметы</div>
     <div class="inventory__slots">
       <div v-for="i in 6" :key="i" class="inventory__slot">
-        <img :src="inventory[i-1]?.src" alt="img" v-if="inventory[i-1]">
+        <img :src="inventory[i-1]?.src" alt="img" v-if="inventory[i-1]" @click="removeItem(i)">
       </div>
     </div>
   </div>
@@ -16,9 +16,9 @@ import { useUserStore } from '@/stores/user'
 
 
 const userStore = useUserStore()
-const inventory = computed(() =>
-  userStore.userInventory,
-)
+const inventory = computed(() => userStore.userInventory)
+const removeItem = (index: number) => userStore.removeItem(index)
+
 </script>
 
 <style scoped lang="scss">
@@ -50,6 +50,7 @@ const inventory = computed(() =>
     height: 66px;
     border: 1px solid var(--color-text);
     position: relative;
+    @include transition(all);
   }
 }
 </style>
