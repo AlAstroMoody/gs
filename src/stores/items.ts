@@ -14,11 +14,11 @@ export const useItemsStore = defineStore({
       },
       {
         name: 'меч', src: '/src/assets/images/testImages/2.png', id: 1, level: 20, class: [5], parents: [3, 0],
-        children: [1, 3],
+        children: [1, 3], description: 'описание предмета', stats: { strength: 15, agility: 200, intelligence: 0 },
       },
       {
         name: 'шлем', src: '/src/assets/images/testImages/3.png', id: 2, level: 10, class: [2], parents: [5, 6],
-        children: [2, 7],
+        children: [2, 7], description: 'описание предмета', stats: { strength: 30, agility: 15, intelligence: 40 },
       },
       { name: 'сапоги', src: '/src/assets/images/testImages/4.png', id: 3, level: 20, class: [2] },
       { name: 'перчатки', src: '/src/assets/images/testImages/5.png', id: 4, level: 10, class: [6] },

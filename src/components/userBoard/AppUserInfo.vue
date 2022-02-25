@@ -1,7 +1,7 @@
 <template>
   <div class="info">
-    <div class="info__name subtitle">{{ user.name }}</div>
-    <div class="info__class">Уровень {{ user.level }}, {{ user.class }}</div>
+    <div class="info__name subtitle">'Крягз "Ядро"'</div>
+    <div class="info__class">Уровень {{ userLevel }}, {{ goblin.name }}</div>
     <div class="info__params">
       <div class="info__sum">
         <div class="info__total">
@@ -22,9 +22,9 @@
       <div class="info__stats">
         <img src="/src/assets/images/stats.png" alt="stats">
         <div>
-          <div class="info__stat">сила: {{ user.stats.strength }}</div>
-          <div class="info__stat">ловкость: {{ user.stats.agility }}</div>
-          <div class="info__stat">разум: {{ user.stats.intelligence }}</div>
+          <div class="info__stat">сила: {{ goblin.stats.strength + displayedItemsStrength }}</div>
+          <div class="info__stat">ловкость: {{ goblin.stats.agility + displayedItemsAgility }}</div>
+          <div class="info__stat">разум: {{ goblin.stats.intelligence + displayedItemsIntelligence }}</div>
         </div>
       </div>
     </div>
@@ -32,21 +32,64 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive } from 'vue'
+import { computed, ref, watch, type Ref } from 'vue'
+
+import { MainParams } from '@/common/enums'
+import { useUserStore } from '@/stores/user'
 
 
-const user = reactive({
-  name: 'Крягз "Ядро"',
-  level: '1',
-  class: 'Ракетчик',
-  stats: {
-    strength: 15,
-    agility: 10,
-    intelligence: 10,
-  },
+const attack = computed(() => {
+  switch (goblin.value.mainParam) {
+    case MainParams.STRENGTH:
+      return strength.value + goblin.value.stats.strength
+    case MainParams.AGILITY:
+      return agility.value + goblin.value.stats.agility
+    default:
+      return intelligence.value + goblin.value.stats.intelligence
+  }
 })
-const attack = computed(() => '26 - 38')
-const defense = computed(() => 1)
+const defense = computed(() => Math.floor(1 + (agility.value + goblin.value.stats.agility) / 3))
+
+const userStore = computed(() => useUserStore())
+const userLevel = computed(() => userStore.value.userLevel)
+const goblin = computed(() => userStore.value.userGoblin)
+
+const strength = computed(() => userStore.value.userItemsStats.strength)
+const agility = computed(() => userStore.value.userItemsStats.agility)
+const intelligence = computed(() => userStore.value.userItemsStats.intelligence)
+
+const displayedItemsStrength = ref(0)
+const displayedItemsAgility = ref(0)
+const displayedItemsIntelligence = ref(0)
+
+watch(strength, async () => {
+  changeParamValue(displayedItemsStrength, strength.value)
+})
+
+watch(agility, async () => {
+  changeParamValue(displayedItemsAgility, agility.value)
+})
+
+watch(intelligence, async () => {
+  changeParamValue(displayedItemsIntelligence, intelligence.value)
+})
+
+const changeParamValue = (displayedValue: Ref<number>, paramValue: number) => {
+  let interval = 0
+  if (displayedValue.value !== paramValue) {
+    interval = window.setInterval(() => {
+        let change = (paramValue - displayedValue.value) / 2
+        change = change >= 0 ? Math.ceil(change) : Math.floor(change)
+        displayedValue.value = displayedValue.value + change
+        if (displayedValue.value === paramValue) {
+          clearInterval(interval)
+        }
+      },
+      10,
+    )
+  }
+}
+
 </script>
 
 <style scoped lang="scss">
@@ -95,11 +138,11 @@ const defense = computed(() => 1)
     justify-content: center;
     align-items: center;
 
-     img {
-       width: 64px;
-       height: 64px;
-       margin-right: 12px;
-     }
+    img {
+      width: 64px;
+      height: 64px;
+      margin-right: 12px;
+    }
   }
 
   &__stat {
