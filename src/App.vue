@@ -103,8 +103,12 @@ const isBigPage = computed(() => route.path === '/goblins' )
   }
 
   &_big {
-    width: calc(100% - 250px);
+    width: 100%;
     right: 0;
+
+    @media (min-width: $l) {
+      width: calc(100% - 250px);
+    }
   }
 
   &__component {
