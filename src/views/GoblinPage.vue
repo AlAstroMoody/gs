@@ -38,7 +38,6 @@ const sliderThumbShift = (distance: number) => {
 
 <style scoped lang="scss">
 .goblin {
-  padding: 16px;
 
   &__cards {
     flex-wrap: wrap;

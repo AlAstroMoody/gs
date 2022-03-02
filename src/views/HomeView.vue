@@ -46,11 +46,11 @@
   position: relative;
 
   &__image {
+    margin: -16px 0 16px;
     width: 100vw;
     opacity: 0;
     animation: opacity 1s forwards;
     animation-delay: 0.5s;
-    margin-bottom: 16px;
     @media (min-width: $l) {
       width: 100%;
     }
