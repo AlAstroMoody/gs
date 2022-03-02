@@ -1,6 +1,7 @@
 <template>
   <section class="sidenav">
     <div class="sidenav__link link" v-for="(point, index) in menu"
+         :class="{sidenav__link_active : point.link === $route.path}"
          :style="linkStyle(index)" @click="openPoint(point.link)" :key="index">
       {{ point.title }}
     </div>
@@ -30,6 +31,7 @@ const openPoint = (link: string) => {
 const linkStyle = (index: number): string => {
   return `animation-delay: ${index / 2 + 0.8}s`
 }
+
 </script>
 
 <style scoped lang="scss">
@@ -56,6 +58,12 @@ const linkStyle = (index: number): string => {
     @include transition(all);
     margin: 8px 0 8px -1px;
     border-radius: 0 16px 16px 0;
+
+    &_active {
+      color: var(--color-background);
+      background: var(--color-text);
+      border: 1px solid var(--color-background);
+    }
 
     &:hover {
       @include transition(color, background);
