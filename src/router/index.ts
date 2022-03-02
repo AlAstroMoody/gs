@@ -15,8 +15,8 @@ const router = createRouter({
       component: () => import('../views/ItemPage.vue'),
     },
     {
-      path: '/goblin',
-      name: 'goblin',
+      path: '/goblins',
+      name: 'goblins',
       component: () => import('../views/GoblinPage.vue'),
     },
     {

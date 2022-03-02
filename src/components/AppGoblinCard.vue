@@ -7,8 +7,7 @@
         <div>Основной параметр: {{ goblin.mainParam }}</div>
       </div>
     </div>
-    <div class="card__description">{{ goblin.description }}</div>
-
+      <div class="card__description">{{ goblin.description }}</div>
   </div>
 </template>
 
@@ -43,6 +42,14 @@ const userGoblin = computed(() => userStore.userGoblin)
   min-width: 250px;
   @include transition(color, background);
 
+  &:hover {
+    border-radius: 8px;
+    padding: 7px;
+    border: 1px solid var(--color-background);
+    background: var(--color-text);
+    color: var(--color-background);
+  }
+
   &_active {
     border-radius: 8px;
     padding: 7px;
@@ -57,6 +64,14 @@ const userGoblin = computed(() => userStore.userGoblin)
     img {
       margin-right: 8px;
     }
+  }
+
+  &-enter-from, &-leave-to {
+    height: 0;
+  }
+
+  &-enter-active, &-leave-active {
+    transition: height 0.3s ease-out;
   }
 }
 </style>
