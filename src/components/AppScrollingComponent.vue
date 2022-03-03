@@ -1,6 +1,6 @@
 <template>
   <div class="scrollbar__wrapper">
-    <div class="scrollbar" ref="scrollbar">
+    <div class="scrollbar" ref="scrollbar" @click="trackClick">
       <div class="scrollbar__track">
         <div class="scrollbar__thumb" ref="thumb"
              :style="{ transform: `translateY(${thumbTransformY}px)`, height: `${thumbHeight}%` }"
@@ -119,6 +119,19 @@ watch(routePath, async () => {
 watch(isResize, async () => {
   resize()
 })
+
+const trackClick = (event: MouseEvent) => {
+  const eventShift = event.clientY < - currentYPosition.value ? event.offsetY : event.clientY
+  if (main.value) {
+    const heightDifference = main.value.scrollHeight - main.value.clientHeight
+    if (eventShift >= heightDifference) {
+      currentYPosition.value = - heightDifference
+    } else {
+      currentYPosition.value = - eventShift
+    }
+    main.value.style.transform = `translateY(${currentYPosition.value}px)`
+  }
+}
 
 </script>
 
