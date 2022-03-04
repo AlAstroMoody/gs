@@ -1,68 +1,67 @@
 <template>
   <div class="sidenav__wrapper">
     <AppGears :event="gearEvent" />
-    <AppSidenav class="sidenav" @startGearEvent="startGearEvent"
-                @closeSidebar="closeSidebar" @openSidebar="openSidebar"
+    <AppSidenav
+      class="sidenav"
+      @startGearEvent="startGearEvent"
+      @closeSidebar="closeSidebar"
+      @openSidebar="openSidebar"
     />
     <AppIconLamp class="sidenav__power" @click="startGearEvent" />
   </div>
 
-  <div class="page" :class="{page_big : isBigPage}">
-
+  <div class="page" :class="{ page_big: isBigPage }">
     <router-view v-slot="{ Component }">
       <transition name="page" mode="out-in">
         <AppScrollingComponent>
           <component :is="Component" :key="$route.path" class="page__component" />
+          <div class="page_empty" />
         </AppScrollingComponent>
       </transition>
+      <AppUserBoard class="board" />
     </router-view>
   </div>
-
-  <AppUserBoard  class="board" />
 
   <AppSidebar class="sidebar" ref="sidebar" :isShow="isSidebarShow" />
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 
-import AppGears from '@/components/AppGears.vue'
-import AppScrollingComponent from '@/components/AppScrollingComponent.vue'
-import AppIconLamp from '@/components/icons/AppIconLamp.vue'
-import AppSidebar from '@/components/layouts/AppSidebar.vue'
-import AppSidenav from '@/components/layouts/AppSidenav.vue'
-import AppUserBoard from '@/components/layouts/AppUserBoard.vue'
+import AppGears from "@/components/AppGears.vue";
+import AppScrollingComponent from "@/components/AppScrollingComponent.vue";
+import AppIconLamp from "@/components/icons/AppIconLamp.vue";
+import AppSidebar from "@/components/layouts/AppSidebar.vue";
+import AppSidenav from "@/components/layouts/AppSidenav.vue";
+import AppUserBoard from "@/components/layouts/AppUserBoard.vue";
 
-
-
-const gearEvent = ref(false)
+const gearEvent = ref(false);
 const startGearEvent = () => {
-  gearEvent.value = !gearEvent.value
-}
+  gearEvent.value = !gearEvent.value;
+};
 
-const isSidebarShow = ref(true)
+const isSidebarShow = ref(true);
 const openSidebar = () => {
-  isSidebarShow.value = true
-}
+  isSidebarShow.value = true;
+};
 const closeSidebar = () => {
-  isSidebarShow.value = false
-}
+  isSidebarShow.value = false;
+};
 
-const route = useRoute()
-const isBigPage = computed(() => route.path === '/goblins' )
+const route = useRoute();
+const isBigPage = computed(() => route.path === "/goblins");
 </script>
 
 <style lang="scss">
-
 #app {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
+  overflow: hidden;
 
   @media (min-width: $s) {
     height: 100vh;
-    overflow: hidden;
     flex-direction: row;
   }
 }
@@ -75,7 +74,7 @@ const isBigPage = computed(() => route.path === '/goblins' )
     display: none;
 
     @media (min-width: $l) {
-     display: block;
+      display: block;
     }
   }
 
@@ -93,11 +92,16 @@ const isBigPage = computed(() => route.path === '/goblins' )
   justify-content: space-between;
   overflow: hidden;
   position: relative;
-  width: calc(100% - 650px);
-  right: 300px;
-  height: calc(100% - 275px);
+  width: 100%;
+  height: 100%;
+
+  @media (min-width: $m) {
+    height: 100%;
+    width: calc(100% - 300px);
+  }
 
   @media (min-width: $l) {
+    width: calc(100% - 650px);
     padding: 0 24px 0;
     right: 400px;
   }
@@ -111,16 +115,22 @@ const isBigPage = computed(() => route.path === '/goblins' )
     }
   }
 
+  &_empty {
+    height: 300px;
+  }
+
   &__component {
     overflow: hidden;
   }
 
-  &-enter-from, &-leave-to {
+  &-enter-from,
+  &-leave-to {
     opacity: 0;
   }
 
-  &-enter-active, &-leave-active {
-    transition: opacity .3s ease-out;
+  &-enter-active,
+  &-leave-active {
+    transition: opacity 0.3s ease-out;
   }
 }
 
@@ -131,7 +141,6 @@ const isBigPage = computed(() => route.path === '/goblins' )
   @media (min-width: $m) {
     display: flex;
   }
-
 }
 
 .sidebar {

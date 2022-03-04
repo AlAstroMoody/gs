@@ -2,7 +2,7 @@
   <div class="board">
     <div class="board__wrapper">
       <div class="board__user">
-        <img :src="goblin.src" alt="logo" class="board__image">
+        <img :src="goblin.src" alt="logo" class="board__image" />
         <div class="board__bar">400 / 400</div>
         <div class="board__bar">350 / 350</div>
       </div>
@@ -13,30 +13,33 @@
         <div class="info__params">
           <div class="info__sum">
             <div class="info__total">
-              <img src="/src/assets/images/weapon.png" alt="weapon">
+              <img src="/src/assets/images/weapon.png" alt="weapon" />
               <div>
                 <span>Атака:</span>
-                <div> {{ attack }}</div>
+                <div>{{ attack }}</div>
               </div>
             </div>
             <div class="info__total">
-              <img src="/src/assets/images/armor.png" alt="armor">
+              <img src="/src/assets/images/armor.png" alt="armor" />
               <div>
                 <span>Защита:</span>
-                <div> {{ defense }}</div>
+                <div>{{ defense }}</div>
               </div>
             </div>
           </div>
           <div class="info__stats">
-            <img src="/src/assets/images/stats.png" alt="stats">
+            <img src="/src/assets/images/stats.png" alt="stats" />
             <div>
-              <div class="info__stat">сила:
+              <div class="info__stat">
+                сила:
                 <div>{{ goblin.stats.strength + displayedItemsStrength }}</div>
               </div>
-              <div class="info__stat">ловкость:
+              <div class="info__stat">
+                ловкость:
                 <div>{{ goblin.stats.agility + displayedItemsAgility }}</div>
               </div>
-              <div class="info__stat">разум:
+              <div class="info__stat">
+                разум:
                 <div>{{ goblin.stats.intelligence + displayedItemsIntelligence }}</div>
               </div>
             </div>
@@ -48,11 +51,15 @@
         <div class="inventory__subtitle body">Предметы</div>
         <div class="inventory__slots">
           <div v-for="i in 6" :key="i" class="inventory__slot">
-            <img :src="inventory[i-1]?.src" alt="img" v-if="inventory[i-1]" @click="removeItem(i)">
+            <img
+              :src="inventory[i - 1]?.src"
+              alt="img"
+              v-if="inventory[i - 1]"
+              @click="removeItem(i)"
+            />
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -119,7 +126,6 @@ const changeParamValue = (displayedValue: Ref<number>, paramValue: number) => {
 
 const inventory = computed(() => userStore.value.userInventory)
 const removeItem = (index: number) => userStore.value.removeItem(index)
-
 </script>
 
 <style scoped lang="scss">
@@ -134,6 +140,8 @@ const removeItem = (index: number) => userStore.value.removeItem(index)
   position: absolute;
   inset: auto 0 0 0;
   z-index: 10;
+  border: 1px solid var(--color-text);
+  border-bottom: none;
 
   @media (min-width: $m) {
     width: fit-content;
@@ -172,10 +180,10 @@ const removeItem = (index: number) => userStore.value.removeItem(index)
 
 @keyframes shiftTop {
   0% {
-    transform: translateY(100%)
+    transform: translateY(100%);
   }
   100% {
-    transform: translateY(0)
+    transform: translateY(0);
   }
 }
 
