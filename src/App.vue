@@ -1,56 +1,64 @@
 <template>
-  <div class="sidenav__wrapper">
-    <AppGears :event="gearEvent" />
-    <AppSidenav
-      class="sidenav"
-      @startGearEvent="startGearEvent"
-      @closeSidebar="closeSidebar"
-      @openSidebar="openSidebar"
-    />
-    <AppIconLamp class="sidenav__power" @click="startGearEvent" />
+  <div class="lg:block hidden">
+    <AppGears />
+    <AppSidenav class="sidenav mt-48" />
+    <AppIconLamp class="absolute z-10 -right-2 top-0" />
   </div>
 
   <div class="page" :class="{ page_big: isBigPage }">
     <router-view v-slot="{ Component }">
       <transition name="page" mode="out-in">
-        <AppScrollingComponent>
-          <component :is="Component" :key="$route.path" class="page__component" />
-          <div class="page_empty" />
-        </AppScrollingComponent>
+        <div class="h-full relative">
+          <AppScrollingComponent>
+            <component
+              :is="Component"
+              :key="$route.path"
+              class="page__component"
+            />
+          </AppScrollingComponent>
+          <AppUserBoard
+            class="hidden absolute bottom-0 lg:flex"
+            v-show="!isBigPage"
+          />
+        </div>
       </transition>
-      <AppUserBoard class="board" />
     </router-view>
   </div>
 
-  <AppSidebar class="sidebar" ref="sidebar" :isShow="isSidebarShow" />
+  <AppSidebar class="sidebar" ref="sidebar" />
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { useRoute } from "vue-router";
+import { computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
-import AppGears from "@/components/AppGears.vue";
-import AppScrollingComponent from "@/components/AppScrollingComponent.vue";
-import AppIconLamp from "@/components/icons/AppIconLamp.vue";
-import AppSidebar from "@/components/layouts/AppSidebar.vue";
-import AppSidenav from "@/components/layouts/AppSidenav.vue";
-import AppUserBoard from "@/components/layouts/AppUserBoard.vue";
+import AppGears from '@/components/AppGears.vue'
+import AppScrollingComponent from '@/components/AppScrollingComponent.vue'
+import AppIconLamp from '@/components/icons/AppIconLamp.vue'
+import AppSidebar from '@/components/layouts/AppSidebar.vue'
+import AppSidenav from '@/components/layouts/AppSidenav.vue'
+import AppUserBoard from '@/components/layouts/AppUserBoard.vue'
+import { useBossStore } from '@/stores/bosses'
+import { useGoblinsStore } from '@/stores/goblins'
+import { useItemsStore } from '@/stores/items'
+import { useUserStore } from '@/stores/user'
 
-const gearEvent = ref(false);
-const startGearEvent = () => {
-  gearEvent.value = !gearEvent.value;
-};
+const route = useRoute()
+const isBigPage = computed(
+  () =>
+    route.path !== '/goblins' &&
+    route.path !== '/' &&
+    !route.path.includes('/item')
+)
 
-const isSidebarShow = ref(true);
-const openSidebar = () => {
-  isSidebarShow.value = true;
-};
-const closeSidebar = () => {
-  isSidebarShow.value = false;
-};
+const userStore = useUserStore()
 
-const route = useRoute();
-const isBigPage = computed(() => route.path === "/goblins");
+onMounted(async () => {
+  await useGoblinsStore().getGoblins()
+  await useBossStore().getBosses()
+  userStore.choiceGoblin(useGoblinsStore().allGoblins[0])
+  await useItemsStore().getItems()
+})
 </script>
 
 <style lang="scss">
@@ -67,16 +75,7 @@ const isBigPage = computed(() => route.path === "/goblins");
 }
 
 .sidenav {
-  width: fit-content;
-  margin-top: 80px;
-
-  &__wrapper {
-    display: none;
-
-    @media (min-width: $l) {
-      display: block;
-    }
-  }
+  // width: fit-content;
 
   &__power {
     position: absolute;
@@ -131,15 +130,6 @@ const isBigPage = computed(() => route.path === "/goblins");
   &-enter-active,
   &-leave-active {
     transition: opacity 0.3s ease-out;
-  }
-}
-
-.board {
-  display: none;
-  width: fit-content;
-
-  @media (min-width: $m) {
-    display: flex;
   }
 }
 
