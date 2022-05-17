@@ -7,22 +7,27 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/HomeView.vue'),
+      component: () => import('@/views/HomeView.vue'),
     },
     {
       path: '/item/:id',
-      name: 'itemPage',
-      component: () => import('../views/ItemPage.vue'),
+      name: 'item',
+      component: () => import('@/views/ItemPage.vue'),
     },
     {
       path: '/goblins',
       name: 'goblins',
-      component: () => import('../views/GoblinPage.vue'),
+      component: () => import('@/views/GoblinsPage.vue'),
     },
     {
       path: '/craft',
       name: 'craft',
-      component: () => import('../views/CraftPage.vue'),
+      component: () => import('@/views/CraftPage.vue'),
+    },
+    {
+      path: '/boss',
+      name: 'boss',
+      component: () => import('@/views/BossPage.vue'),
     },
   ],
 })

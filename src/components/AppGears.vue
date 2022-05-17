@@ -1,9 +1,21 @@
 <template>
-  <div class="gears">
-    <svg width="128" height="128" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" @click="turnGears"
-         ref="gearFirst">
-      <path fill="var(--color-text)" fill-rule="evenodd" clip-rule="evenodd"
-            d="M.974 8.504l1.728-.825a.94.94 0 00.323-1.439l-1.21-1.498a7.009 7.009 0 011.494-1.895l1.727.847a.931.931
+  <div class="absolute">
+    <svg
+      width="128"
+      height="128"
+      viewBox="0 0 16 16"
+      xmlns="http://www.w3.org/2000/svg"
+      @click="isGearsTurn = !isGearsTurn"
+      :class="[positions[index], `${isGearsTurn ? angle[0] : angle[1]}`]"
+      class="absolute transition ease-in-out duration-1000"
+      v-for="(angle, index) in angles"
+      :key="index"
+    >
+      <path
+        class="v-path"
+        fill="var(--color-text)"
+        fill-rule="evenodd"
+        d="M.974 8.504l1.728-.825a.94.94 0 00.323-1.439l-1.21-1.498a7.009 7.009 0 011.494-1.895l1.727.847a.931.931
             0 001.32-.642l.407-1.88a6.96 6.96 0 012.412.001L9.6 3.057a.934.934 0 001.323.637l1.721-.847a7.053 7.053 0
             011.511 1.894L12.957 6.24a.942.942 0 00.33 1.437l1.74.826a7.086 7.086 0 01-.529 2.362l-1.914-.012a.935
             .935 0 00-.912 1.155l.446 1.874a7.002 7.002 0 01-2.17 1.05l-1.194-1.514a.93.93 0 00-1.466.002l-1.18
@@ -12,121 +24,32 @@
             011.179-2.741A2.11 2.11 0 019.96 7.409z"
       />
     </svg>
-    <svg width="128" height="128" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" ref="gearSecond">
-      <path fill="var(--color-text)" fill-rule="evenodd" clip-rule="evenodd"
-            d="M.974 8.504l1.728-.825a.94.94 0 00.323-1.439l-1.21-1.498a7.009 7.009 0 011.494-1.895l1.727.847a.931.931
-            0 001.32-.642l.407-1.88a6.96 6.96 0 012.412.001L9.6 3.057a.934.934 0 001.323.637l1.721-.847a7.053 7.053 0
-            011.511 1.894L12.957 6.24a.942.942 0 00.33 1.437l1.74.826a7.086 7.086 0 01-.529 2.362l-1.914-.012a.935.935
-            0 00-.912 1.155l.446 1.874a7.002 7.002 0 01-2.17 1.05l-1.194-1.514a.93.93 0 00-1.466.002l-1.18 1.512a7.09
-            7.09 0 01-2.178-1.05l.43-1.878a.94.94 0 00-.917-1.15l-1.92.011a7.095 7.095 0 01-.06-.149 7.102 7.102 0
-            01-.488-2.212zM9.96 7.409a2.11 2.11 0 01-1.18 2.74 2.11 2.11 0 01-2.733-1.195 2.11 2.11 0
-            011.179-2.741A2.11 2.11 0 019.96 7.409z"
-      />
-    </svg>
-    <svg width="128" height="128" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" ref="gearThird">
-      <path fill="var(--color-text)" fill-rule="evenodd" clip-rule="evenodd"
-            d="M.974 8.504l1.728-.825a.94.94 0 00.323-1.439l-1.21-1.498a7.009 7.009 0 011.494-1.895l1.727.847a.931.931
-            0 001.32-.642l.407-1.88a6.96 6.96 0 012.412.001L9.6 3.057a.934.934 0 001.323.637l1.721-.847a7.053 7.053 0
-            011.511 1.894L12.957 6.24a.942.942 0 00.33 1.437l1.74.826a7.086 7.086 0 01-.529 2.362l-1.914-.012a.935.935
-            0 00-.912 1.155l.446 1.874a7.002 7.002 0 01-2.17 1.05l-1.194-1.514a.93.93 0 00-1.466.002l-1.18 1.512a7.09
-            7.09 0 01-2.178-1.05l.43-1.878a.94.94 0 00-.917-1.15l-1.92.011a7.095 7.095 0 01-.06-.149 7.102 7.102 0
-            01-.488-2.212zM9.96 7.409a2.11 2.11 0 01-1.18 2.74 2.11 2.11 0 01-2.733-1.195 2.11 2.11 0
-            011.179-2.741A2.11 2.11 0 019.96 7.409z"
-      />
-    </svg>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, toRefs, watch } from 'vue'
-
-
-const props = defineProps({
-  event: {
-    default: false,
-    type: Boolean,
-  },
-})
-
-const { event } = toRefs(props)
-watch(event, async () => {
-  turnGears()
-})
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const isGearsTurn = ref(false)
-const gearFirst = ref<HTMLElement | null>(null)
-const gearSecond = ref<HTMLElement | null>(null)
-const gearThird = ref<HTMLElement | null>(null)
+const router = useRouter()
+router.beforeEach(() => {
+  isGearsTurn.value = !isGearsTurn.value
 
-const turnGears = () => {
-  // maybe easy use classes
-  if (gearFirst.value && gearSecond.value && gearThird.value) {
-    gearFirst.value.style.transform = isGearsTurn.value ? 'rotate(0deg)' : 'rotate(90deg)'
-    gearSecond.value.style.transform = isGearsTurn.value ? 'rotate(30deg)' : 'rotate(-55deg)'
-    gearThird.value.style.transform = isGearsTurn.value ? 'rotate(30deg)' : 'rotate(-66deg)'
-    isGearsTurn.value = !isGearsTurn.value
-  }
-}
+  return true
+})
+
+// начальные позиции  шестеренок
+const positions = [
+  'top-[-18px] left-[-18px]',
+  'top-[-58px] left-[78px]',
+  'top-[86px] left-[-42px]',
+]
+
+// углы поворота шестеренок
+const angles = [
+  ['rotate-90', 'rotate-0'],
+  ['rotate-[-55deg]', 'rotate-[30deg]'],
+  ['rotate-[-66deg]', 'rotate-[30deg]'],
+]
 </script>
-
-<style scoped lang="scss">
-.gears {
-  position: absolute;
-
-  svg {
-    transition: all 1s ease-in-out;
-
-    path {
-      @include transition(fill);
-    }
-
-    &:first-child {
-      position: absolute;
-      inset: -18px 0 0 -18px;
-      animation: gear1 2s ease-in-out;
-    }
-
-    &:nth-child(2) {
-      position: absolute;
-      inset: -58px 0 0 78px;
-      transform: rotate(30deg);
-      animation: gear2 2s ease-in-out;
-    }
-
-    &:last-child {
-      position: absolute;
-      inset: 86px 0 0 -42px;
-      transform: rotate(30deg);
-      animation: gear3 2s ease-in-out;
-    }
-  }
-}
-
-@keyframes gear1 {
-  from {
-    transform: rotate(190deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
-}
-
-@keyframes gear2 {
-  from {
-    transform: rotate(-155deg);
-  }
-  to {
-
-    transform: rotate(30deg);
-  }
-}
-
-@keyframes gear3 {
-  from {
-    transform: rotate(-166deg);
-  }
-  to {
-    transform: rotate(30deg);
-  }
-}
-</style>

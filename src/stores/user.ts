@@ -1,27 +1,32 @@
 import { defineStore } from 'pinia'
 
 import type { GoblinsInterface, ItemsInterface } from '@/common/interfaces'
-import { useGoblinsStore } from '@/stores/goblins'
-
 
 export const useUserStore = defineStore({
   id: 'user',
   state: () => ({
-    inventory: <ItemsInterface[]>[
-    ],
-    goblin: <GoblinsInterface>useGoblinsStore().allGoblins[0],
+    inventory: <ItemsInterface[]>[],
+    goblin: <GoblinsInterface>{ stats: {
+      strength: 1,
+      agility: 1,
+      intelligence: 1,
+    } },
     level: 1,
   }),
   getters: {
     userInventory: (state) => state.inventory,
     userGoblin: (state) => state.goblin,
     userLevel: (state) => state.level,
-    userItemsStats:  (state) =>  state.inventory.reduce((sum, item) =>
+    userItemsStats: (state) =>  state.inventory.reduce((sum, item) =>
       sum = {
-        strength: sum.strength += item?.stats?.strength ? item?.stats?.strength : 0,
-        agility: sum.agility += item?.stats?.agility ? item?.stats?.agility : 0,
-        intelligence: sum.intelligence += item?.stats?.intelligence ? item?.stats?.intelligence : 0,
-      }, { strength: 0, agility: 0, intelligence: 0 } )
+        strength: sum.strength += item?.params?.strength || 0,
+        agility: sum.agility += item?.params?.agility || 0,
+        intelligence: sum.intelligence += item?.params?.intelligence || 0,
+        mp: sum.mp += item?.params?.mp || 0,
+        hp: sum.hp += item?.params?.hp || 0,
+        defence: sum.defence += item?.params?.defence || 0,
+        attack: sum.attack += item?.params?.attack || 0,
+      }, { strength: 0, agility: 0, intelligence: 0, mp: 0, hp: 0, defence: 0, attack: 0 } )
   },
   actions: {
     addItem(item: ItemsInterface) {
