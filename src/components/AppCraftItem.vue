@@ -15,16 +15,15 @@
     </ul>
   </ol>
 </template>
-<script setup lang="ts">
+<script setup>
 import { computed, ref, toRefs } from 'vue'
 
-import type { ItemsInterface } from '@/common/interfaces'
 import AppCraftItem from '@/components/AppCraftItem.vue'
 import { useItemsStore } from '@/stores/items'
 
 const props = defineProps({
   item: {
-    default: () => <ItemsInterface>{},
+    default: () => {},
     type: Object,
   },
 })

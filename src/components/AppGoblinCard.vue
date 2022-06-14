@@ -24,7 +24,7 @@
 
   defineProps({
     goblin: {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+
       default: () => {},
       type: Object as () => GoblinsInterface,
     },

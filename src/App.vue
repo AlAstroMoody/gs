@@ -2,10 +2,17 @@
   <div class="lg:block hidden">
     <AppGears />
     <AppSidenav class="sidenav mt-48" />
-    <AppIconLamp class="absolute z-10 -right-2 top-0" />
+    <!-- <AppIconLamp class="absolute z-10 -right-2 top-0" /> -->
   </div>
 
-  <div class="page" :class="{ page_big: isBigPage }">
+  <div
+    class="page mr-auto h-full relative overflow-hidden flex flex-col pl-3 xl:pl-6 justify-between"
+    :class="
+      isBigPage
+        ? 'w-full'
+        : 'xl:w-[calc(100%-670px)] lg:w-[calc(100%-490px)] w-[calc(100%-310px)]'
+    "
+  >
     <router-view v-slot="{ Component }">
       <transition name="page" mode="out-in">
         <div class="h-full relative">
@@ -13,13 +20,10 @@
             <component
               :is="Component"
               :key="$route.path"
-              class="page__component"
+              class="overflow-hidden"
             />
           </AppScrollingComponent>
-          <AppUserBoard
-            class="hidden absolute bottom-0 lg:flex"
-            v-show="!isBigPage"
-          />
+          <AppUserBoard class="absolute bottom-0 xl:flex" v-show="!isBigPage" />
         </div>
       </transition>
     </router-view>
@@ -45,10 +49,7 @@ import { useUserStore } from '@/stores/user'
 
 const route = useRoute()
 const isBigPage = computed(
-  () =>
-    route.path !== '/goblins' &&
-    route.path !== '/' &&
-    !route.path.includes('/item')
+  () => route.path !== '/goblins' && !route.path.includes('/item')
 )
 
 const userStore = useUserStore()
@@ -62,66 +63,7 @@ onMounted(async () => {
 </script>
 
 <style lang="scss">
-#app {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  overflow: hidden;
-
-  @media (min-width: $s) {
-    height: 100vh;
-    flex-direction: row;
-  }
-}
-
-.sidenav {
-  // width: fit-content;
-
-  &__power {
-    position: absolute;
-    z-index: 1;
-    inset: 0 0 0 85%;
-  }
-}
-
 .page {
-  padding: 0 12px 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-  height: 100%;
-
-  @media (min-width: $m) {
-    height: 100%;
-    width: calc(100% - 300px);
-  }
-
-  @media (min-width: $l) {
-    width: calc(100% - 650px);
-    padding: 0 24px 0;
-    right: 400px;
-  }
-
-  &_big {
-    width: 100%;
-    right: 0;
-
-    @media (min-width: $l) {
-      width: calc(100% - 250px);
-    }
-  }
-
-  &_empty {
-    height: 300px;
-  }
-
-  &__component {
-    overflow: hidden;
-  }
-
   &-enter-from,
   &-leave-to {
     opacity: 0;
@@ -135,9 +77,7 @@ onMounted(async () => {
 
 .sidebar {
   width: 300px;
-  position: absolute;
   inset: 0 0 0 calc(100% - 300px);
-  background: var(--color-background);
 
   @media (min-width: $l) {
     inset: 0 0 0 calc(100% - 400px);

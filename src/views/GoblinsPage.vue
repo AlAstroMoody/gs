@@ -23,14 +23,15 @@
           </div>
         </div>
         <div class="p-4">{{ userGoblin.description }}</div>
-      </div>
-    </div>
-
-    <div class="flex flex-wrap items-center my-4 p-4">
-      <div>апнуть уровень:</div>
-      <div class="mx-4 w-80">
-        <div class="flex justify-between"><span>1</span> <span>200</span></div>
-        <AppCommonSlider @thumbShift="sliderThumbShift" />
+        <div class="flex flex-wrap items-center my-4 p-4">
+          <div>апнуть уровень:</div>
+          <div class="mx-4 w-80">
+            <div class="flex justify-between">
+              <span>1</span> <span>200</span>
+            </div>
+            <AppCommonSlider @thumbShift="sliderThumbShift" />
+          </div>
+        </div>
       </div>
     </div>
   </main>

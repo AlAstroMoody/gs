@@ -1,44 +1,20 @@
 <template>
-  <div ref="sidebar">
-    <div class="filters">
-      <div class="filters__name">
-        <input
-          v-model="filterFields.name"
-          placeholder=" "
-          id="name"
-          class="subtitle"
-        />
-        <label for="name"> поиск по названию </label>
-      </div>
-
-      уровень предмета от: {{ Math.round(filterFields.level) }}
-      <div class="filters__level">
-        0
-        <AppCommonSlider
-          class="filters__slider"
-          @thumbShift="sliderThumbShift"
-        />
-        200
-      </div>
-
-      игровой класс:
-      <AppCommonSelect
-        :options="goblins"
-        @getOption="classSelection"
-        default-value="--для всех классов--"
-      />
+  <div
+    ref="sidebar"
+    class="sidebar_hidden flex flex-col overflow-hidden py-2 px-1 -translate-y-full animate-side delay-300 border-l border-solid dark:border-white-400 border-gray-300 absolute bg-white-100 xl:w-96"
+  >
+    <div
+      class="w-full dark:bg-white-200 bg-gray-200 relative z-10 rounded-2xl border border-white-400 my-2 p-2 opacity-0 animate-filter"
+    >
+      <AppFilter @filteredItems="changeItemsKit($event)" />
     </div>
 
     <div class="sidebar__body">
       <AppScrollingComponent :is-resize="isResize">
         <div class="sidebar__items" ref="itemsBlock">
-          <AppItemLine
-            v-for="item in filteredItems"
-            :key="item.id"
-            :item="item"
-          />
+          <AppItemLine v-for="item in items" :key="item.id" :item="item" />
         </div>
-        <div v-if="!filteredItems.length" class="sidebar__items_empty">
+        <div v-if="!items.length" class="w-full text-center">
           совпадений не найдено
         </div>
       </AppScrollingComponent>
@@ -46,25 +22,30 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { computed, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
+import AppFilter from '@/components/AppFilter.vue'
 import AppItemLine from '@/components/AppItemLine.vue'
 import AppScrollingComponent from '@/components/AppScrollingComponent.vue'
-import AppCommonSelect from '@/components/common/AppCommonSelect.vue'
-import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
-import { useGoblinsStore } from '@/stores/goblins'
-import { useItemsStore } from '@/stores/items'
 
 const route = useRoute()
 // отображать sidebar
 const isShow = computed(
-  () =>
-    route.path === '/' ||
-    route.path === '/goblins' ||
-    route.path.includes('/item/')
+  () => route.path === '/goblins' || route.path.includes('/item/')
 )
+
+const isResize = ref(false)
+const items = ref([])
+// изменяем набор артов
+const changeItemsKit = (filteredItems) => {
+  items.value = filteredItems
+  isResize.value = true
+  setTimeout(() => (isResize.value = false), 500)
+}
+
+const sidebar = ref(null)
 
 watch(isShow, async () => {
   if (sidebar.value) {
@@ -76,70 +57,10 @@ watch(isShow, async () => {
     )
   }
 })
-
-const sidebar = ref<HTMLElement | null>(null)
-
-const itemsStore = useItemsStore()
-const items = computed(() => itemsStore.allItems)
-
-const goblinsStore = useGoblinsStore()
-const goblins = computed(() => goblinsStore.allGoblins)
-
-const filterFields = reactive({
-  name: '',
-  level: 0,
-  goblins: [],
-})
-
-const filteredItems = computed(() => {
-  let sampleItems = items.value
-  console.log(filterFields)
-  if (filterFields.name) {
-    sampleItems = sampleItems.filter((item) =>
-      item.name.includes(filterFields.name)
-    )
-  }
-  if (filterFields.level) {
-    sampleItems = sampleItems.filter((item) =>
-      item.level ? item.level >= filterFields.level : null
-    )
-  }
-  if (filterFields.goblins?.length) {
-    sampleItems = sampleItems.filter((item) =>
-      item.goblins.some((goblin) => filterFields.goblins[0] === goblin.id)
-    )
-  }
-
-  return sampleItems
-})
-
-const isResize = ref(false)
-watch(filteredItems, async () => {
-  isResize.value = true
-  setTimeout(() => (isResize.value = false), 500)
-})
-
-const sliderThumbShift = (distance: number) => {
-  filterFields.level = 200 * distance
-}
-
-const classSelection = (value: { id: number }) => {
-  filterFields.goblins = []
-  value.id ? filterFields.goblins.push(value.id) : null
-}
 </script>
 
 <style scoped lang="scss">
 .sidebar {
-  border-left: 1px solid var(--color-border);
-  display: flex;
-  flex-direction: column;
-  padding: 8px 12px;
-  transform: translateY(-100%);
-  animation: sidebar 1s ease-in forwards;
-  animation-delay: 0.3s;
-  overflow: hidden;
-
   @media (min-width: $l) {
     padding: 16px 24px;
   }
@@ -170,67 +91,6 @@ const classSelection = (value: { id: number }) => {
     height: 100%;
     transition: all 1s ease-out;
     flex: 1;
-    margin-left: 8px;
-
-    &_empty {
-      width: 100%;
-      text-align: center;
-    }
-  }
-}
-
-.filters {
-  width: 100%;
-  background: var(--color-background);
-  min-height: 300px;
-  position: relative;
-  z-index: 2;
-  opacity: 0;
-  animation: opacity 1s ease-out forwards;
-  animation-delay: 1.6s;
-  border-radius: 16px;
-  border: 1px solid var(--color-text);
-  margin: 8px 0;
-  padding: 8px;
-
-  &__name {
-    width: 100%;
-    padding: 12px 12px 0;
-    background: var(--color-background-soft);
-    border-radius: 16px;
-    margin: 8px 0;
-    display: flex;
-    border: 1px solid var(--color-text);
-
-    label {
-      position: absolute;
-      inset: 0 auto;
-      padding: 8px;
-      @include transition(all);
-    }
-
-    input {
-      color: var(--color-text);
-      width: 100%;
-    }
-  }
-
-  &__level {
-    display: flex;
-    align-items: center;
-  }
-
-  &__slider {
-    margin: 0 4px;
-  }
-}
-
-@keyframes sidebar {
-  from {
-    transform: translateY(-100%);
-  }
-  to {
-    transform: translateY(0);
   }
 }
 

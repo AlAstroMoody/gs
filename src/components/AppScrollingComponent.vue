@@ -2,18 +2,10 @@
   <div class="flex flex-row h-full w-full">
     <div class="h-full hidden px-2" ref="scrollbar" @click="trackClick">
       <div
-        class="
-          scrollbar__track
-          z-background
-          ease-out
-          duration-1000
-          h-full
-          rounded-lg
-          w-[1px]
-        "
+        class="scrollbar__track z-background ease-out duration-1000 h-full rounded-lg w-[1px]"
       >
         <div
-          class="scrollbar__thumb"
+          class="scrollbar__thumb bg-red-100"
           ref="thumb"
           :style="{
             transform: `translateY(${thumbTransformY}px)`,
@@ -22,7 +14,7 @@
         />
       </div>
     </div>
-    <div class="ease-out duration-1000" ref="main">
+    <div class="ease-out duration-1000 w-full" ref="main">
       <div ref="body">
         <slot />
       </div>
@@ -105,6 +97,7 @@ const removeWheelHandler = () => {
 }
 
 const resize = () => {
+  main.value ? (main.value.style.transform = 'translateY(0px)') : null
   changeBlockHeight()
   currentYPosition.value = 0
 }
@@ -137,7 +130,6 @@ const changeBlockHeight = () => {
 const route = useRoute()
 const routePath = computed(() => route.path)
 watch(routePath, async () => {
-  main.value ? (main.value.style.transform = 'translateY(0px)') : null
   resize()
 })
 

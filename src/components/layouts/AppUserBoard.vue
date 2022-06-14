@@ -1,73 +1,18 @@
 <template>
-  <div class="board">
-    <div class="board__wrapper flex justify-between px-2 pt-2" v-if="goblin">
-      <div class="board__user">
-        <img :src="goblin.src" alt="logo" class="board__image" />
-        <div class="board__bar">{{ hp }} / {{ hp }}</div>
-        <div class="board__bar">{{ mp }} / {{ mp }}</div>
+  <div class="board my-0 mx-auto items-center right-0 left-0 flex flex-col">
+    <div class="flex mb-2">
+      <div class="rounded-full overflow-hidden">
+        <img :src="goblin.src" alt="logo" class="contain" />
       </div>
-
-      <div class="v-background flex-1 flex flex-col pt-3 px-3">
+      <div class="w-56 ml-4">
         <div class="mx-auto subtitle">'Крягз "Ядро"'</div>
         <div class="v-border w-full mx-auto text-center p-1 rounded-lg">
           Уровень {{ userLevel }}, {{ goblin.name }}
         </div>
-        <div class="flex w-96">
-          <div class="w-1/2 py-4 px-0">
-            <div class="flex py-1">
-              <img
-                src="/src/assets/images/weapon.png"
-                alt="weapon"
-                class="mr-3"
-              />
-              <div>
-                <span>Атака:</span>
-                <div>{{ attack }}</div>
-              </div>
-            </div>
-            <div class="flex py-1">
-              <img
-                src="/src/assets/images/armor.png"
-                alt="armor"
-                class="mr-3"
-              />
-              <div>
-                <span>Защита:</span>
-                <div>{{ defense }}</div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="w-1/2 flex justify-center items-center"
-            v-if="goblinStats"
-          >
-            <img
-              src="/src/assets/images/stats.png"
-              alt="stats"
-              class="w-16 h-16 mr-3"
-            />
-            <div>
-              <div class="py-2">
-                сила:
-                <div>{{ goblinStats.strength + displayedItemsStrength }}</div>
-              </div>
-              <div class="py-2">
-                ловкость:
-                <div>{{ goblinStats.agility + displayedItemsAgility }}</div>
-              </div>
-              <div class="py-2">
-                разум:
-                <div>
-                  {{ goblinStats.intelligence + displayedItemsIntelligence }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
-
+    </div>
+    <div class="flex">
       <div class="inventory">
-        <div class="inventory__subtitle body">Предметы</div>
         <div class="inventory__slots">
           <div v-for="i in 6" :key="i" class="inventory__slot">
             <img
@@ -84,6 +29,43 @@
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        <span class="px-3">
+          основные <br />
+          параметры:
+        </span>
+        <div>{{ hp }} hp</div>
+        <div>{{ mp }} mp</div>
+        <div class="flex justify-between">
+          сила: <span>{{ goblinStats.strength + displayedItemsStrength }}</span>
+        </div>
+        <div class="flex justify-between">
+          ловкость:
+          <span>{{ goblinStats.agility + displayedItemsAgility }}</span>
+        </div>
+        <div class="flex justify-between">
+          разум:
+          <span>
+            {{ goblinStats.intelligence + displayedItemsIntelligence }}
+          </span>
+        </div>
+        <div class="flex justify-between">
+          урон:
+          <span>
+            {{ attack }}
+          </span>
+        </div>
+        <div class="flex justify-between">
+          защита:
+          <span>
+            {{ defense }}
+          </span>
+        </div>
+      </div>
+      <div>
+        <span class="px-3"> дополнительные <br /></span>
+        <span class="px-3">параметры:</span>
       </div>
     </div>
   </div>
@@ -106,7 +88,8 @@ const attack = computed(() => {
       itemsStatAttack = goblinStats.value.agility + itemsStats.value.agility
       break
     default:
-      itemsStatAttack = goblinStats.value.intelligence + itemsStats.value.intelligence
+      itemsStatAttack =
+        goblinStats.value.intelligence + itemsStats.value.intelligence
       break
   }
 
@@ -116,7 +99,11 @@ const attack = computed(() => {
 // общая защита
 const defense = computed(() =>
   itemsStats.value
-    ? Math.floor(1 + itemsStats.value.defence + (goblinStats.value.agility + itemsStats.value.agility) / 3)
+    ? Math.floor(
+        1 +
+          itemsStats.value.defence +
+          (goblinStats.value.agility + itemsStats.value.agility) / 3
+      )
     : 0
 )
 
@@ -130,14 +117,20 @@ const goblinStats = computed(() => useUserStore().userGoblin.stats)
 // статы от шмоток
 const itemsStats = computed(() => useUserStore().userItemsStats)
 // общие hp
-const hp = computed(() => goblinStats.value.strength * 20 + (itemsStats.value 
-  ? itemsStats.value.strength * 20 + itemsStats.value.hp 
-  : 0)
+const hp = computed(
+  () =>
+    goblinStats.value.strength * 20 +
+    (itemsStats.value
+      ? itemsStats.value.strength * 20 + itemsStats.value.hp
+      : 0)
 )
 // общие mp
-const mp = computed(() => goblinStats.value.intelligence * 15 + (itemsStats.value 
-  ? itemsStats.value.intelligence * 15 + itemsStats.value.mp 
-  : 0)
+const mp = computed(
+  () =>
+    goblinStats.value.intelligence * 15 +
+    (itemsStats.value
+      ? itemsStats.value.intelligence * 15 + itemsStats.value.mp
+      : 0)
 )
 
 const displayedItemsStrength = ref(0)
@@ -186,30 +179,6 @@ const removeItem = (index: number) => userStore.value.removeItem(index)
   @media (min-width: $m) {
     width: fit-content;
   }
-
-  &__user {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 50px 0 0 8px;
-    height: 100%;
-    background: var(--color-background);
-    border-radius: 16px 0 0 0;
-    align-items: center;
-  }
-
-  &__bar {
-    padding: 4px 8px;
-    border: 1px solid var(--color-background-mute);
-    width: 100%;
-    text-align: center;
-    color: green;
-  }
-
-  &__image {
-    width: 150px;
-    object-fit: cover;
-  }
 }
 
 @keyframes shiftTop {
@@ -222,15 +191,12 @@ const removeItem = (index: number) => userStore.value.removeItem(index)
 }
 
 .inventory {
-  background: var(--color-background);
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   max-width: 152px;
   width: fit-content;
   height: fit-content;
-  border-radius: 0 16px 0 0;
-  padding: 12px 8px 16px;
   opacity: 0;
   animation: opacity 1s forwards;
 

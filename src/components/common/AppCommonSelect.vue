@@ -16,15 +16,13 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { computed, ref } from 'vue'
-
-import type { CommonSelect } from '@/common/interfaces'
 
 const emit = defineEmits(['getOption'])
 const props = defineProps({
   options: {
-    default: (): CommonSelect[] => [],
+    default: () => [],
     type: Array,
   },
   defaultValue: {
@@ -46,20 +44,18 @@ const changeOptionsVisibility = () => {
 }
 
 const selectClick = () => (isSelectClick.value ? null : addHandler())
-const selectValue = (id: number) => {
+const selectValue = (id) => {
   removeHandler()
   isSelectClick.value = !isSelectClick.value
   if (id || id === 0) {
-    currentValue.value = props.options.find(
-      (option) => option?.id === id
-    ) as CommonSelect
+    currentValue.value = props.options.find((option) => option?.id === id)
   } else {
     currentValue.value = { name: props.defaultValue, id: undefined }
   }
   emit('getOption', currentValue.value)
 }
 
-const currentValue = ref<CommonSelect>({ name: '', id: 0 })
+const currentValue = ref({ name: '', id: 0 })
 
 const addHandler = () => {
   window.addEventListener('click', changeOptionsVisibility)
@@ -106,7 +102,6 @@ const removeHandler = () => {
       color: var(--color-background);
 
       &:after {
-        border-bottom: 1px solid var(--color-border-hover);
         content: '';
         position: absolute;
         width: 100%;
