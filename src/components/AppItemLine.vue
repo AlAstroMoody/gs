@@ -14,7 +14,6 @@ import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 defineProps({
   item: {
     type: Object,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     default: () => {},
   },
 })

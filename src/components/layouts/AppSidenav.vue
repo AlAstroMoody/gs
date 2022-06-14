@@ -17,8 +17,8 @@
 import { reactive } from 'vue'
 
 const menu = reactive([
-  { title: 'выбрать персонажа', link: '/goblins' },
-  { title: 'подобрать снарягу', link: '/' },
+  { title: 'что происходит?', link: '/' },
+  { title: 'снарядить персонажа', link: '/goblins' },
   { title: 'смотреть боссов', link: '/boss' },
   { title: 'дерево крафта', link: '/craft' },
 ])
