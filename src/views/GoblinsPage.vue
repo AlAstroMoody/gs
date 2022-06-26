@@ -37,10 +37,9 @@
   </main>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { computed } from 'vue'
 
-import type { GoblinsInterface } from '@/common/interfaces'
 import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
 import { useGoblinsStore } from '@/stores/goblins'
 import { useUserStore } from '@/stores/user'
@@ -54,12 +53,12 @@ const goblins = computed(() => goblinsStore.allGoblins)
 // выбранный гоблин
 const userGoblin = computed(() => userStore.userGoblin)
 // меняем гоблина
-const choiceGoblin = (goblin: GoblinsInterface) => {
+const choiceGoblin = (goblin) => {
   userStore.choiceGoblin(goblin)
 }
 
 // меняем лвл
-const sliderThumbShift = (distance: number) => {
+const sliderThumbShift = (distance) => {
   userStore.changeLevel(Math.round(200 * distance) || 1)
 }
 </script>

@@ -8,7 +8,7 @@
   </router-link>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
 defineProps({

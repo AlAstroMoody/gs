@@ -31,4 +31,9 @@ export enum itemParams {
   stealth_detection = 'обнаружение невидимок',
   as = 'скорость атаки',
   ms = 'скорость бега',
+  manaburn = 'каждый удар сжигает',
+  evade = 'уклонение',
+  aura = 'аура',
+  active = 'актив',
+  distant_resist = 'снижение урона от дальнего боя'
 }

@@ -29,10 +29,10 @@
     </router-view>
   </div>
 
-  <AppSidebar class="sidebar" ref="sidebar" />
+  <AppSidebar class="sidebar" ref="sidebar" v-show="!isBigPage" />
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 

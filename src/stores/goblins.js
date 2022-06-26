@@ -1,13 +1,12 @@
 import { defineStore } from 'pinia'
 
 import { getGoblins } from "@/api/goblin"
-import type { GoblinsInterface } from '@/common/interfaces'
 
 
 export const useGoblinsStore = defineStore({
   id: 'goblins',
   state: () => ({
-    goblins: <GoblinsInterface[]>[],
+    goblins: [],
   }),
   getters: {
     allGoblins: (state) => state.goblins,

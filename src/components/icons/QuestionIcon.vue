@@ -33,7 +33,7 @@
     </g>
   </svg>
 </template>
-<script setup lang="ts">
+<script setup>
 defineProps({
   width: {
     default: 36,
@@ -49,7 +49,3 @@ defineProps({
   },
 })
 </script>
-
-
-
-

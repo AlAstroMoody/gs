@@ -22,7 +22,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {
   computed,
   nextTick,
@@ -43,8 +43,8 @@ const props = defineProps({
 const { isResize } = toRefs(props)
 
 // scrollbar logic
-const scrollbar = ref<HTMLElement | null>(null)
-const thumb = ref<HTMLElement | null>(null)
+const scrollbar = ref(null)
+const thumb = ref(null)
 const thumbHeight = computed(() => {
   return scrollbar.value
     ? (100 * scrollbar.value.clientHeight) / blockHeight.value
@@ -59,13 +59,13 @@ const thumbTransformY = computed(() =>
 )
 
 //body logic
-const main = ref<HTMLElement | null>(null)
-const body = ref<HTMLElement | null>(null)
+const main = ref(null)
+const body = ref(null)
 const blockHeight = ref(0)
 
 const currentYPosition = ref(0)
 
-const wheelWatcher = (event: WheelEvent) => {
+const wheelWatcher = (event) => {
   if (main.value) {
     const heightDifference = main.value.scrollHeight - main.value.clientHeight
     if (!heightDifference) return
@@ -137,7 +137,7 @@ watch(isResize, async () => {
   resize()
 })
 
-const trackClick = (event: MouseEvent) => {
+const trackClick = (event) => {
   const eventShift =
     event.clientY < -currentYPosition.value ? event.offsetY : event.clientY
   if (main.value) {
