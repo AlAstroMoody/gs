@@ -5,6 +5,7 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/gs/',
   plugins: [vue()],
   resolve: {
     alias: {

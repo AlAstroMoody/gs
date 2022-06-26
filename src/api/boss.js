@@ -5,7 +5,7 @@ export const getBosses = async () => {
   // const response = await instance
   //   .get(`bosses/?populate=*`)
   //   .catch((error) => console.log(error))
-  // console.log(response)
+
   const response = bosses
 
   return response.data.data.map((boss) => {
