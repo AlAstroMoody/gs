@@ -23,7 +23,7 @@ export const getItems = async () => {
       // src: src
       //   ? `${import.meta.env.VITE_BASE_URL}${src[0].attributes.url}`
       //   : null,
-      src: src ? `/src/assets${src[0].attributes.url}` : null,
+      src: src ? `/gs${src[0].attributes.url}` : null,
     }
   })
 }
