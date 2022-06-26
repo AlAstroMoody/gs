@@ -1,0 +1,27 @@
+.v-border {
+    border: 1px solid var(--color-text);
+}
+.z-border {
+    border: 1px solid var(--color-background);
+}
+
+.v-background {
+    background: var(--color-background);
+}
+.z-background {
+    background: var(--color-text);
+}
+
+.v-text {
+    color: var(--color-text);
+}
+.z-text {
+    color: var(--color-background);
+}
+
+.v-transition {
+    @include transition(color, background);
+}
+.v-path {
+    @include transition(fill)
+}

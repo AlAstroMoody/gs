@@ -1,125 +1,213 @@
 <template>
-  <div class="board">
-    <div class="board__wrapper">
-      <div class="board__user">
-        <img :src="goblin.src" alt="logo" class="board__image">
-        <div class="board__bar">400 / 400</div>
-        <div class="board__bar">350 / 350</div>
+  <div
+    class="board my-0 mx-auto items-center right-0 left-0 flex flex-col px-6"
+  >
+    <div class="flex mb-2">
+      <div class="rounded-full overflow-hidden">
+        <img :src="goblin.src" alt="logo" class="contain" />
       </div>
-
-      <div class="info">
-        <div class="info__name subtitle">'Крягз "Ядро"'</div>
-        <div class="info__class">Уровень {{ userLevel }}, {{ goblin.name }}</div>
-        <div class="info__params">
-          <div class="info__sum">
-            <div class="info__total">
-              <img src="/src/assets/images/weapon.png" alt="weapon">
-              <div>
-                <span>Атака:</span>
-                <div> {{ attack }}</div>
-              </div>
-            </div>
-            <div class="info__total">
-              <img src="/src/assets/images/armor.png" alt="armor">
-              <div>
-                <span>Защита:</span>
-                <div> {{ defense }}</div>
-              </div>
-            </div>
-          </div>
-          <div class="info__stats">
-            <img src="/src/assets/images/stats.png" alt="stats">
-            <div>
-              <div class="info__stat">сила:
-                <div>{{ goblin.stats.strength + displayedItemsStrength }}</div>
-              </div>
-              <div class="info__stat">ловкость:
-                <div>{{ goblin.stats.agility + displayedItemsAgility }}</div>
-              </div>
-              <div class="info__stat">разум:
-                <div>{{ goblin.stats.intelligence + displayedItemsIntelligence }}</div>
-              </div>
-            </div>
-          </div>
+      <div class="w-56 ml-4">
+        <div class="mx-auto subtitle">'Крягз "Ядро"'</div>
+        <div class="v-border w-full mx-auto text-center p-1 rounded-lg">
+          Уровень {{ userLevel }}, {{ goblin.name }}
         </div>
       </div>
-
+    </div>
+    <div class="flex">
       <div class="inventory">
-        <div class="inventory__subtitle body">Предметы</div>
         <div class="inventory__slots">
           <div v-for="i in 6" :key="i" class="inventory__slot">
-            <img :src="inventory[i-1]?.src" alt="img" v-if="inventory[i-1]" @click="removeItem(i)">
+            <img
+              :src="inventory[i - 1]?.src"
+              alt="img"
+              v-if="inventory[i - 1]?.src"
+              @click="removeItem(i)"
+            />
+            <div
+              v-if="inventory[i - 1] && !inventory[i - 1]?.src"
+              @click="removeItem(i)"
+            >
+              <QuestionIcon />
+            </div>
           </div>
         </div>
       </div>
-
+      <div class="px-6">
+        <span>
+          основные <br />
+          параметры:
+        </span>
+        <div
+          class="flex justify-between"
+          v-for="param in mainParams"
+          :key="param.title"
+        >
+          {{ param.title }}
+          <span class="ml-1">{{ param.value }}</span>
+        </div>
+      </div>
+      <div class="px-6">
+        <span> дополнительные <br /></span>
+        <span>параметры:</span>
+        <div
+          class="flex justify-between"
+          v-for="param in secondParams"
+          :key="param.title"
+        >
+          {{ param.title }}
+          <span class="ml-1">{{ param.value }}</span>
+        </div>
+      </div>
+      <!-- <div class="px-3">
+        <span class="px-3">различные<br /></span>
+        <span class="px-3">эффекты:</span><br />
+        <AppScrollingComponent class="overflow-hidden">
+          <div v-html="itemsStats.description" class="h-36" />
+        </AppScrollingComponent>
+      </div> -->
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
+import { computed, ref, watch } from 'vue'
 
-import { computed, ref, watch, type Ref } from 'vue'
-
-import { MainParams } from '@/common/enums'
+import QuestionIcon from '@/components/icons/QuestionIcon.vue'
+// import AppScrollingComponent from '@/components/AppScrollingComponent.vue'
 import { useUserStore } from '@/stores/user'
 
-
+// общая атака
 const attack = computed(() => {
+  let itemsStatAttack = 0
   switch (goblin.value.mainParam) {
-    case MainParams.STRENGTH:
-      return strength.value + goblin.value.stats.strength
-    case MainParams.AGILITY:
-      return agility.value + goblin.value.stats.agility
+    case 'Сила':
+      itemsStatAttack = goblinStats.value.strength + itemsStats.value.strength
+      break
+    case 'Ловкость':
+      itemsStatAttack = goblinStats.value.agility + itemsStats.value.agility
+      break
     default:
-      return intelligence.value + goblin.value.stats.intelligence
+      itemsStatAttack =
+        goblinStats.value.intelligence + itemsStats.value.intelligence
+      break
   }
+
+  return itemsStats.value.attack + itemsStatAttack
 })
-const defense = computed(() => Math.floor(1 + (agility.value + goblin.value.stats.agility) / 3))
+
+// общая защита
+const defense = computed(() =>
+  itemsStats.value
+    ? Math.floor(
+        1 +
+          itemsStats.value.defence +
+          (goblinStats.value.agility + itemsStats.value.agility) / 3
+      )
+    : 0
+)
 
 const userStore = computed(() => useUserStore())
 const userLevel = computed(() => userStore.value.userLevel)
 const goblin = computed(() => userStore.value.userGoblin)
 
-const strength = computed(() => userStore.value.userItemsStats.strength)
-const agility = computed(() => userStore.value.userItemsStats.agility)
-const intelligence = computed(() => userStore.value.userItemsStats.intelligence)
+// статы от гоблина
+const goblinStats = computed(() => useUserStore().userGoblin.stats)
+
+// статы от шмоток
+const itemsStats = computed(() => useUserStore().userItemsStats)
+// общие hp
+const hp = computed(
+  () =>
+    goblinStats.value.strength * 20 +
+    (itemsStats.value
+      ? itemsStats.value.strength * 20 + itemsStats.value.hp
+      : 0)
+)
+// общие mp
+const mp = computed(
+  () =>
+    goblinStats.value.intelligence * 15 +
+    (itemsStats.value
+      ? itemsStats.value.intelligence * 15 + itemsStats.value.mp
+      : 0)
+)
 
 const displayedItemsStrength = ref(0)
 const displayedItemsAgility = ref(0)
 const displayedItemsIntelligence = ref(0)
 
-watch(strength, async () => {
-  changeParamValue(displayedItemsStrength, strength.value)
+watch(itemsStats, async () => {
+  changeParamValue(displayedItemsStrength, itemsStats.value.strength)
+  changeParamValue(displayedItemsAgility, itemsStats.value.agility)
+  changeParamValue(displayedItemsIntelligence, itemsStats.value.intelligence)
 })
 
-watch(agility, async () => {
-  changeParamValue(displayedItemsAgility, agility.value)
-})
-
-watch(intelligence, async () => {
-  changeParamValue(displayedItemsIntelligence, intelligence.value)
-})
-
-const changeParamValue = (displayedValue: Ref<number>, paramValue: number) => {
+const changeParamValue = (displayedValue, paramValue) => {
   let interval = 0
   if (displayedValue.value !== paramValue) {
     interval = window.setInterval(() => {
-        let change = (paramValue - displayedValue.value) / 2
-        change = change >= 0 ? Math.ceil(change) : Math.floor(change)
-        displayedValue.value = displayedValue.value + change
-        if (displayedValue.value === paramValue) {
-          clearInterval(interval)
-        }
-      },
-      10,
-    )
+      let change = (paramValue - displayedValue.value) / 2
+      change = change >= 0 ? Math.ceil(change) : Math.floor(change)
+      displayedValue.value = displayedValue.value + change
+      if (displayedValue.value === paramValue) {
+        clearInterval(interval)
+      }
+    }, 10)
   }
 }
 
 const inventory = computed(() => userStore.value.userInventory)
-const removeItem = (index: number) => userStore.value.removeItem(index)
+const removeItem = (index) => userStore.value.removeItem(index)
 
+const mainParams = computed(() => [
+  {
+    title: 'hp:',
+    value: hp,
+  },
+  {
+    title: 'mp:',
+    value: mp,
+  },
+  {
+    title: 'сила:',
+    value: goblinStats.value.strength + displayedItemsStrength.value,
+  },
+  {
+    title: 'ловкость:',
+    value: goblinStats.value.agility + displayedItemsAgility.value,
+  },
+  {
+    title: 'разум:',
+    value: goblinStats.value.intelligence + displayedItemsIntelligence.value,
+  },
+  {
+    title: 'урон:',
+    value: attack.value,
+  },
+  {
+    title: 'защита:',
+    value: defense.value,
+  },
+])
+
+const secondParams = computed(() => [
+  {
+    title: 'удача:',
+    value: itemsStats.value.luck || 0,
+  },
+  {
+    title: 'маг. резист:',
+    value: `${itemsStats.value.resist || 0}%`,
+  },
+  {
+    title: 'cкорость бега:',
+    value: itemsStats.value.ms || 0,
+  },
+  {
+    title: 'cкорость атаки:',
+    value: `${itemsStats.value.as || 0}%`,
+  },
+])
 </script>
 
 <style scoped lang="scss">
@@ -128,127 +216,38 @@ const removeItem = (index: number) => userStore.value.removeItem(index)
   border-radius: 16px 16px 0 0;
   animation: shiftTop 1s forwards;
   transform: translateY(100%);
-  animation-delay: 2s;
+  animation-delay: 0.5s;
   align-items: center;
   margin: 0 auto;
   position: absolute;
   inset: auto 0 0 0;
   z-index: 10;
+  border: 1px solid var(--color-text);
+  border-bottom: none;
 
   @media (min-width: $m) {
     width: fit-content;
-  }
-
-  &__wrapper {
-    padding: 8px 8px 0;
-    justify-content: space-between;
-    display: flex;
-  }
-
-  &__user {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 50px 0 0 8px;
-    height: 100%;
-    background: var(--color-background);
-    border-radius: 16px 0 0 0;
-    align-items: center;
-  }
-
-  &__bar {
-    padding: 4px 8px;
-    border: 1px solid var(--color-background-mute);
-    width: 100%;
-    text-align: center;
-    color: green;
-  }
-
-  &__image {
-    width: 150px;
-    object-fit: cover;
   }
 }
 
 @keyframes shiftTop {
   0% {
-    transform: translateY(100%)
+    transform: translateY(100%);
   }
   100% {
-    transform: translateY(0)
-  }
-}
-
-.info {
-  background: var(--color-background);
-  padding: 12px 12px 0;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-
-  &__name {
-    margin: 0 auto;
-  }
-
-  &__class {
-    border: 1px solid var(--color-text);
-    border-radius: 8px;
-    width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    padding: 2px;
-  }
-
-  &__params {
-    display: flex;
-    min-width: 350px;
-  }
-
-  &__sum {
-    padding: 16px 0;
-    width: 50%;
-  }
-
-  &__total {
-    display: flex;
-    padding: 4px 0;
-
-    img {
-      margin-right: 12px;
-    }
-  }
-
-  &__stats {
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    img {
-      width: 64px;
-      height: 64px;
-      margin-right: 12px;
-    }
-  }
-
-  &__stat {
-    padding: 8px 0;
+    transform: translateY(0);
   }
 }
 
 .inventory {
-  background: var(--color-background);
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   max-width: 152px;
   width: fit-content;
   height: fit-content;
-  border-radius: 0 16px 0 0;
-  padding: 12px 8px 16px;
   opacity: 0;
   animation: opacity 1s forwards;
-  animation-delay: 2s;
 
   &__subtitle {
     margin: auto;
@@ -262,12 +261,23 @@ const removeItem = (index: number) => userStore.value.removeItem(index)
 
   &__slot {
     margin: 1px;
-    background-image: url("/src/assets/images/slot.png");
+    background-image: url('/src/assets/images/slot.png');
     width: 66px;
     height: 66px;
     border: 1px solid var(--color-text);
     position: relative;
     @include transition(all);
+
+    div {
+      width: 64px;
+      height: 64px;
+      background: white;
+      display: flex;
+
+      svg {
+        margin: auto;
+      }
+    }
   }
 }
 </style>

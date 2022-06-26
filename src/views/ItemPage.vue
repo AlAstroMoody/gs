@@ -1,171 +1,122 @@
 <template>
-  <main v-if="item" class="item">
-    <div class="headline item__headline">{{ item.name }}</div>
-    <div class="item__main">
-      <img :src="item.src" alt="logo">
-      <div class="item__requirements">
-        <div>требуемый уровень: {{ item.level }}</div>
-        <div v-if="item.class?.length"> только для класса:
-          <span class="item__class">{{ itemClasses }}</span>
+  <main v-if="item" class="p-4">
+    <div class="headline">{{ item.name }}</div>
+    <div class="flex mt-10 mb-4">
+      <img :src="item.src" alt="logo" v-if="item.src" class="h-16 w-16" />
+      <QuestionIcon v-else color="red" />
+
+      <div class="ml-4 flex flex-col justify-center content-center">
+        <div v-if="item.level">требуемый уровень: {{ item.level }}</div>
+        <div v-else>Нет ограничения по уровню</div>
+        <div v-if="item.goblins.length">
+          Только для класса:
+          <span class="text-red-100 text-lg">
+            {{ item.goblins.map((item) => item.attributes.name).join(', ') }}
+          </span>
         </div>
-        <div v-else>подходит для всех классов</div>
+        <div v-else>Подходит для всех классов</div>
       </div>
-      <div class="item__button_wrapper">
-        <button class="item__button" @click="addItem">{{ buttonText }}</button>
+      <div class="flex-1 flex justify-end ml-2">
+        <button
+          class="dark:text-white-400 text-gray-300 text-md p-2 rounded-2xl border dark:border-white-400 border-gray-300 border-solid ease-out hover:border-red-100 hover:text-red-100"
+          @click="addItem"
+        >
+          {{ buttonText }}
+        </button>
       </div>
     </div>
-    <div class="item__description body">
-      {{ item.description }}
-      бла-бла описание предмета
-    </div>
+    <div class="my-2 body" v-html="item.description" />
 
-    <div class="item__description">
-      бонусы предмета:
-      <!--     TODO change later, when will the api be ready-->
-      <div v-if="item.stats?.strength">сила: {{ item.stats.strength }}</div>
-      <div v-if="item.stats?.agility">ловкость: {{ item.stats.agility }}</div>
-      <div v-if="item.stats?.intelligence">разум: {{ item.stats.intelligence }}</div>
-    </div>
+    <ul class="my-2" v-if="item.params">
+      Бонусы предмета:
 
-    <div class="item__craft" v-if="item.parents?.length">
-      из предмета "{{ item.name }}" можно скрафтить:
-      <span v-for="(parent, index) in item.parents" class="item__link" :key="parent.id">
-        <router-link :to="'/item/' + parent">
-          <span class="item__name"> {{ getItemName(parent).name }} </span>
-          <span v-if="index !== item.parents.length - 1">, </span>
-          <span v-else>; </span>
-        </router-link>
-      </span>
-    </div>
+      <li
+        v-for="(key, index) in Object.keys(item.params)"
+        :key="index"
+        class="ml-7"
+      >
+        <div v-if="item.params[key] && itemParams[key]">
+          <span v-if="key === 'manaburn'">
+            {{ itemParams[key] }} {{ item.params[key] }} маны противнику
+          </span>
+          <span v-else>{{ itemParams[key] }}: {{ item.params[key] }}</span>
+          <span
+            v-if="
+              ['as', 'mp_regeneration', 'resist', 'distant_resist'].includes(
+                key
+              )
+            "
+          >
+            %
+          </span>
+        </div>
+      </li>
+    </ul>
 
-    <div class="item__craft" v-if="item.children?.length">
-      предмет "{{ item.name }}" крафтится из:
-      <span v-for="(child, index) in item.children" class="item__link" :key="child.id">
-        <router-link :to="'/item/' + child">
-          <span class="item__name"> {{ getItemName(child).name }} </span>
+    <div
+      class="rounded-lg p-2 border border-white-300"
+      v-if="item.children.length"
+    >
+      Из предмета "{{ item.name }}" можно скрафтить:
+      <span
+        v-for="(child, index) in item.children"
+        class="text-end text-md"
+        :key="child.id"
+      >
+        <router-link :to="`/item/${child.id}`">
+          <span class="text-red-100 hover:border-b"> {{ child.name }} </span>
           <span v-if="index !== item.children.length - 1">, </span>
           <span v-else>; </span>
         </router-link>
       </span>
     </div>
 
+    <div
+      class="rounded-lg p-2 border border-white-300 my-2"
+      v-if="item.parents.length"
+    >
+      Предмет "{{ item.name }}" крафтится из:
+      <span
+        v-for="(parent, index) in item.parents"
+        class="text-end text-md"
+        :key="parent.id"
+      >
+        <router-link :to="`/item/${parent.id}`">
+          <span class="text-red-100 hover:border-b"> {{ parent.name }} </span>
+          <span v-if="index !== item.parents.length - 1">, </span>
+          <span v-else>; </span>
+        </router-link>
+      </span>
+    </div>
   </main>
-  <div v-else class="item">такого предмета нет</div>
+  <div v-else>Такого предмета нет</div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
-import type { ItemsInterface } from '@/common/interfaces'
-import { useGoblinsStore } from '@/stores/goblins'
+import { itemParams } from '@/common/enums'
+import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 import { useItemsStore } from '@/stores/items'
 import { useUserStore } from '@/stores/user'
-
 
 const route = useRoute()
 
 const itemsStore = useItemsStore()
 let item = computed(() =>
-  itemsStore.allItems.find(item => item.id === Number(route.path.split('/')[2])),
+  itemsStore.allItems.find((item) => item.id === Number(route.params.id))
 )
-
-const items = computed(() => itemsStore.allItems)
-const getItemName = (id: number) => {
-  return items.value.find(item => item.id === id)
-}
-
-const goblinStore = useGoblinsStore()
-const goblins = goblinStore.allGoblins
-
-const itemClasses = computed(() => {
-  if (item.value && item.value.class) {
-    return goblins.filter(goblin => item.value?.class.includes(goblin.id))
-      .map(item => item.name).toString().replace(',', ', ')
-  }
-
-  return ''
-})
 
 const userStore = useUserStore()
 const buttonText = computed(() =>
-  userStore.userInventory.length < 6 ? 'добавить в инвентарь' : 'инвентарь переполнен',
+  userStore.userInventory.length < 6
+    ? 'добавить в инвентарь'
+    : 'инвентарь переполнен'
 )
 const addItem = () => {
   if (userStore.userInventory.length < 6) {
-    userStore.addItem(item.value as ItemsInterface)
+    userStore.addItem(item.value)
   }
 }
-
 </script>
-
-<style scoped lang="scss">
-.item {
-  padding: 16px;
-
-  &__main {
-    margin: 40px 0 16px;
-    display: flex;
-
-    img {
-      width: 64px;
-      height: 64px;
-    }
-  }
-
-  &__requirements {
-    margin-left: 16px;
-    align-content: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  &__class {
-    color: var(--color-text-hover);
-    font-size: 1.2em;
-  }
-
-  &__button {
-    color: var(--color-text);
-    font-size: 1.1em;
-    border-radius: 16px;
-    border: 1px solid var(--color-text);
-    padding: 8px;
-    @include transition(all);
-
-    &:hover {
-      border: 1px solid var(--color-text-hover);
-      color: var(--color-text-hover);
-    }
-
-    &_wrapper {
-      flex: 1;
-      display: flex;
-      justify-content: flex-end;
-      margin-left: 8px;
-    }
-  }
-
-  &__craft {
-    margin: 8px 0;
-    border-radius: 8px;
-    border: 1px solid var(--color-text);
-    padding: 8px;
-  }
-
-  &__description {
-    margin: 8px 0;
-  }
-
-  &__link {
-    text-align: end;
-    font-size: 1.1em;
-  }
-
-  &__name {
-    border-bottom: 1px solid var(--color-text);
-    color: var(--color-text-hover);
-  }
-}
-</style>

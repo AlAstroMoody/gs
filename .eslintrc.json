@@ -1,42 +1,40 @@
 {
-  "env": {
-    "browser": true,
-    "es2021": true,
-    "vue/setup-compiler-macros": true,
-    "node": true
-  },
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:import/typescript",
-    "plugin:vue/essential"
-  ],
-  "parser": "vue-eslint-parser",
-  "parserOptions": {
-    "ecmaVersion": 2021,
-    "parser": "@typescript-eslint/parser"
-  },
-  "plugins": [
-    "@typescript-eslint",
-    "import",
-    "vue"
-  ],
-  "rules": {
-    "import/newline-after-import": ["error", { "count": 2 }],
-    "import/order": [
-      "error",
-      {
-        "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object"],
-        "newlines-between": "always",
-        "alphabetize": {
-          "order": "asc",
-          "caseInsensitive": true
-        }
-      }
+    "env": {
+      "browser": true,
+      "es2021": true,
+      "vue/setup-compiler-macros": true,
+      "node": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:vue/essential"
     ],
-    "max-len": ["error", { "code": 120, "ignoreTemplateLiterals": true }],
-    "padding-line-between-statements": ["error", { "blankLine": "always", "prev": "*", "next": "return" }],
-    "semi": ["error", "never"],
-    "vue/no-multiple-template-root": "off"
+    "parser": "vue-eslint-parser",
+    "parserOptions": {
+      "ecmaVersion": 2021,
+    },
+    "plugins": [
+      "import",
+      "vue"
+    ],
+    "rules": {
+      "import/newline-after-import": ["error", { "count": 1 }],
+      "import/order": [
+        "error",
+        {
+          "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "object"],
+          "newlines-between": "always",
+          "alphabetize": {
+            "order": "asc",
+            "caseInsensitive": true
+          }
+        }
+      ],
+      "max-len": ["error", { "code": 120, "ignoreTemplateLiterals": true }],
+      "padding-line-between-statements": ["error", { "blankLine": "always", "prev": "*", "next": "return" }],
+      "semi": ["error", "never"],
+      "object-curly-spacing": ["error", "always"],
+      "vue/no-multiple-template-root": "off"
+    }
   }
-}
+  

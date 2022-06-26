@@ -1,42 +1,36 @@
 <template>
   <section class="sidenav">
-    <div class="sidenav__link link" v-for="(point, index) in menu"
-         :class="{sidenav__link_active : point.link === $route.path}"
-         :style="linkStyle(index)" @click="openPoint(point.link)" :key="index">
+    <router-link
+      class="sidenav__link link block"
+      v-for="(point, index) in menu"
+      :class="{ sidenav__link_active: point.link === $route.path }"
+      :style="linkStyle(index)"
+      :key="index"
+      :to="point.link"
+    >
       {{ point.title }}
-    </div>
+    </router-link>
   </section>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
-
 
 const menu = reactive([
-  { title: 'выбрать персонажа', link: '/goblins' },
-  { title: 'подобрать снарягу', link: '/' },
+  { title: 'что происходит?', link: '/' },
+  { title: 'снарядить персонажа', link: '/goblins' },
+  { title: 'смотреть боссов', link: '/boss' },
   { title: 'дерево крафта', link: '/craft' },
 ])
 
-const emit = defineEmits(['startGearEvent', 'closeSidebar', 'openSidebar'])
-const router = useRouter()
-
-const openPoint = (link: string) => {
-  emit('startGearEvent')
-  link ? router.push(link) : null
-  link !== '/' ? emit('closeSidebar') : emit('openSidebar')
-}
-
-const linkStyle = (index: number): string => {
+const linkStyle = (index) => {
   return `animation-delay: ${index / 2 + 0.8}s`
 }
-
 </script>
 
 <style scoped lang="scss">
 .sidenav {
-  margin-top: 200px;
+  // margin-top: 200px;
   background: var(--color-text);
   padding: 20px 20px 20px 0;
   border-radius: 0 16px 16px 0;
@@ -76,19 +70,19 @@ const linkStyle = (index: number): string => {
 
 @keyframes sidenav {
   from {
-    transform: translateX(-100%)
+    transform: translateX(-100%);
   }
   to {
-    transform: translateX(0)
+    transform: translateX(0);
   }
 }
 
 @keyframes shiftRight {
   0% {
-    transform: translateX(-600px)
+    transform: translateX(-600px);
   }
   100% {
-    transform: translateX(0)
+    transform: translateX(0);
   }
 }
 </style>

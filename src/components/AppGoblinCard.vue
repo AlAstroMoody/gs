@@ -1,33 +1,34 @@
 <template>
-  <div class="card" @click="choiceGoblin(goblin)" :class="{card_active: userGoblin.id === goblin.id}">
+  <div
+    class="card"
+    @click="choiceGoblin(goblin)"
+    :class="{ card_active: userGoblin.id === goblin.id }"
+  >
     <div class="card__main">
-      <img :src="goblin.src" alt="img">
+      <img :src="goblin.src" alt="img" />
       <div class="card__info">
         <div class="subtitle">{{ goblin.name }}</div>
         <div>Основной параметр: {{ goblin.mainParam }}</div>
       </div>
     </div>
-      <div class="card__description">{{ goblin.description }}</div>
+    <div class="card__description">{{ goblin.description }}</div>
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { computed } from 'vue'
 
-import type { GoblinsInterface } from '@/common/interfaces'
 import { useUserStore } from '@/stores/user'
-
 
 defineProps({
   goblin: {
-    default: () => {
-    },
-    type: Object as () => GoblinsInterface,
+    default: () => {},
+    type: () => {},
   },
 })
 
 const userStore = useUserStore()
-const choiceGoblin = (goblin: GoblinsInterface) => {
+const choiceGoblin = (goblin) => {
   userStore.choiceGoblin(goblin)
 }
 
@@ -66,11 +67,13 @@ const userGoblin = computed(() => userStore.userGoblin)
     }
   }
 
-  &-enter-from, &-leave-to {
+  &-enter-from,
+  &-leave-to {
     height: 0;
   }
 
-  &-enter-active, &-leave-active {
+  &-enter-active,
+  &-leave-active {
     transition: height 0.3s ease-out;
   }
 }

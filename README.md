@@ -2,7 +2,7 @@
 
 pet-project for great justice :D
 
-used vue3, vue-router, pinia, and some typescript
+used vue3, vue-router, pinia
 
 no backend yet, it is planned later
 
