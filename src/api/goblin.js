@@ -16,9 +16,12 @@ export const getGoblins = async () => {
       mainParam,
       name,
       stats,
-      src:
-        import.meta.env.VITE_BASE_URL +
-        goblin.attributes.src.data.attributes.url,
+      src: goblin.attributes?.src
+        ? `/src/assets${goblin.attributes.src.data.attributes.url}`
+        : null,
+      // src:
+      //   import.meta.env.VITE_BASE_URL +
+      //   goblin.attributes.src.data.attributes.url,
     }
   })
 }

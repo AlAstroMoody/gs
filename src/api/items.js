@@ -20,9 +20,10 @@ export const getItems = async () => {
       children: getRelative(item.attributes.children.data),
       parents: getRelative(item.attributes.parents.data),
       goblins: item.attributes.goblins.data,
-      src: src
-        ? `${import.meta.env.VITE_BASE_URL}${src[0].attributes.url}`
-        : null,
+      // src: src
+      //   ? `${import.meta.env.VITE_BASE_URL}${src[0].attributes.url}`
+      //   : null,
+      src: src ? `/src/assets${src[0].attributes.url}` : null,
     }
   })
 }
