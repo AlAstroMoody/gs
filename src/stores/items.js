@@ -1,13 +1,11 @@
 import { defineStore } from 'pinia'
 
-import { getItems } from "@/api/items"
-import type { ItemsInterface } from '@/common/interfaces'
-
+import { getItems } from '@/api/items'
 
 export const useItemsStore = defineStore({
   id: 'items',
   state: () => ({
-    items: <ItemsInterface[]>[],
+    items: [],
   }),
   getters: {
     allItems: (state) => state.items,

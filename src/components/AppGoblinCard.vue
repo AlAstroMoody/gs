@@ -15,69 +15,66 @@
   </div>
 </template>
 
-<script setup lang="ts">
-  import { computed } from "vue"
+<script setup>
+import { computed } from 'vue'
 
-  import type { GoblinsInterface } from "@/common/interfaces"
-  import { useUserStore } from "@/stores/user"
+import { useUserStore } from '@/stores/user'
 
+defineProps({
+  goblin: {
+    default: () => {},
+    type: () => {},
+  },
+})
 
-  defineProps({
-    goblin: {
+const userStore = useUserStore()
+const choiceGoblin = (goblin) => {
+  userStore.choiceGoblin(goblin)
+}
 
-      default: () => {},
-      type: Object as () => GoblinsInterface,
-    },
-  })
-
-  const userStore = useUserStore()
-  const choiceGoblin = (goblin: GoblinsInterface) => {
-    userStore.choiceGoblin(goblin)
-  }
-
-  const userGoblin = computed(() => userStore.userGoblin)
+const userGoblin = computed(() => userStore.userGoblin)
 </script>
 
 <style scoped lang="scss">
-  .card {
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  min-width: 250px;
+  @include transition(color, background);
+
+  &:hover {
+    border-radius: 8px;
+    padding: 7px;
+    border: 1px solid var(--color-background);
+    background: var(--color-text);
+    color: var(--color-background);
+  }
+
+  &_active {
+    border-radius: 8px;
+    padding: 7px;
+    border: 1px solid var(--color-background);
+    background: var(--color-text);
+    color: var(--color-background);
+  }
+
+  &__main {
     display: flex;
-    flex-direction: column;
-    padding: 8px;
-    min-width: 250px;
-    @include transition(color, background);
 
-    &:hover {
-      border-radius: 8px;
-      padding: 7px;
-      border: 1px solid var(--color-background);
-      background: var(--color-text);
-      color: var(--color-background);
-    }
-
-    &_active {
-      border-radius: 8px;
-      padding: 7px;
-      border: 1px solid var(--color-background);
-      background: var(--color-text);
-      color: var(--color-background);
-    }
-
-    &__main {
-      display: flex;
-
-      img {
-        margin-right: 8px;
-      }
-    }
-
-    &-enter-from,
-    &-leave-to {
-      height: 0;
-    }
-
-    &-enter-active,
-    &-leave-active {
-      transition: height 0.3s ease-out;
+    img {
+      margin-right: 8px;
     }
   }
+
+  &-enter-from,
+  &-leave-to {
+    height: 0;
+  }
+
+  &-enter-active,
+  &-leave-active {
+    transition: height 0.3s ease-out;
+  }
+}
 </style>

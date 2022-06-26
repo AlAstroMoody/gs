@@ -3,16 +3,16 @@
     <ul>
       <AppCraftItem
         :item="item"
-        v-for="item in itemsStore.allItems.filter(
-          (item) => item?.parents?.length
-        )"
+        v-for="item in itemsStore.allItems
+          .filter((item) => item?.parents?.length)
+          .sort((a, b) => a.level - b.level)"
         :key="item.id"
       />
     </ul>
   </main>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import AppCraftItem from '@/components/AppCraftItem.vue'
 import { useItemsStore } from '@/stores/items'
 

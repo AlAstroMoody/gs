@@ -18,17 +18,7 @@
       </div>
       <div class="flex-1 flex justify-end ml-2">
         <button
-          class="
-            dark:text-white-400
-            text-gray-300 text-md
-            p-2
-            rounded-2xl
-            border
-            dark:border-white-400
-            border-gray-300 border-solid
-            ease-out
-            hover:border-red-100 hover:text-red-100
-          "
+          class="dark:text-white-400 text-gray-300 text-md p-2 rounded-2xl border dark:border-white-400 border-gray-300 border-solid ease-out hover:border-red-100 hover:text-red-100"
           @click="addItem"
         >
           {{ buttonText }}
@@ -46,8 +36,19 @@
         class="ml-7"
       >
         <div v-if="item.params[key] && itemParams[key]">
-          {{ itemParams[key] }}: {{ item.params[key] }}
-          <span v-if="['as', 'mp_regeneration'].includes(key)">%</span>
+          <span v-if="key === 'manaburn'">
+            {{ itemParams[key] }} {{ item.params[key] }} маны противнику
+          </span>
+          <span v-else>{{ itemParams[key] }}: {{ item.params[key] }}</span>
+          <span
+            v-if="
+              ['as', 'mp_regeneration', 'resist', 'distant_resist'].includes(
+                key
+              )
+            "
+          >
+            %
+          </span>
         </div>
       </li>
     </ul>

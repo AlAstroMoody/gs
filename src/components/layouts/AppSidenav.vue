@@ -13,7 +13,7 @@
   </section>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { reactive } from 'vue'
 
 const menu = reactive([
@@ -23,7 +23,7 @@ const menu = reactive([
   { title: 'дерево крафта', link: '/craft' },
 ])
 
-const linkStyle = (index: number): string => {
+const linkStyle = (index) => {
   return `animation-delay: ${index / 2 + 0.8}s`
 }
 </script>

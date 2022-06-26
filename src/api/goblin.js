@@ -1,10 +1,13 @@
-import instance from "@/api/instance"
-
+import instance from '@/api/instance'
+import { goblins } from '@/temp/goblins'
 
 export const getGoblins = async () => {
-  const response = await instance.get(`goblins/?populate=*`).catch(error => console.log(error))
+  // const response = await instance
+  //   .get(`goblins/?populate=*`)
+  //   .catch((error) => console.log(error))
 
-  return response.data.data.map(goblin => {
+  const response = goblins
+  return response.data.data.map((goblin) => {
     const { description, mainParam, name, stats } = goblin.attributes
 
     return {
@@ -13,7 +16,9 @@ export const getGoblins = async () => {
       mainParam,
       name,
       stats,
-      src: import.meta.env.VITE_BASE_URL + goblin.attributes.src.data.attributes.url
+      src:
+        import.meta.env.VITE_BASE_URL +
+        goblin.attributes.src.data.attributes.url,
     }
   })
 }

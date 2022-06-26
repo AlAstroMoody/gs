@@ -1,5 +1,7 @@
 <template>
-  <div class="board my-0 mx-auto items-center right-0 left-0 flex flex-col">
+  <div
+    class="board my-0 mx-auto items-center right-0 left-0 flex flex-col px-6"
+  >
     <div class="flex mb-2">
       <div class="rounded-full overflow-hidden">
         <img :src="goblin.src" alt="logo" class="contain" />
@@ -30,51 +32,48 @@
           </div>
         </div>
       </div>
-      <div>
-        <span class="px-3">
+      <div class="px-6">
+        <span>
           основные <br />
           параметры:
         </span>
-        <div>{{ hp }} hp</div>
-        <div>{{ mp }} mp</div>
-        <div class="flex justify-between">
-          сила: <span>{{ goblinStats.strength + displayedItemsStrength }}</span>
-        </div>
-        <div class="flex justify-between">
-          ловкость:
-          <span>{{ goblinStats.agility + displayedItemsAgility }}</span>
-        </div>
-        <div class="flex justify-between">
-          разум:
-          <span>
-            {{ goblinStats.intelligence + displayedItemsIntelligence }}
-          </span>
-        </div>
-        <div class="flex justify-between">
-          урон:
-          <span>
-            {{ attack }}
-          </span>
-        </div>
-        <div class="flex justify-between">
-          защита:
-          <span>
-            {{ defense }}
-          </span>
+        <div
+          class="flex justify-between"
+          v-for="param in mainParams"
+          :key="param.title"
+        >
+          {{ param.title }}
+          <span class="ml-1">{{ param.value }}</span>
         </div>
       </div>
-      <div>
-        <span class="px-3"> дополнительные <br /></span>
-        <span class="px-3">параметры:</span>
+      <div class="px-6">
+        <span> дополнительные <br /></span>
+        <span>параметры:</span>
+        <div
+          class="flex justify-between"
+          v-for="param in secondParams"
+          :key="param.title"
+        >
+          {{ param.title }}
+          <span class="ml-1">{{ param.value }}</span>
+        </div>
       </div>
+      <!-- <div class="px-3">
+        <span class="px-3">различные<br /></span>
+        <span class="px-3">эффекты:</span><br />
+        <AppScrollingComponent class="overflow-hidden">
+          <div v-html="itemsStats.description" class="h-36" />
+        </AppScrollingComponent>
+      </div> -->
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-import { computed, ref, watch, type Ref } from 'vue'
+<script setup>
+import { computed, ref, watch } from 'vue'
 
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
+// import AppScrollingComponent from '@/components/AppScrollingComponent.vue'
 import { useUserStore } from '@/stores/user'
 
 // общая атака
@@ -143,7 +142,7 @@ watch(itemsStats, async () => {
   changeParamValue(displayedItemsIntelligence, itemsStats.value.intelligence)
 })
 
-const changeParamValue = (displayedValue: Ref<number>, paramValue: number) => {
+const changeParamValue = (displayedValue, paramValue) => {
   let interval = 0
   if (displayedValue.value !== paramValue) {
     interval = window.setInterval(() => {
@@ -158,7 +157,57 @@ const changeParamValue = (displayedValue: Ref<number>, paramValue: number) => {
 }
 
 const inventory = computed(() => userStore.value.userInventory)
-const removeItem = (index: number) => userStore.value.removeItem(index)
+const removeItem = (index) => userStore.value.removeItem(index)
+
+const mainParams = computed(() => [
+  {
+    title: 'hp:',
+    value: hp,
+  },
+  {
+    title: 'mp:',
+    value: mp,
+  },
+  {
+    title: 'сила:',
+    value: goblinStats.value.strength + displayedItemsStrength.value,
+  },
+  {
+    title: 'ловкость:',
+    value: goblinStats.value.agility + displayedItemsAgility.value,
+  },
+  {
+    title: 'разум:',
+    value: goblinStats.value.intelligence + displayedItemsIntelligence.value,
+  },
+  {
+    title: 'урон:',
+    value: attack.value,
+  },
+  {
+    title: 'защита:',
+    value: defense.value,
+  },
+])
+
+const secondParams = computed(() => [
+  {
+    title: 'удача:',
+    value: itemsStats.value.luck || 0,
+  },
+  {
+    title: 'маг. резист:',
+    value: `${itemsStats.value.resist || 0}%`,
+  },
+  {
+    title: 'cкорость бега:',
+    value: itemsStats.value.ms || 0,
+  },
+  {
+    title: 'cкорость атаки:',
+    value: `${itemsStats.value.as || 0}%`,
+  },
+])
 </script>
 
 <style scoped lang="scss">
