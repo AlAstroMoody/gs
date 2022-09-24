@@ -66,27 +66,24 @@ const blockHeight = ref(0)
 const currentYPosition = ref(0)
 
 const wheelWatcher = (event) => {
-  if (main.value) {
-    const heightDifference = main.value.scrollHeight - main.value.clientHeight
-    if (!heightDifference) return
+  const heightDifference = main.value.scrollHeight - main.value.clientHeight
+  if (!heightDifference) return
 
-    if (currentYPosition.value + event.deltaY < 0) {
-      if (event.deltaY > 0) {
-        currentYPosition.value += event.deltaY * 4
-      } else {
-        if (-currentYPosition.value + event.deltaY < heightDifference) {
-          currentYPosition.value = currentYPosition.value += event.deltaY * 4
-        }
-      }
+  if (event.deltaY < 0) {
+    currentYPosition.value -= event.deltaY * 4
+  } else {
+    if (currentYPosition.value - event.deltaY > -heightDifference) {
+      currentYPosition.value = currentYPosition.value -= event.deltaY * 4
     }
-    // extremum points
-    currentYPosition.value >= 0 ? (currentYPosition.value = 0) : null
-    currentYPosition.value + heightDifference < 0
-      ? (currentYPosition.value = -heightDifference)
-      : null
-
-    main.value.style.transform = `translateY(${currentYPosition.value}px)`
   }
+
+  // extremum points
+  currentYPosition.value >= 0 ? (currentYPosition.value = 0) : null
+  currentYPosition.value + heightDifference < 0
+    ? (currentYPosition.value = -heightDifference)
+    : null
+
+  main.value.style.transform = `translateY(${currentYPosition.value}px)`
 }
 
 const addWheelHandler = () => {
@@ -116,10 +113,8 @@ onUnmounted(() => {
 })
 
 const changeBlockHeight = () => {
-  if (main.value && scrollbar.value && body.value) {
-    if (main.value.clientHeight !== body.value.scrollHeight) {
-      scrollbar.value.style.display = 'block'
-    }
+  if (main?.value?.clientHeight !== body?.value?.scrollHeight) {
+    scrollbar.value.classList.add('md:block')
   }
 
   nextTick(() =>

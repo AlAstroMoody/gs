@@ -30,6 +30,7 @@
   </div>
 
   <AppSidebar class="sidebar" ref="sidebar" v-show="!isBigPage" />
+  <AppMobileMenu class="absolute bottom-0 left-0 right-0 block md:hidden" />
 </template>
 
 <script setup>
@@ -46,6 +47,7 @@ import { useBossStore } from '@/stores/bosses'
 import { useGoblinsStore } from '@/stores/goblins'
 import { useItemsStore } from '@/stores/items'
 import { useUserStore } from '@/stores/user'
+import AppMobileMenu from './components/AppMobileMenu.vue'
 
 const route = useRoute()
 const isBigPage = computed(

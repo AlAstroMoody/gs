@@ -35,7 +35,6 @@ const isGearsTurn = ref(false)
 const router = useRouter()
 router.beforeEach(() => {
   isGearsTurn.value = !isGearsTurn.value
-
   return true
 })
 
