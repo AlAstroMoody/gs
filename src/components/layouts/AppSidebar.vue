@@ -1,7 +1,7 @@
 <template>
   <div
     ref="sidebar"
-    class="sidebar_hidden flex flex-col overflow-hidden py-2 px-1 -translate-y-full animate-side delay-300 border-l border-solid dark:border-white-400 border-gray-300 absolute bg-white-100 xl:w-96"
+    class="sidebar sidebar_hidden flex flex-col overflow-hidden py-2 px-1 -translate-y-full animate-side delay-300 border-l border-solid dark:border-white-400 border-gray-300 absolute bg-white-100 xl:w-96"
   >
     <div
       class="w-full dark:bg-white-200 bg-gray-200 relative z-10 rounded-2xl border border-white-400 my-2 p-2 opacity-0 animate-filter"
@@ -14,7 +14,7 @@
         <div class="sidebar__items" ref="itemsBlock">
           <AppItemLine v-for="item in items" :key="item.id" :item="item" />
         </div>
-        <div v-if="!items.length" class="w-full text-center">
+        <div v-if="!items?.length" class="w-full text-center">
           совпадений не найдено
         </div>
       </AppScrollingComponent>
@@ -61,8 +61,13 @@ watch(isShow, async () => {
 
 <style scoped lang="scss">
 .sidebar {
+  width: 300px;
+  inset: 0 0 0 calc(100% - 300px);
+
   @media (min-width: $l) {
     padding: 16px 24px;
+    inset: 0 0 0 calc(100% - 400px);
+    width: 400px;
   }
 
   &_show {

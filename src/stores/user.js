@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { itemParams } from '../common/enums'
 
 export const useUserStore = defineStore({
   id: 'user',

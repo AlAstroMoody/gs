@@ -29,20 +29,10 @@
 </template>
 <script setup>
 import { computed, reactive } from 'vue'
-import { useItemsStore } from '@/stores/items'
-import { useGoblinsStore } from '@/stores/goblins'
 import AppCommonSelect from '@/components/common/AppCommonSelect.vue'
 import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
+import { useState } from '@/components/composibles/useState'
 
-// эмит отфильтрованных артов
-const emit = defineEmits(['filteredItems'])
-
-// подключаем стор с артами
-const itemsStore = useItemsStore()
-
-// получаем арты реактивно
-const items = computed(() => itemsStore.allItems)
-emit('filteredItems', items)
 // поля фильтрации
 const filterFields = reactive({
   name: '',
@@ -50,9 +40,14 @@ const filterFields = reactive({
   goblins: [],
 })
 
-// получаем гоблинов
-const goblinsStore = useGoblinsStore()
-const goblins = computed(() => goblinsStore.allGoblins)
+let { entities } = await useState()
+console.log(entities)
+const goblins = entities.goblins
+const items = entities.items
+
+// эмит отфильтрованных артов
+const emit = defineEmits(['filteredItems'])
+emit('filteredItems', items)
 
 // сдвигаем положение на слайдере
 const sliderThumbShift = (distance) => {

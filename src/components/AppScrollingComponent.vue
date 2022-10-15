@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="ease-out duration-1000 w-full" ref="main">
-      <div ref="body">
+      <div ref="body" class="h-full">
         <slot />
       </div>
     </div>

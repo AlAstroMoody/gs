@@ -1,10 +1,6 @@
 <template>
-  <main class="flex flex-col align-center relative z-50">
-    <img
-      src="/src/assets/images/header.jpg"
-      alt="main"
-      class="-mt:4 mb-4 w-full"
-    />
+  <main class="flex flex-col align-center relative z-50 mb-20">
+    <img src="/src/assets/images/header.jpg" alt="main" class="mb-4 w-full" />
     <div class="headline">Goblin Survival</div>
     <div class="subtitle my-6">
       <span>

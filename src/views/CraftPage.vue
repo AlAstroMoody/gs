@@ -3,7 +3,7 @@
     <ul>
       <AppCraftItem
         :item="item"
-        v-for="item in itemsStore.allItems
+        v-for="item in entities
           .filter((item) => item?.parents?.length)
           .sort((a, b) => a.level - b.level)"
         :key="item.id"
@@ -14,7 +14,7 @@
 
 <script setup>
 import AppCraftItem from '@/components/AppCraftItem.vue'
-import { useItemsStore } from '@/stores/items'
+import { useState } from '@/components/composibles/useState'
 
-const itemsStore = useItemsStore()
+const { entities } = await useState({ entity: 'items' })
 </script>

@@ -19,7 +19,7 @@
 import { computed, ref, toRefs } from 'vue'
 
 import AppCraftItem from '@/components/AppCraftItem.vue'
-import { useItemsStore } from '@/stores/items'
+import { useState } from '@/components/composibles/useState'
 
 const props = defineProps({
   item: {
@@ -38,9 +38,8 @@ const toggle = () => {
   isHasParents.value ? (isOpen.value = !isOpen.value) : null
 }
 
-const itemsStore = useItemsStore()
-// текущий предмет со всеми свойствами
-const currentItem = computed(() =>
-  itemsStore.allItems.find((i) => i.id === item.value.id)
-)
+const { currentItem } = await useState({
+  entity: 'items',
+  id: item?.value?.id || 0,
+})
 </script>

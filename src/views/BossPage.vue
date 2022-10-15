@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div v-for="boss in bosses" :key="boss.id" class="mb-8">
+    <div v-for="boss in entities" :key="boss.id" class="mb-8">
       <div class="subtitle">{{ boss.name }}</div>
       <div class="my-4">волна №{{ boss.wave }}</div>
       <div>
@@ -16,12 +16,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { useState } from '@/components/composibles/useState'
 
-import { useBossStore } from '@/stores/bosses'
-
-const goblinsStore = useBossStore()
-
-// все боссы
-const bosses = computed(() => goblinsStore.allBosses)
+const { entities } = await useState({ entity: 'bosses' })
 </script>

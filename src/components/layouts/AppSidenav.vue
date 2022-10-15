@@ -1,9 +1,15 @@
 <template>
-  <section class="sidenav">
+  <section
+    class="sidenav mt-48 lg:block hidden h-fit rounded-r-2xl py-5 pr-5 bg-white-400"
+  >
     <router-link
-      class="sidenav__link link block"
+      class="sidenav__link link block relative cursor-pointer py-4 px-2 hover:bg-white-400 hover:text-white-200 w-max rounded-r-2xl my-2"
       v-for="(point, index) in menu"
-      :class="{ sidenav__link_active: point.link === $route.path }"
+      :class="
+        point.link === $route.path
+          ? 'bg-white-400 text-white-200'
+          : 'text-white-400 bg-white-200'
+      "
       :style="linkStyle(index)"
       :key="index"
       :to="point.link"
@@ -11,78 +17,61 @@
       {{ point.title }}
     </router-link>
   </section>
+  <section
+    class="bg-white-200 flex justify-around absolute bottom-0 inset-x-0 lg:hidden z-10"
+  >
+    <router-link :to="point.link" v-for="point in menu">
+      <component
+        :is="icon(point.icon)"
+        class="p-1 w-full rounded-full border hover:border-red-200"
+        :width="64"
+        color="white"
+      />
+    </router-link>
+  </section>
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { defineAsyncComponent } from 'vue'
 
-const menu = reactive([
-  { title: 'что происходит?', link: '/' },
-  { title: 'снарядить персонажа', link: '/goblins' },
-  { title: 'смотреть боссов', link: '/boss' },
-  { title: 'дерево крафта', link: '/craft' },
-])
+import { menu } from '@/components/layouts/menu'
+import { useState } from '@/components/composibles/useState'
+import { getItems } from '@/api/items'
+import { getBosses } from '@/api/boss'
+import { getGoblins } from '@/api/goblin'
 
 const linkStyle = (index) => {
-  return `animation-delay: ${index / 2 + 0.8}s`
+  return `animation-delay: ${index / 2 + 0.3}s`
+}
+
+const icon = (name) =>
+  defineAsyncComponent(() => import(`../icons/${name}.vue`))
+
+// сущности, информацию о которых получаем : функция получения
+const allEntities = {
+  items: getItems,
+  bosses: getBosses,
+  goblins: getGoblins,
+}
+
+for (const key in allEntities) {
+  let { setItems } = await useState({
+    getAll: allEntities[key],
+    entity: key,
+  })
+  await setItems()
 }
 </script>
 
 <style scoped lang="scss">
 .sidenav {
-  // margin-top: 200px;
-  background: var(--color-text);
-  padding: 20px 20px 20px 0;
-  border-radius: 0 16px 16px 0;
   transform: translateX(-100%);
   animation: sidenav 1s ease-out forwards;
   animation-delay: 1s;
-  @include transition(all);
 
   &__link {
-    padding: 16px 8px;
-    cursor: pointer;
-    width: max-content;
-    position: relative;
     transform: translateX(-600px);
     animation: shiftRight 1s ease-out forwards;
-    border: 1px solid var(--color-text);
-    background: var(--color-background);
-    color: var(--color-text);
-    @include transition(all);
-    margin: 8px 0 8px -1px;
-    border-radius: 0 16px 16px 0;
-
-    &_active {
-      color: var(--color-background);
-      background: var(--color-text);
-      border: 1px solid var(--color-background);
-    }
-
-    &:hover {
-      @include transition(color, background);
-      color: var(--color-background);
-      background: var(--color-text);
-      border: 1px solid var(--color-background);
-    }
-  }
-}
-
-@keyframes sidenav {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes shiftRight {
-  0% {
-    transform: translateX(-600px);
-  }
-  100% {
-    transform: translateX(0);
   }
 }
 </style>

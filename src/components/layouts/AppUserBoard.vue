@@ -1,30 +1,29 @@
 <template>
-  <div
-    class="board my-0 mx-auto items-center right-0 left-0 flex flex-col px-6"
-  >
+  <div class="board my-0 mx-auto items-center flex flex-col px-6 h-fit">
     <div class="flex mb-2">
-      <div class="rounded-full overflow-hidden">
-        <img :src="goblin.src" alt="logo" class="contain" />
+      <div class="overflow-hidden">
+        <img :src="user.goblin.src" alt="logo" class="contain" />
       </div>
       <div class="w-56 ml-4">
         <div class="mx-auto subtitle">'Крягз "Ядро"'</div>
         <div class="v-border w-full mx-auto text-center p-1 rounded-lg">
-          Уровень {{ userLevel }}, {{ goblin.name }}
+          Уровень {{ user.level }}, {{ user.goblin.name }}
         </div>
       </div>
     </div>
+
     <div class="flex">
-      <div class="inventory">
+      <div class="inventory flex flex-col flex-wrap">
         <div class="inventory__slots">
           <div v-for="i in 6" :key="i" class="inventory__slot">
             <img
-              :src="inventory[i - 1]?.src"
+              :src="user.inventory[i - 1]?.src"
               alt="img"
-              v-if="inventory[i - 1]?.src"
+              v-if="user.inventory[i - 1]?.src"
               @click="removeItem(i)"
             />
             <div
-              v-if="inventory[i - 1] && !inventory[i - 1]?.src"
+              v-if="user.inventory[i - 1] && !user.inventory[i - 1]?.src"
               @click="removeItem(i)"
             >
               <QuestionIcon />
@@ -32,6 +31,7 @@
           </div>
         </div>
       </div>
+
       <div class="px-6">
         <span>
           основные <br />
@@ -58,13 +58,6 @@
           <span class="ml-1">{{ param.value }}</span>
         </div>
       </div>
-      <!-- <div class="px-3">
-        <span class="px-3">различные<br /></span>
-        <span class="px-3">эффекты:</span><br />
-        <AppScrollingComponent class="overflow-hidden">
-          <div v-html="itemsStats.description" class="h-36" />
-        </AppScrollingComponent>
-      </div> -->
     </div>
   </div>
 </template>
@@ -73,22 +66,23 @@
 import { computed, ref, watch } from 'vue'
 
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
-// import AppScrollingComponent from '@/components/AppScrollingComponent.vue'
-import { useUserStore } from '@/stores/user'
+import { useGoblinState } from '@/components/composibles/useGoblinState'
+
+const { user, itemsStats, removeItem } = useGoblinState()
 
 // общая атака
 const attack = computed(() => {
   let itemsStatAttack = 0
-  switch (goblin.value.mainParam) {
+  switch (user.goblin.mainParam) {
     case 'Сила':
-      itemsStatAttack = goblinStats.value.strength + itemsStats.value.strength
+      itemsStatAttack = user.goblin.stats.strength + itemsStats.value.strength
       break
     case 'Ловкость':
-      itemsStatAttack = goblinStats.value.agility + itemsStats.value.agility
+      itemsStatAttack = user.goblin.stats.agility + itemsStats.value.agility
       break
     default:
       itemsStatAttack =
-        goblinStats.value.intelligence + itemsStats.value.intelligence
+        user.goblin.stats.intelligence + itemsStats.value.intelligence
       break
   }
 
@@ -97,39 +91,26 @@ const attack = computed(() => {
 
 // общая защита
 const defense = computed(() =>
-  itemsStats.value
+  itemsStats
     ? Math.floor(
         1 +
           itemsStats.value.defence +
-          (goblinStats.value.agility + itemsStats.value.agility) / 3
+          (user.goblin.stats.agility + itemsStats.value.agility) / 3
       )
     : 0
 )
 
-const userStore = computed(() => useUserStore())
-const userLevel = computed(() => userStore.value.userLevel)
-const goblin = computed(() => userStore.value.userGoblin)
-
-// статы от гоблина
-const goblinStats = computed(() => useUserStore().userGoblin.stats)
-
-// статы от шмоток
-const itemsStats = computed(() => useUserStore().userItemsStats)
 // общие hp
 const hp = computed(
   () =>
-    goblinStats.value.strength * 20 +
-    (itemsStats.value
-      ? itemsStats.value.strength * 20 + itemsStats.value.hp
-      : 0)
+    (user.goblin.stats.strength + itemsStats.value.strength) * 20 +
+    itemsStats.value.hp
 )
 // общие mp
 const mp = computed(
   () =>
-    goblinStats.value.intelligence * 15 +
-    (itemsStats.value
-      ? itemsStats.value.intelligence * 15 + itemsStats.value.mp
-      : 0)
+    (user.goblin.stats.intelligence + itemsStats.value.intelligence) * 15 +
+    itemsStats.value.mp
 )
 
 const displayedItemsStrength = ref(0)
@@ -156,9 +137,6 @@ const changeParamValue = (displayedValue, paramValue) => {
   }
 }
 
-const inventory = computed(() => userStore.value.userInventory)
-const removeItem = (index) => userStore.value.removeItem(index)
-
 const mainParams = computed(() => [
   {
     title: 'hp:',
@@ -170,15 +148,15 @@ const mainParams = computed(() => [
   },
   {
     title: 'сила:',
-    value: goblinStats.value.strength + displayedItemsStrength.value,
+    value: user.goblin.stats.strength + displayedItemsStrength.value,
   },
   {
     title: 'ловкость:',
-    value: goblinStats.value.agility + displayedItemsAgility.value,
+    value: user.goblin.stats.agility + displayedItemsAgility.value,
   },
   {
     title: 'разум:',
-    value: goblinStats.value.intelligence + displayedItemsIntelligence.value,
+    value: user.goblin.stats.intelligence + displayedItemsIntelligence.value,
   },
   {
     title: 'урон:',
@@ -217,9 +195,6 @@ const secondParams = computed(() => [
   animation: shiftTop 1s forwards;
   transform: translateY(100%);
   animation-delay: 0.5s;
-  align-items: center;
-  margin: 0 auto;
-  position: absolute;
   inset: auto 0 0 0;
   z-index: 10;
   border: 1px solid var(--color-text);
@@ -240,9 +215,6 @@ const secondParams = computed(() => [
 }
 
 .inventory {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
   max-width: 152px;
   width: fit-content;
   height: fit-content;

@@ -133,5 +133,9 @@ input:not(:placeholder-shown) + label {
 
 main {
   height: 100%;
-  padding: 16px;
+  padding: 16px 16px 0;
+}
+
+a, section {
+  @include transition(all);
 }
