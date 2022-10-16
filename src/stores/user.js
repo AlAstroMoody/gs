@@ -10,13 +10,22 @@ export const useUserStore = defineStore({
         agility: 1,
         intelligence: 1,
       },
+      stats_increase: {
+        strength: 1,
+        agility: 1,
+        intelligence: 1,
+      },
     },
     level: 1,
+    attackPoints: 0,
+    defencePoints: 0,
   }),
   getters: {
     userInventory: (state) => state.inventory,
     userGoblin: (state) => state.goblin,
     userLevel: (state) => state.level,
+    userAttackPoints: (state) => state.attackPoints,
+    userDefencePoints: (state) => state.defencePoints,
     userItemsStats: (state) =>
       state.inventory.reduce(
         (sum, item) =>
@@ -29,9 +38,16 @@ export const useUserStore = defineStore({
             defence: (sum.defence += item?.params?.defence || 0),
             attack: (sum.attack += item?.params?.attack || 0),
             luck: (sum.luck += item?.params?.luck || 0),
-            resist: (sum.resist += item?.params?.resist || 0),
+            resist:
+              item?.params?.resist > sum.resist
+                ? item?.params?.resist
+                : sum.resist,
             as: (sum.as += item?.params?.as || 0),
-            ms: (sum.resist += item?.params?.ms || 0),
+            ms: item?.params?.ms > sum.ms ? item?.params?.ms : sum.ms,
+            hp_regeneration: (sum.hp_regeneration +=
+              item?.params?.hp_regeneration || 0),
+            mp_regeneration: (sum.mp_regeneration +=
+              item?.params?.mp_regeneration || 0),
             description: (sum.description += sum.description
               ? `<br/> ${item?.description || ''} `
               : item?.description || ''),
@@ -49,6 +65,8 @@ export const useUserStore = defineStore({
           as: 0,
           ms: 0,
           description: '',
+          mp_regeneration: 0,
+          hp_regeneration: 0,
         }
       ),
   },
@@ -64,6 +82,12 @@ export const useUserStore = defineStore({
     },
     changeLevel(level) {
       this.level = level
+    },
+    changeAttack(points) {
+      this.attackPoints = points
+    },
+    changeDefence(points) {
+      this.defencePoints = points
     },
   },
 })

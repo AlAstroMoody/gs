@@ -9,10 +9,17 @@ const user = reactive({
       agility: 1,
       intelligence: 1,
     },
+    stats_increase: {
+      strength: 1,
+      agility: 1,
+      intelligence: 1,
+    },
   },
+  attackPoints: 0,
+  defencePoints: 0,
 })
 
-export function useGoblinState({ goblin, level, item, number } = {}) {
+export function useGoblinState({ goblin, level, item, number, points } = {}) {
   const setGoblin = (goblin) => (user.goblin = goblin)
   const setLevel = (level) => (user.level = level)
   const addItem = (item) => user.inventory.push(item)
@@ -33,9 +40,16 @@ export function useGoblinState({ goblin, level, item, number } = {}) {
           defence: (sum.defence += item?.params?.defence || 0),
           attack: (sum.attack += item?.params?.attack || 0),
           luck: (sum.luck += item?.params?.luck || 0),
-          resist: (sum.resist += item?.params?.resist || 0),
+          resist:
+            item?.params?.resist > sum.resist
+              ? item?.params?.resist
+              : sum.resist,
           as: (sum.as += item?.params?.as || 0),
-          ms: (sum.resist += item?.params?.ms || 0),
+          ms: item?.params?.ms > sum.ms ? item?.params?.ms : sum.ms,
+          hp_regeneration: (sum.hp_regeneration +=
+            item?.params?.hp_regeneration || 0),
+          mp_regeneration: (sum.mp_regeneration +=
+            item?.params?.mp_regeneration || 0),
           description: (sum.description += sum.description
             ? `<br/> ${item?.description || ''} `
             : item?.description || ''),
@@ -53,9 +67,13 @@ export function useGoblinState({ goblin, level, item, number } = {}) {
         as: 0,
         ms: 0,
         description: '',
+        hp_regeneration: 0,
       }
     )
   )
+
+  const changeAttack = (points) => (user.attackPoints = points)
+  const changeDefence = (points) => (user.defencePoints = points)
 
   return {
     user,
@@ -64,5 +82,7 @@ export function useGoblinState({ goblin, level, item, number } = {}) {
     itemsStats,
     addItem,
     removeItem,
+    changeAttack,
+    changeDefence,
   }
 }

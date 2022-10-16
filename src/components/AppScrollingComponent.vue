@@ -15,7 +15,10 @@
       </div>
     </div>
     <div class="ease-out duration-1000 w-full" ref="main">
-      <div ref="body" class="h-full">
+      <div
+        ref="body"
+        :class="{ 'h-full': ['/item', '/goblins'].includes(route.path) }"
+      >
         <slot />
       </div>
     </div>

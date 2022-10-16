@@ -1,5 +1,5 @@
 <template>
-  <main class="flex flex-col justify-between">
+  <main class="flex flex-col justify-between h-full">
     <div>
       <div class="headline mb-8">Доступные персонажи</div>
       <div class="flex flex-col lg:flex-row">
