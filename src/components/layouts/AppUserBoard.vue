@@ -1,8 +1,10 @@
 <template>
-  <div class="board my-0 mx-auto items-center flex flex-col px-6 h-fit">
+  <div
+    class="board lg:my-0 mx-auto items-center flex flex-col px-2 md:px-6 h-fit w-full mb-16"
+  >
     <div class="flex mb-2">
       <div class="overflow-hidden">
-        <img :src="user.goblin.src" alt="logo" class="contain" />
+        <img :src="user.goblin.src" alt="logo" class="contain h-16 w-16" />
       </div>
       <div class="w-56 ml-4">
         <div class="mx-auto subtitle">'Крягз "Ядро"'</div>
@@ -14,7 +16,7 @@
 
     <div class="flex">
       <div class="inventory flex flex-col flex-wrap">
-        <div class="inventory__slots">
+        <div class="w-full flex-wrap sm:flex hidden">
           <div v-for="i in 6" :key="i" class="inventory__slot">
             <img
               :src="user.inventory[i - 1]?.src"
@@ -63,7 +65,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 import { useGoblinState } from '@/components/composibles/useGoblinState'
@@ -101,41 +103,11 @@ const defense = computed(() =>
 )
 
 // общие hp
-const hp = computed(
-  () =>
-    (user.goblin.stats.strength + itemsStats.value.strength) * 20 +
-    itemsStats.value.hp
-)
+const hp = computed(() => itemsStats.value.strength * 20 + itemsStats.value.hp)
 // общие mp
 const mp = computed(
-  () =>
-    (user.goblin.stats.intelligence + itemsStats.value.intelligence) * 15 +
-    itemsStats.value.mp
+  () => itemsStats.value.intelligence * 15 + itemsStats.value.mp
 )
-
-const displayedItemsStrength = ref(0)
-const displayedItemsAgility = ref(0)
-const displayedItemsIntelligence = ref(0)
-
-watch(itemsStats, async () => {
-  changeParamValue(displayedItemsStrength, itemsStats.value.strength)
-  changeParamValue(displayedItemsAgility, itemsStats.value.agility)
-  changeParamValue(displayedItemsIntelligence, itemsStats.value.intelligence)
-})
-
-const changeParamValue = (displayedValue, paramValue) => {
-  let interval = 0
-  if (displayedValue.value !== paramValue) {
-    interval = window.setInterval(() => {
-      let change = (paramValue - displayedValue.value) / 2
-      change = change >= 0 ? Math.ceil(change) : Math.floor(change)
-      displayedValue.value = displayedValue.value + change
-      if (displayedValue.value === paramValue) {
-        clearInterval(interval)
-      }
-    }, 10)
-  }
-}
 
 const mainParams = computed(() => [
   {
@@ -148,23 +120,23 @@ const mainParams = computed(() => [
   },
   {
     title: 'сила:',
-    value: user.goblin.stats.strength + displayedItemsStrength.value,
+    value: itemsStats.value.strength,
   },
   {
     title: 'ловкость:',
-    value: user.goblin.stats.agility + displayedItemsAgility.value,
+    value: itemsStats.value.agility,
   },
   {
     title: 'разум:',
-    value: user.goblin.stats.intelligence + displayedItemsIntelligence.value,
+    value: itemsStats.value.intelligence,
   },
   {
     title: 'урон:',
-    value: attack.value,
+    value: attack.value + user.attackPoints * 100,
   },
   {
     title: 'защита:',
-    value: defense.value,
+    value: defense.value + user.defencePoints * 3,
   },
 ])
 
@@ -184,6 +156,20 @@ const secondParams = computed(() => [
   {
     title: 'cкорость атаки:',
     value: `${itemsStats.value.as || 0}%`,
+  },
+  {
+    title: 'регенерация hp:',
+    value: `${
+      itemsStats.value.hp_regeneration +
+        Math.floor(itemsStats.value.strength / 100) || 0
+    }/сек`,
+  },
+  {
+    title: 'регенерация mp:',
+    value: `${
+      itemsStats.value.mp_regeneration +
+        Math.floor(itemsStats.value.intelligence / 100) || 0
+    }%`,
   },
 ])
 </script>
@@ -223,12 +209,6 @@ const secondParams = computed(() => [
 
   &__subtitle {
     margin: auto;
-  }
-
-  &__slots {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
   }
 
   &__slot {

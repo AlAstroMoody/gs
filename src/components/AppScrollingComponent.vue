@@ -17,7 +17,7 @@
     <div class="ease-out duration-1000 w-full" ref="main">
       <div
         ref="body"
-        :class="{ 'h-full': ['/item', '/goblins'].includes(route.path) }"
+        :class="{ 'xs:h-full': ['/item', '/goblins'].includes(route.path) }"
       >
         <slot />
       </div>
@@ -70,6 +70,7 @@ const currentYPosition = ref(0)
 
 const wheelWatcher = (event) => {
   const heightDifference = main.value.scrollHeight - main.value.clientHeight
+  console.log(heightDifference)
   if (!heightDifference) return
 
   if (event.deltaY < 0) {

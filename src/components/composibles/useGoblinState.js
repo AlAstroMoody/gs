@@ -1,4 +1,4 @@
-import { ref, readonly, computed, reactive } from 'vue'
+import { computed, reactive } from 'vue'
 
 const user = reactive({
   inventory: [],
@@ -26,6 +26,25 @@ export function useGoblinState({ goblin, level, item, number, points } = {}) {
 
   // порядковый номер удаленного предмета (1-6)
   const removeItem = (number) => user.inventory.splice(number - 1, 1)
+
+  const strength = computed(() =>
+    Math.floor(
+      user.goblin.stats_increase.strength * user.level +
+        user.goblin.stats.strength
+    )
+  )
+  const agility = computed(() =>
+    Math.floor(
+      user.goblin.stats_increase.agility * user.level +
+        user.goblin.stats.agility
+    )
+  )
+  const intelligence = computed(() =>
+    Math.floor(
+      user.goblin.stats_increase.intelligence * user.level +
+        user.goblin.stats.intelligence
+    )
+  )
 
   // бонусы инвентаря
   const itemsStats = computed(() =>
@@ -55,9 +74,9 @@ export function useGoblinState({ goblin, level, item, number, points } = {}) {
             : item?.description || ''),
         }),
       {
-        strength: 0,
-        agility: 0,
-        intelligence: 0,
+        strength: strength.value,
+        agility: agility.value,
+        intelligence: intelligence.value,
         mp: 0,
         hp: 0,
         defence: 0,
@@ -72,8 +91,13 @@ export function useGoblinState({ goblin, level, item, number, points } = {}) {
     )
   )
 
-  const changeAttack = (points) => (user.attackPoints = points)
-  const changeDefence = (points) => (user.defencePoints = points)
+  const changeAttack = (points) => {
+    user.attackPoints = points
+  }
+
+  const changeDefence = (points) => {
+    user.defencePoints = points
+  }
 
   return {
     user,
