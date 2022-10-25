@@ -1,7 +1,15 @@
 <template>
   <ol>
-    <div :class="{ 'font-bold': isHasParents }" @click="toggle">
-      <router-link :to="`/item/${item.id}`">{{ item.name }}</router-link>
+    <div
+      :class="{ 'font-bold': isHasParents }"
+      @click="toggle"
+      class="flex items-center"
+    >
+      <router-link :to="`/item/${item.id}`" class="mr-2">
+        <LoupeIcon />
+      </router-link>
+      {{ count ? `${count}шт` : '' }}
+      {{ item.name }}
       <span v-if="isHasParents" class="dark:text-orange-300 text-green-700">
         [ {{ isOpen ? '-' : '+' }} ]
       </span>
@@ -9,6 +17,7 @@
     <ul v-show="isOpen" v-if="isHasParents" class="pl-3">
       <AppCraftItem
         v-for="(parent, index) in currentItem?.parents"
+        :count="Number(currentItem.parents_count[parent.id] || 0)"
         :key="index"
         :item="parent"
       />
@@ -19,12 +28,17 @@
 import { computed, ref, toRefs } from 'vue'
 
 import AppCraftItem from '@/components/AppCraftItem.vue'
+import LoupeIcon from '@/components/icons/LoupeIcon.vue'
 import { useState } from '@/components/composibles/useState'
 
 const props = defineProps({
   item: {
     default: () => {},
     type: Object,
+  },
+  count: {
+    type: Number,
+    default: 0,
   },
 })
 

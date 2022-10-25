@@ -15,6 +15,7 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { throttle } from '@/common/throttle'
 
 const emit = defineEmits(['thumbShift'])
 const thumb = ref(null)
@@ -41,9 +42,46 @@ const thumbShift = computed(() => {
   return 0
 })
 
-watch(travelDistance, async () => {
+// таймаут на срабатывание слайдера
+const sliderTimeout = ref(null)
+
+// проброс результата наверх
+const emitShift = () => {
+  console.log('shift')
   emit('thumbShift', thumbShift.value)
+}
+
+watch(travelDistance, () => {
+  const asd = throttle(emitShift, 1500)
 })
+
+// const throttle = (func, ms) => {
+//   let isThrottled = false,
+//     savedArgs,
+//     savedThis
+
+//   function wrapper() {
+//     if (isThrottled) {
+//       savedArgs = arguments
+//       savedThis = this
+//       return
+//     }
+
+//     func.apply(this, arguments)
+
+//     isThrottled = true
+
+//     setTimeout(function () {
+//       isThrottled = false // (3)
+//       if (savedArgs) {
+//         wrapper.apply(savedThis, savedArgs)
+//         savedArgs = savedThis = null
+//       }
+//     }, ms)
+//   }
+
+//   return wrapper
+// }
 
 const onMouseDown = (event) => {
   event.preventDefault()
@@ -93,8 +131,15 @@ onMounted(() => {
   window.addEventListener('resize', resize)
 })
 
+// очистка таймаута
+const clearSliderTimeout = () => {
+  clearTimeout(sliderTimeout.value)
+  sliderTimeout.value = null
+}
+
 onUnmounted(() => {
   window.removeEventListener('resize', resize)
+  clearSliderTimeout()
 })
 </script>
 

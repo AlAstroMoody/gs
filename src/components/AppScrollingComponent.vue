@@ -15,9 +15,13 @@
       </div>
     </div>
     <div class="ease-out duration-1000 w-full" ref="main">
+      <!-- TODO скролл херня)) -->
       <div
         ref="body"
-        :class="{ 'xs:h-full': ['/item', '/goblins'].includes(route.path) }"
+        :class="[
+          { 'xs:h-full': route.path.startsWith('/goblins') },
+          { 'md:h-full': route.path.startsWith('/item') },
+        ]"
       >
         <slot />
       </div>
@@ -70,7 +74,6 @@ const currentYPosition = ref(0)
 
 const wheelWatcher = (event) => {
   const heightDifference = main.value.scrollHeight - main.value.clientHeight
-  console.log(heightDifference)
   if (!heightDifference) return
 
   if (event.deltaY < 0) {

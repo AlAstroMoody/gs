@@ -17,15 +17,31 @@
     <div class="flex">
       <div class="inventory flex flex-col flex-wrap">
         <div class="w-full flex-wrap sm:flex hidden">
-          <div v-for="i in 6" :key="i" class="inventory__slot">
+          <div
+            v-for="i in 6"
+            :key="i"
+            class="inventory__slot"
+            @mouseenter="showDescription(user.inventory[i - 1], i)"
+            @mouseleave="showDescription({})"
+          >
+            <div
+              v-show="
+                isShowPopup && activeItem?.name && activeItem?.index === i
+              "
+              class="absolute -top-12 bg-white-300 border rounded-md text-white-200 p-2 whitespace-nowrap border-white-200"
+            >
+              {{ activeItem.name }}
+            </div>
+
             <img
-              :src="user.inventory[i - 1]?.src"
+              v-if="user.inventory[i - 1] && user.inventory[i - 1].src"
+              :src="user.inventory[i - 1].src"
               alt="img"
-              v-if="user.inventory[i - 1]?.src"
               @click="removeItem(i)"
             />
             <div
-              v-if="user.inventory[i - 1] && !user.inventory[i - 1]?.src"
+              class="flex w-16 h-16 bg-white-300"
+              v-if="user.inventory[i - 1] && !user.inventory[i - 1]?.value?.src"
               @click="removeItem(i)"
             >
               <QuestionIcon />
@@ -65,7 +81,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 import { useGoblinState } from '@/components/composibles/useGoblinState'
@@ -108,6 +124,17 @@ const hp = computed(() => itemsStats.value.strength * 20 + itemsStats.value.hp)
 const mp = computed(
   () => itemsStats.value.intelligence * 15 + itemsStats.value.mp
 )
+
+// попап
+const activeItem = ref('')
+const isShowPopup = ref(false)
+const showDescription = (item, index) => {
+  isShowPopup.value = !!item
+  if (item) {
+    activeItem.value = item
+    activeItem.value.index = index
+  }
+}
 
 const mainParams = computed(() => [
   {
@@ -155,7 +182,7 @@ const secondParams = computed(() => [
   },
   {
     title: 'cкорость атаки:',
-    value: `${itemsStats.value.as || 0}%`,
+    value: itemsStats.value.as >= 500 ? 'max' : `${itemsStats.value.as || 0}%`,
   },
   {
     title: 'регенерация hp:',
@@ -220,15 +247,8 @@ const secondParams = computed(() => [
     position: relative;
     @include transition(all);
 
-    div {
-      width: 64px;
-      height: 64px;
-      background: white;
-      display: flex;
-
-      svg {
-        margin: auto;
-      }
+    svg {
+      margin: auto;
     }
   }
 }

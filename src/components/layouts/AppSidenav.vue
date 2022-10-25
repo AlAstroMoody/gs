@@ -36,6 +36,8 @@ import { defineAsyncComponent } from 'vue'
 
 import { menu } from '@/components/layouts/menu'
 import { useState } from '@/components/composibles/useState'
+import { useGoblinState } from '@/components/composibles/useGoblinState'
+
 import { getItems } from '@/api/items'
 import { getBosses } from '@/api/boss'
 import { getGoblins } from '@/api/goblin'
@@ -61,6 +63,10 @@ for (const key in allEntities) {
   })
   await setItems()
 }
+
+const { entities } = await useState({ entity: 'goblins' })
+const { user, setGoblin } = useGoblinState()
+user.goblin?.id ? null : setGoblin(entities[0])
 </script>
 
 <style scoped lang="scss">

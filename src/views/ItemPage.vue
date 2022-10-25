@@ -1,36 +1,37 @@
 <template>
-  <main v-if="currentItem" class="p-4">
+  <main v-if="currentItem" class="p-4 flex flex-col justify-between h-full">
     <div>
       <div class="headline">{{ currentItem.name }}</div>
-      <div class="flex mt-10 mb-4">
-        <img
-          :src="currentItem.src"
-          alt="logo"
-          v-if="currentItem.src"
-          class="h-16 w-16"
-        />
-        <QuestionIcon v-else color="red" />
-
-        <div class="ml-4 flex flex-col justify-center content-center">
-          <div v-if="currentItem.level">
-            требуемый уровень: {{ currentItem.level }}
+      <div class="flex mt-10 mb-4 flex-wrap">
+        <div class="flex w-full xs:w-auto">
+          <img
+            :src="currentItem.src"
+            alt="logo"
+            v-if="currentItem.src"
+            class="h-24 w-24"
+          />
+          <QuestionIcon v-else color="red" />
+          <div class="flex flex-col justify-center content-center ml-4">
+            <div v-if="currentItem.level">
+              требуемый уровень: {{ currentItem.level }}
+            </div>
+            <div v-else>Нет ограничения по уровню</div>
+            <div v-if="currentItem.goblins.length">
+              Только для класса:
+              <span class="text-red-100 text-lg">
+                {{
+                  currentItem.goblins
+                    .map((currentItem) => currentItem.attributes.name)
+                    .join(', ')
+                }}
+              </span>
+            </div>
+            <div v-else>Подходит для всех классов</div>
           </div>
-          <div v-else>Нет ограничения по уровню</div>
-          <div v-if="currentItem.goblins.length">
-            Только для класса:
-            <span class="text-red-100 text-lg">
-              {{
-                currentItem.goblins
-                  .map((currentItem) => currentItem.attributes.name)
-                  .join(', ')
-              }}
-            </span>
-          </div>
-          <div v-else>Подходит для всех классов</div>
         </div>
         <div class="flex-1 flex justify-end ml-2">
           <button
-            class="dark:text-white-400 text-gray-300 text-md p-2 rounded-2xl border dark:border-white-400 border-gray-300 border-solid ease-out hover:border-red-100 hover:text-red-100"
+            class="whitespace-nowrap dark:text-white-400 text-gray-300 text-md p-2 rounded-2xl border dark:border-white-400 border-gray-300 border-solid ease-out hover:border-red-100 hover:text-red-100"
             @click="add"
           >
             {{ buttonText }}
@@ -116,10 +117,11 @@ import { useRoute } from 'vue-router'
 
 import { itemParams } from '@/common/enums'
 
-import AppSidebar from '@/components/layouts/AppSidebar.vue'
+import AppUserBoard from '@/components/layouts/AppUserBoard.vue'
 import AppSidebar from '@/components/layouts/AppSidebar.vue'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 import { useState } from '@/components/composibles/useState'
+import { useGoblinState } from '@/components/composibles/useGoblinState'
 
 const { user, addItem } = useGoblinState()
 
@@ -132,7 +134,7 @@ const buttonText = computed(() =>
 )
 const add = () => {
   if (user.inventory.length < 6) {
-    addItem(currentItem)
+    addItem(currentItem.value)
   }
 }
 </script>

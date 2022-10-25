@@ -3,8 +3,11 @@ import { ref, readonly, computed, reactive } from 'vue'
 const entities = reactive({ items: [], bosses: [], goblins: [] })
 
 export async function useState({ id, getAll, entity } = {}) {
+  // запрашиваем данные по сущности, если их еще нет
   const setItems = async () => {
-    entities[entity] = await getAll()
+    if (!entities[entity].length) {
+      entities[entity] = await getAll()
+    }
   }
 
   // предмет по id

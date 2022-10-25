@@ -15,7 +15,7 @@
   уровень предмета от: {{ Math.round(filterFields.level) }}
   <div class="flex">
     0
-    <AppCommonSlider class="" @thumbShift="sliderThumbShift" />
+    <AppCommonSlider @thumbShift="sliderThumbShift" />
     200
   </div>
 
@@ -28,7 +28,7 @@
   />
 </template>
 <script setup>
-import { computed, reactive } from 'vue'
+import { computed, reactive, ref, onUnmounted } from 'vue'
 import AppCommonSelect from '@/components/common/AppCommonSelect.vue'
 import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
 import { useState } from '@/components/composibles/useState'
@@ -41,7 +41,7 @@ const filterFields = reactive({
 })
 
 let { entities } = await useState()
-console.log(entities)
+
 const goblins = entities.goblins
 const items = entities.items
 
@@ -51,6 +51,7 @@ emit('filteredItems', items)
 
 // сдвигаем положение на слайдере
 const sliderThumbShift = (distance) => {
+  console.log(distance)
   filterFields.level = 200 * distance
 }
 
@@ -62,7 +63,7 @@ const goblinSelection = (value) => {
 
 // при изменении любого из полей фильтра меняем выборку
 const filteredItems = computed(() => {
-  let sampleItems = items.value
+  let sampleItems = items
 
   if (filterFields.name) {
     sampleItems = sampleItems.filter((item) =>

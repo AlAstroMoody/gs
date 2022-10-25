@@ -87,6 +87,7 @@ export function useGoblinState({ goblin, level, item, number, points } = {}) {
         ms: 0,
         description: '',
         hp_regeneration: 0,
+        mp_regeneration: 0,
       }
     )
   )
