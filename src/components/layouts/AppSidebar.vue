@@ -1,16 +1,17 @@
 <template>
   <div
     ref="sidebar"
-    class="flex flex-col w-80 overflow-hidden py-2 px-1 animate-side delay-300 border-l border-solid dark:border-white-400 border-gray-300 bg-white-100 xl:w-96"
+    class="w-80 overflow-hidden py-2 px-1 animate-side delay-300 border-l border-second xxl:w-96 md:h-full h-[75vh] mx-auto"
   >
-    <!-- -translate-y-full sidebar_hidden -->
     <div
-      class="w-full dark:bg-white-200 bg-gray-200 relative z-10 rounded-2xl border border-white-400 my-2 p-2 opacity-0 animate-filter"
+      class="w-full bg-primary relative z-10 rounded-2xl border border-second my-2 p-2 opacity-0 animate-filter"
     >
       <AppFilter @filteredItems="changeItemsKit($event)" />
     </div>
 
-    <div class="sidebar__body flex overflow-hidden h-full justify-between">
+    <div
+      class="sidebar__body flex overflow-hidden h-[75vh] md:h-full justify-between"
+    >
       <AppScrollingComponent :is-resize="resized">
         <div
           class="relative h-full flex-1 z-10 ease-out duration-1000 transition-all"

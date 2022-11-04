@@ -1,26 +1,28 @@
 <template>
   <div
-    class="board lg:my-0 mx-auto items-center flex flex-col px-2 md:px-6 h-fit w-full mb-16"
+    class="lg:my-0 mx-auto px-2 xl:px-6 h-fit w-full lg:w-fit mb-16 bg-gray border-silver rounded-t-2xl border border-b-0 animate-opacity"
   >
-    <div class="flex mb-2">
+    <div class="flex mb-2 justify-center">
       <div class="overflow-hidden">
-        <img :src="user.goblin.src" alt="logo" class="contain h-16 w-16" />
+        <img :src="user.goblin.src" alt="logo" class="h-16 w-16" />
       </div>
       <div class="w-56 ml-4">
         <div class="mx-auto subtitle">'Крягз "Ядро"'</div>
-        <div class="v-border w-full mx-auto text-center p-1 rounded-lg">
+        <div
+          class="w-full mx-auto text-center p-1 rounded-lg border border-second"
+        >
           Уровень {{ user.level }}, {{ user.goblin.name }}
         </div>
       </div>
     </div>
 
-    <div class="flex">
-      <div class="inventory flex flex-col flex-wrap">
-        <div class="w-full flex-wrap sm:flex hidden">
+    <div class="flex justify-center">
+      <div class="flex flex-col flex-wrap w-fit h-fit max-w-[152px]">
+        <div class="w-full flex-wrap xs:flex hidden">
           <div
             v-for="i in 6"
             :key="i"
-            class="inventory__slot"
+            class="bg-slot relative border-second h-16 w-16 m-one"
             @mouseenter="showDescription(user.inventory[i - 1], i)"
             @mouseleave="showDescription({})"
           >
@@ -28,7 +30,7 @@
               v-show="
                 isShowPopup && activeItem?.name && activeItem?.index === i
               "
-              class="absolute -top-12 bg-white-300 border rounded-md text-white-200 p-2 whitespace-nowrap border-white-200"
+              class="absolute -top-12 bg-silver border rounded-md text-primary p-2 whitespace-nowrap border-primary"
             >
               {{ activeItem.name }}
             </div>
@@ -40,21 +42,18 @@
               @click="removeItem(i)"
             />
             <div
-              class="flex w-16 h-16 bg-white-300"
-              v-if="user.inventory[i - 1] && !user.inventory[i - 1]?.value?.src"
+              v-if="user.inventory[i - 1] && !user.inventory[i - 1].src"
+              class="flex w-16 h-16 bg-silver"
               @click="removeItem(i)"
             >
-              <QuestionIcon />
+              <QuestionIcon class="m-auto" />
             </div>
           </div>
         </div>
       </div>
 
-      <div class="px-6">
-        <span>
-          основные <br />
-          параметры:
-        </span>
+      <div class="px-2 xl:px-6">
+        <span>основные <br />параметры:</span>
         <div
           class="flex justify-between"
           v-for="param in mainParams"
@@ -64,7 +63,7 @@
           <span class="ml-1">{{ param.value }}</span>
         </div>
       </div>
-      <div class="px-6">
+      <div class="px-2 xl:px-6">
         <span> дополнительные <br /></span>
         <span>параметры:</span>
         <div
@@ -83,8 +82,8 @@
 <script setup>
 import { computed, ref } from 'vue'
 
-import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 import { useGoblinState } from '@/components/composibles/useGoblinState'
+import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
 const { user, itemsStats, removeItem } = useGoblinState()
 
@@ -200,56 +199,3 @@ const secondParams = computed(() => [
   },
 ])
 </script>
-
-<style scoped lang="scss">
-.board {
-  background: var(--color-background-soft);
-  border-radius: 16px 16px 0 0;
-  animation: shiftTop 1s forwards;
-  transform: translateY(100%);
-  animation-delay: 0.5s;
-  inset: auto 0 0 0;
-  z-index: 10;
-  border: 1px solid var(--color-text);
-  border-bottom: none;
-
-  @media (min-width: $m) {
-    width: fit-content;
-  }
-}
-
-@keyframes shiftTop {
-  0% {
-    transform: translateY(100%);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-.inventory {
-  max-width: 152px;
-  width: fit-content;
-  height: fit-content;
-  opacity: 0;
-  animation: opacity 1s forwards;
-
-  &__subtitle {
-    margin: auto;
-  }
-
-  &__slot {
-    margin: 1px;
-    background-image: url('/src/assets/images/slot.png');
-    width: 66px;
-    height: 66px;
-    border: 1px solid var(--color-text);
-    position: relative;
-    @include transition(all);
-
-    svg {
-      margin: auto;
-    }
-  }
-}
-</style>

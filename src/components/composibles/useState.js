@@ -1,4 +1,4 @@
-import { ref, readonly, computed, reactive } from 'vue'
+import { readonly, computed, reactive } from 'vue'
 
 const entities = reactive({ items: [], bosses: [], goblins: [] })
 

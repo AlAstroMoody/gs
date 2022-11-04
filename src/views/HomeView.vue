@@ -7,7 +7,7 @@
         Интерактивный редактор персонажа, дерево крафта и библиотека оружия для
         твоей любимой карты. Актуально для версии:
       </span>
-      <span class="text-red-100 text-xl"> 1.4f.fix7 </span>
+      <span class="text-red text-xl"> 1.4f.fix7 </span>
     </div>
     <div class="indent-8">
       Небольшой гоблинской экспедиции становится известным о старой заброшенной
@@ -29,30 +29,15 @@
       сумасшедших изобретениях...
     </div>
 
-    <div class="home__privacy mt-50px mx-auto mb-auto mt-12">
+    <div class="mt-50px mx-auto mb-auto mt-12">
       Проект "Goblin Survival" создан
-      <a href="http://goblinworkshop.ru/" target="_blank" class="text-red-100">
+      <a
+        href="http://goblinworkshop.ru/"
+        target="_blank"
+        class="text-red font-medium"
+      >
         гильдией картостроителей</a
       >, все права принадлежат ей же.
     </div>
   </main>
 </template>
-
-<script setup></script>
-
-<style scoped lang="scss">
-.home {
-  &__privacy {
-    animation-delay: 1.4s;
-
-    a {
-      font-size: 0.8em;
-
-      &:hover {
-        @include transition(all);
-        border-bottom: 1px solid var(--color-text-hover);
-      }
-    }
-  }
-}
-</style>

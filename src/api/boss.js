@@ -1,4 +1,4 @@
-import instance from '@/api/instance'
+// import instance from '@/api/instance'
 import { bosses } from '@/temp/bosses'
 
 export const getBosses = async () => {

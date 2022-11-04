@@ -11,19 +11,29 @@ body {
   margin: unset;
 }
 
-p, button, ul, li, h1, h2, h3, input {
+p,
+button,
+ul,
+li,
+h1,
+h2,
+h3,
+input {
   margin: unset;
   padding: unset;
 }
 
-button, input {
+button,
+input {
   appearance: unset;
   background: unset;
   border: unset;
   outline: unset;
 }
 
-ul, li, ol {
+ul,
+li,
+ol {
   text-indent: 0;
   list-style: unset;
 }
@@ -31,4 +41,5 @@ ul, li, ol {
 a {
   color: unset;
   text-decoration: unset;
+  cursor: pointer;
 }

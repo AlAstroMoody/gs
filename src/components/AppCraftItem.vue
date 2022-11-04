@@ -10,7 +10,7 @@
       </router-link>
       {{ count ? `${count}шт` : '' }}
       {{ item.name }}
-      <span v-if="isHasParents" class="dark:text-orange-300 text-green-700">
+      <span v-if="isHasParents" class="text-orange-300">
         [ {{ isOpen ? '-' : '+' }} ]
       </span>
     </div>
@@ -28,8 +28,8 @@
 import { computed, ref, toRefs } from 'vue'
 
 import AppCraftItem from '@/components/AppCraftItem.vue'
-import LoupeIcon from '@/components/icons/LoupeIcon.vue'
 import { useState } from '@/components/composibles/useState'
+import LoupeIcon from '@/components/icons/LoupeIcon.vue'
 
 const props = defineProps({
   item: {

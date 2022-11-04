@@ -17,7 +17,6 @@ export default defineConfig({
       scss: {
         additionalData: [
           `@import "@/assets/scss/fonts/fonts.scss"; 
-           @import "@/assets/scss/_screens.scss";
            @import "@/assets/scss/_mixins.scss";`,
         ],
       },

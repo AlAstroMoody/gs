@@ -1,12 +1,13 @@
-import instance from '@/api/instance'
+// import instance from '@/api/instance'
 import { items } from '@/temp/items'
 
 export const getItems = async () => {
   // const response = await instance
   //   .get(`items/?populate=*`)
   //   .catch((error) => console.log(error))
-  // console.log(response)
+
   const response = items
+
   return response.data.data.map((item) => {
     const { description, level, name, params } = item.attributes
     const src = item.attributes.src.data

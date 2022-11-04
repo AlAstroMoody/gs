@@ -1,10 +1,10 @@
 <template>
   <div
-    class="bg-gray-300 w-full h-4 rounded-lg"
+    class="bg-gray w-full h-4 rounded-lg"
     ref="slider"
     @click.self="onSliderClick"
   >
-    <div
+    <label
       class="slider__thumb rounded-lg relative left-0 h-6 w-3 -top-1"
       ref="thumb"
       @mousedown="onMouseDown"
@@ -142,15 +142,3 @@ onUnmounted(() => {
   clearSliderTimeout()
 })
 </script>
-
-<style scoped lang="scss">
-.slider {
-  &__thumb {
-    // width: 10px;
-    // height: 25px;
-
-    background: var(--color-text);
-    cursor: url(/src/assets/images/cursor_gauntlet2.png), auto;
-  }
-}
-</style>

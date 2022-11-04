@@ -1,17 +1,17 @@
 <template>
-  <div class="select">
-    <div class="select__value" @click="selectClick">
+  <div class="bg-gray rounded-2xl p-2 border-silver border">
+    <label class="w-full block" @click="selectClick">
       {{ currentValue?.name || defaultValue }}
-    </div>
-    <div class="select__options" v-if="isSelectClick">
-      <div
+    </label>
+    <div class="opacity-100" v-if="isSelectClick">
+      <label
         v-for="option in filteredOptions"
         :key="option.id"
         @click="selectValue(option.id)"
-        class="select__option"
+        class="py-0 px-2 w-full block transition-all hover:text-primary hover:bg-second"
       >
         {{ option.name || option }}
-      </div>
+      </label>
     </div>
   </div>
 </template>
@@ -64,50 +64,3 @@ const removeHandler = () => {
   window.removeEventListener('click', changeOptionsVisibility)
 }
 </script>
-
-<style scoped lang="scss">
-.select {
-  border: 1px solid var(--color-text);
-  color: var(--color-text);
-  background: var(--color-background-soft);
-  border-radius: 16px;
-  padding: 8px;
-
-  &__options {
-    color: var(--color-text);
-    opacity: 1;
-  }
-
-  &__value {
-    cursor: url(/src/assets/images/cursor_gauntlet.png), auto;
-
-    &:hover {
-      cursor: url(/src/assets/images/cursor_gauntlet2.png), auto;
-    }
-  }
-
-  &__option {
-    width: max-content;
-    cursor: url(/src/assets/images/cursor_gauntlet2.png), auto;
-    padding: 0 8px;
-
-    &:after {
-      width: 0;
-      @include transition(all);
-    }
-
-    &:hover {
-      background: var(--color-text);
-      border-radius: 4px;
-      color: var(--color-background);
-
-      &:after {
-        content: '';
-        position: absolute;
-        width: 100%;
-        inset: 4px 0;
-      }
-    }
-  }
-}
-</style>

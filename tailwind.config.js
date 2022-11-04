@@ -1,5 +1,4 @@
 module.exports = {
-  darkMode: 'class',
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
     screens: {
@@ -8,30 +7,24 @@ module.exports = {
       sm: '576px',
       md: '768px',
       lg: '992px',
-      xl: '1440px',
+      xl: '1280px',
+      xxl: '1440px',
+    },
+    colors: {
+      primary: '#181818', // bg
+      second: 'rgba(235, 235, 235, 0.64)', // text
+      silver: '#d4cece', // второй бг
+      red: 'rgba(255, 3, 3, 0.82)',
+      gray: '#222222',
     },
     extend: {
-      colors: {
-        gray: {
-          200: '#e3e3e3', // бг
-          300: '#222222', // второй бг
-          400: '#e1d7d7', // текст
-          500: '#2c3e50', // текст второй
-        },
-        white: {
-          200: '#181818', // бг
-          300: '#d4cece', // второй бг
-          400: 'rgba(235, 235, 235, 0.64)', // text
-        },
-        red: {
-          100: 'rgba(255, 3, 3, 0.82)',
-          200: 'rgba(143, 2, 2, 0.82)',
-        },
-      },
       animation: {
         filter: 'opacity 3s 1s ease-out forwards',
         side: 'sidebar 1s ease-in forwards',
-        string: 'opacity 1s ease-out forwards',
+        opacity: 'opacity 1s ease-out forwards',
+      },
+      backgroundImage: {
+        slot: "url('/src/assets/images/slot.png')",
       },
       keyframes: {
         opacity: {
@@ -48,8 +41,11 @@ module.exports = {
         },
         hidden: {
           '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(00%)' },
+          '100%': { transform: 'translateX(100%)' },
         },
+      },
+      spacing: {
+        one: '1px',
       },
     },
   },

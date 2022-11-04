@@ -1,14 +1,14 @@
 <template>
   <section
-    class="sidenav mt-48 lg:block hidden h-fit rounded-r-2xl py-5 pr-5 bg-white-400"
+    class="sidenav mt-48 lg:block hidden h-fit rounded-r-2xl py-5 pr-5 bg-second"
   >
     <router-link
-      class="sidenav__link link block relative cursor-pointer py-4 px-2 hover:bg-white-400 hover:text-white-200 w-max rounded-r-2xl my-2"
+      class="sidenav__link link block relative py-4 px-2 hover:bg-second hover:text-primary w-max rounded-r-2xl my-2"
       v-for="(point, index) in menu"
       :class="
         point.link === $route.path
-          ? 'bg-white-400 text-white-200'
-          : 'text-white-400 bg-white-200'
+          ? 'bg-second text-primary'
+          : 'text-second bg-primary'
       "
       :style="linkStyle(index)"
       :key="index"
@@ -18,12 +18,12 @@
     </router-link>
   </section>
   <section
-    class="bg-white-200 flex justify-around absolute bottom-0 inset-x-0 lg:hidden z-10"
+    class="bg-primary flex justify-around absolute bottom-0 inset-x-0 lg:hidden z-10"
   >
-    <router-link :to="point.link" v-for="point in menu">
+    <router-link :to="point.link" v-for="point in menu" :key="point.link">
       <component
         :is="icon(point.icon)"
-        class="p-1 w-full rounded-full border hover:border-red-200"
+        class="p-1 w-full rounded-full border hover:border-red"
         :width="64"
         color="white"
       />
@@ -34,13 +34,12 @@
 <script setup>
 import { defineAsyncComponent } from 'vue'
 
-import { menu } from '@/components/layouts/menu'
-import { useState } from '@/components/composibles/useState'
-import { useGoblinState } from '@/components/composibles/useGoblinState'
-
-import { getItems } from '@/api/items'
 import { getBosses } from '@/api/boss'
 import { getGoblins } from '@/api/goblin'
+import { getItems } from '@/api/items'
+import { menu } from '@/common/menu'
+import { useGoblinState } from '@/components/composibles/useGoblinState'
+import { useState } from '@/components/composibles/useState'
 
 const linkStyle = (index) => {
   return `animation-delay: ${index / 2 + 0.3}s`

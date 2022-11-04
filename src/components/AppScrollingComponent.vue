@@ -1,11 +1,9 @@
 <template>
   <div class="flex flex-row h-full w-full">
     <div class="h-full hidden px-2" ref="scrollbar" @click="trackClick">
-      <div
-        class="scrollbar__track z-background ease-out duration-1000 h-full rounded-lg w-[1px]"
-      >
+      <div class="bg-second ease-out duration-1000 h-full rounded-lg w-one">
         <div
-          class="scrollbar__thumb bg-red-100"
+          class="transition-all duration-1000 bg-red rounded-lg h-8 w-[3px] -ml-one"
           ref="thumb"
           :style="{
             transform: `translateY(${thumbTransformY}px)`,
@@ -153,17 +151,3 @@ const trackClick = (event) => {
   }
 }
 </script>
-
-<style scoped lang="scss">
-.scrollbar {
-  &__thumb {
-    height: 30px;
-    width: 3px;
-    margin: 0 0 0 -1px;
-    border: 1 ps solid var(--color-text);
-    border-radius: 10px;
-    background: var(--color-text-hover);
-    transition: 1s all;
-  }
-}
-</style>

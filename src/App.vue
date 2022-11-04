@@ -4,7 +4,9 @@
     <AppSidenav />
   </Suspense>
 
-  <div class="mr-auto h-full w-full relative overflow-hidden flex pl-3 xl:pl-6">
+  <div
+    class="mr-auto h-full w-full relative overflow-hidden flex lg:pl-3 xxl:pl-6"
+  >
     <Suspense>
       <router-view v-slot="{ Component }">
         <transition name="page" mode="out-in">

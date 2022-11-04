@@ -1,14 +1,14 @@
 // нижний блок с инвентарем
 .board {
-    &-enter-from,
-    &-leave-to {
-      opacity: 0;
-    }
-  
-    &-enter-active,
-    &-leave-active {
-      transition: opacity 0.1s ease-out;
-    }
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+
+  &-enter-active,
+  &-leave-active {
+    transition: opacity 0.1s ease-out;
+  }
 }
 
 // смена страниц
@@ -29,6 +29,7 @@
   from {
     transform: translateX(-100%);
   }
+
   to {
     transform: translateX(0);
   }
@@ -39,6 +40,7 @@
   0% {
     transform: translateX(-600px);
   }
+
   100% {
     transform: translateX(0);
   }
@@ -48,6 +50,7 @@
   from {
     transform: translateX(100%);
   }
+
   to {
     transform: translateX(0);
   }
@@ -57,7 +60,18 @@
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(100%);
+  }
+}
+
+@keyframes shiftTop {
+  0% {
+    transform: translateY(100%);
+  }
+
+  100% {
+    transform: translateY(0);
   }
 }
