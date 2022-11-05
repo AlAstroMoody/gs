@@ -1,9 +1,9 @@
 <template>
   <section
-    class="sidenav mt-48 lg:block hidden h-fit rounded-r-2xl py-5 pr-5 bg-second"
+    class="mt-48 lg:block hidden h-fit rounded-r-2xl py-5 pr-5 bg-second transform -translate-x-full animate-leftToRight"
   >
     <router-link
-      class="sidenav__link link block relative py-4 px-2 hover:bg-second hover:text-primary w-max rounded-r-2xl my-2"
+      class="link block relative py-4 px-2 hover:bg-second hover:text-primary w-max rounded-r-2xl my-2 animate-leftToRight transform -translate-x-full"
       v-for="(point, index) in menu"
       :class="
         point.link === $route.path
@@ -67,16 +67,3 @@ const { entities } = await useState({ entity: 'goblins' })
 const { user, setGoblin } = useGoblinState()
 user.goblin?.id ? null : setGoblin(entities[0])
 </script>
-
-<style scoped lang="scss">
-.sidenav {
-  transform: translateX(-100%);
-  animation: sidenav 1s ease-out forwards;
-  animation-delay: 1s;
-
-  &__link {
-    transform: translateX(-600px);
-    animation: shiftRight 1s ease-out forwards;
-  }
-}
-</style>

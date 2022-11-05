@@ -15,6 +15,7 @@
 
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+
 import { throttle } from '@/common/throttle'
 
 const emit = defineEmits(['thumbShift'])

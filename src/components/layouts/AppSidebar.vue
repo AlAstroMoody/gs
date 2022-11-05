@@ -1,7 +1,6 @@
 <template>
   <div
-    ref="sidebar"
-    class="w-80 overflow-hidden py-2 px-1 animate-side delay-300 border-l border-second xxl:w-96 md:h-full h-[75vh] mx-auto"
+    class="w-80 overflow-hidden py-2 px-1 -translate-y-full animate-topToBottom transform border-l border-second xxl:w-96 md:h-full h-[75vh] mx-auto"
   >
     <div
       class="w-full bg-primary relative z-10 rounded-2xl border border-second my-2 p-2 opacity-0 animate-filter"
@@ -10,7 +9,7 @@
     </div>
 
     <div
-      class="sidebar__body flex overflow-hidden h-[75vh] md:h-full justify-between"
+      class="flex overflow-hidden h-[75vh] md:h-full justify-between opacity-0 animate-opacity animation-delay-1500"
     >
       <AppScrollingComponent :is-resize="resized">
         <div
@@ -43,23 +42,3 @@ const changeItemsKit = (filteredItems) => {
   resized.value = !resized.value
 }
 </script>
-
-<style scoped lang="scss">
-.sidebar {
-  &_show {
-    animation: show 0.5s ease-in forwards;
-    transform: translateY(0);
-  }
-
-  &_hidden {
-    animation: hidden 0.5s ease-in forwards;
-    transform: translateY(0);
-  }
-
-  &__body {
-    opacity: 0;
-    animation: opacity 1s ease-out forwards;
-    animation-delay: 1.8s;
-  }
-}
-</style>

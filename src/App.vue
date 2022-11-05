@@ -9,17 +9,17 @@
   >
     <Suspense>
       <router-view v-slot="{ Component }">
-        <transition name="page" mode="out-in">
-          <div class="h-full w-full relative">
-            <AppScrollingComponent>
+        <div class="h-full w-full relative">
+          <AppScrollingComponent>
+            <transition name="scale" mode="out-in">
               <component
                 :is="Component"
                 :key="$route.path"
                 class="overflow-hidden"
               />
-            </AppScrollingComponent>
-          </div>
-        </transition>
+            </transition>
+          </AppScrollingComponent>
+        </div>
       </router-view>
     </Suspense>
   </div>
@@ -30,3 +30,16 @@ import AppGears from '@/components/AppGears.vue'
 import AppScrollingComponent from '@/components/AppScrollingComponent.vue'
 import AppSidenav from '@/components/layouts/AppSidenav.vue'
 </script>
+
+<style scoped>
+.scale-enter-active,
+.scale-leave-active {
+  transition: all 0.3s ease;
+}
+.scale-enter-from,
+.scale-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+  filter: blur(10px);
+}
+</style>

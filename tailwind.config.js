@@ -19,9 +19,11 @@ module.exports = {
     },
     extend: {
       animation: {
-        filter: 'opacity 3s 1s ease-out forwards',
-        side: 'sidebar 1s ease-in forwards',
+        filter: 'opacity 3s 0.8s ease-out forwards',
+        topToBottom: 'topToBottom 1s ease-in forwards',
+        show: 'show 0.5s ease-in forwards',
         opacity: 'opacity 1s ease-out forwards',
+        leftToRight: 'leftToRight 1s ease-out forwards',
       },
       backgroundImage: {
         slot: "url('/src/assets/images/slot.png')",
@@ -31,7 +33,7 @@ module.exports = {
           '0%': { opacity: 0 },
           '100%': { opacity: 1 },
         },
-        sidebar: {
+        topToBottom: {
           '0%': { transform: 'translateY(-100%)' },
           '100%': { transform: 'translateY(0)' },
         },
@@ -43,11 +45,18 @@ module.exports = {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(100%)' },
         },
+        leftToRight: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
       },
       spacing: {
         one: '1px',
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwindcss-animation-delay'),
+    // ...
+  ],
 }

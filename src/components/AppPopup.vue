@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isOpen"
-    class="fixed inset-0 flex justify-center items-start z-10 bg-opacity-20 bg-silver backdrop"
+    class="fixed inset-0 flex justify-center items-start z-10 bg-opacity-20 bg-silver backdrop-blur-[6px]"
     @click.self="close"
     @keydown.esc="close"
     @scroll.prevent.passive
