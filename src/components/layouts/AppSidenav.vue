@@ -3,7 +3,7 @@
     class="mt-48 lg:block hidden h-fit rounded-r-2xl py-5 pr-5 bg-second transform -translate-x-full animate-leftToRight"
   >
     <router-link
-      class="link block relative py-4 px-2 hover:bg-second hover:text-primary w-max rounded-r-2xl my-2 animate-leftToRight transform -translate-x-full"
+      class="link block relative py-4 px-2 hover:bg-second hover:text-primary w-max rounded-r-2xl my-2 animate-leftToRight transform -translate-x-full shadow-xl"
       v-for="(point, index) in menu"
       :class="
         point.link === $route.path

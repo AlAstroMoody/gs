@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-80 overflow-hidden py-2 px-1 -translate-y-full animate-topToBottom transform border-l border-second xxl:w-96 md:h-full h-[75vh] mx-auto"
+    class="w-80 py-2 px-1 -translate-y-full animate-topToBottom transform border-l border-second xxl:w-96 md:h-full h-[75vh] mx-auto"
   >
     <div
       class="w-full bg-primary relative z-10 rounded-2xl border border-second my-2 p-2 opacity-0 animate-filter"
@@ -16,7 +16,30 @@
           class="relative h-full flex-1 z-10 ease-out duration-1000 transition-all"
           ref="itemsBlock"
         >
-          <AppItemLine v-for="item in items" :key="item.id" :item="item" />
+          <router-link
+            v-for="item in items"
+            :key="item.id"
+            :to="'/item/' + item.id"
+            class="flex w-full rounded-2xl my-1 border border-second transition-all hover:bg-second hover:text-primary"
+            :class="
+              $route.params.id === String(item.id)
+                ? 'text-primary bg-second'
+                : 'bg-primary text-second'
+            "
+          >
+            <img
+              v-if="item.src"
+              :src="item.src"
+              class="w-16 h-16 rounded-l-2xl"
+              alt="img"
+            />
+            <QuestionIcon
+              v-else
+              color="purple"
+              class="w-16 h-16 mr-3 rounded-lg"
+            />
+            <div class="ml-2 my-auto">{{ item.name }}</div>
+          </router-link>
         </div>
         <div v-if="!items?.length" class="w-full text-center">
           совпадений не найдено
@@ -30,8 +53,8 @@
 import { ref } from 'vue'
 
 import AppFilter from '@/components/AppFilter.vue'
-import AppItemLine from '@/components/AppItemLine.vue'
 import AppScrollingComponent from '@/components/AppScrollingComponent.vue'
+import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
 const items = ref([])
 const resized = ref(false)

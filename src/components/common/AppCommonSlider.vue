@@ -5,7 +5,7 @@
     @click.self="onSliderClick"
   >
     <label
-      class="slider__thumb rounded-lg relative left-0 h-6 w-3 -top-1"
+      class="rounded-lg relative left-0 h-6 w-3 -top-1 bg-second block"
       ref="thumb"
       @mousedown="onMouseDown"
       @dragstart="OnDragStart"
@@ -43,46 +43,14 @@ const thumbShift = computed(() => {
   return 0
 })
 
-// таймаут на срабатывание слайдера
-const sliderTimeout = ref(null)
-
 // проброс результата наверх
 const emitShift = () => {
-  console.log('shift')
   emit('thumbShift', thumbShift.value)
 }
 
 watch(travelDistance, () => {
-  const asd = throttle(emitShift, 1500)
+  throttle(emitShift, 150)
 })
-
-// const throttle = (func, ms) => {
-//   let isThrottled = false,
-//     savedArgs,
-//     savedThis
-
-//   function wrapper() {
-//     if (isThrottled) {
-//       savedArgs = arguments
-//       savedThis = this
-//       return
-//     }
-
-//     func.apply(this, arguments)
-
-//     isThrottled = true
-
-//     setTimeout(function () {
-//       isThrottled = false // (3)
-//       if (savedArgs) {
-//         wrapper.apply(savedThis, savedArgs)
-//         savedArgs = savedThis = null
-//       }
-//     }, ms)
-//   }
-
-//   return wrapper
-// }
 
 const onMouseDown = (event) => {
   event.preventDefault()
@@ -132,14 +100,7 @@ onMounted(() => {
   window.addEventListener('resize', resize)
 })
 
-// очистка таймаута
-const clearSliderTimeout = () => {
-  clearTimeout(sliderTimeout.value)
-  sliderTimeout.value = null
-}
-
 onUnmounted(() => {
   window.removeEventListener('resize', resize)
-  clearSliderTimeout()
 })
 </script>

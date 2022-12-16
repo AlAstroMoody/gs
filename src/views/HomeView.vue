@@ -5,7 +5,7 @@
     <div class="subtitle my-6">
       <span>
         Интерактивный редактор персонажа, дерево крафта и библиотека оружия для
-        твоей любимой карты. Актуально для версии:
+        твоей любимой карты. <br />Актуально для версии:
       </span>
       <span class="text-red text-xl"> 1.4f.fix7 </span>
     </div>
@@ -29,15 +29,26 @@
       сумасшедших изобретениях...
     </div>
 
-    <div class="mt-50px mx-auto mb-auto mt-12">
+    <div class="mt-12 mx-auto mb-2">
       Проект "Goblin Survival" создан
       <a
         href="http://goblinworkshop.ru/"
         target="_blank"
         class="text-red font-medium"
       >
-        гильдией картостроителей</a
-      >, все права принадлежат ей же.
+        гильдией картостроителей
+      </a>
+      , все права принадлежат ей же.
+    </div>
+    <div class="mx-auto mb-auto text-right">
+      <a
+        href="https://discord.gg/uzJDPcuv"
+        target="_blank"
+        class="text-red font-medium"
+      >
+        Discord-сообщество
+      </a>
+      проекта
     </div>
   </main>
 </template>

@@ -20,7 +20,7 @@ module.exports = {
     extend: {
       animation: {
         filter: 'opacity 3s 0.8s ease-out forwards',
-        topToBottom: 'topToBottom 1s ease-in forwards',
+        topToBottom: 'topToBottom 0.5s ease-in forwards',
         show: 'show 0.5s ease-in forwards',
         opacity: 'opacity 1s ease-out forwards',
         leftToRight: 'leftToRight 1s ease-out forwards',

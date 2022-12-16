@@ -8,27 +8,41 @@
     class="mr-auto h-full w-full relative overflow-hidden flex lg:pl-3 xxl:pl-6"
   >
     <Suspense>
-      <router-view v-slot="{ Component }">
-        <div class="h-full w-full relative">
-          <AppScrollingComponent>
-            <transition name="scale" mode="out-in">
-              <component
-                :is="Component"
-                :key="$route.path"
-                class="overflow-hidden"
-              />
-            </transition>
-          </AppScrollingComponent>
-        </div>
-      </router-view>
+      <div class="flex justify-center md:justify-between h-full w-full">
+        <router-view v-slot="{ Component }">
+          <div class="h-full w-full relative flex-1">
+            <AppScrollingComponent :needReset="true">
+              <transition name="scale" mode="out-in">
+                <component
+                  :is="Component"
+                  :key="$route.path"
+                  class="min-h-full"
+                />
+              </transition>
+            </AppScrollingComponent>
+          </div>
+        </router-view>
+        <AppSidebar class="hidden md:block ml-1" v-if="isShowSidebar" />
+      </div>
     </Suspense>
   </div>
 </template>
 
 <script setup>
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+
 import AppGears from '@/components/AppGears.vue'
 import AppScrollingComponent from '@/components/AppScrollingComponent.vue'
+import AppSidebar from '@/components/layouts/AppSidebar.vue'
 import AppSidenav from '@/components/layouts/AppSidenav.vue'
+
+const route = useRoute()
+
+// отображать сайдбар на отдельных страницах
+const isShowSidebar = computed(
+  () => route.path === '/goblins' || route.path.includes('/item')
+)
 </script>
 
 <style scoped>
@@ -40,6 +54,6 @@ import AppSidenav from '@/components/layouts/AppSidenav.vue'
 .scale-leave-to {
   opacity: 0;
   transform: scale(0.9);
-  filter: blur(10px);
+  filter: grayscale(1);
 }
 </style>

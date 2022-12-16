@@ -17,7 +17,7 @@
     </div>
 
     <div class="flex justify-center">
-      <div class="flex flex-col flex-wrap w-fit h-fit max-w-[152px]">
+      <div class="flex flex-col flex-wrap w-fit h-fit max-w-[132px]">
         <div class="w-full flex-wrap xs:flex hidden">
           <div
             v-for="i in 6"
@@ -52,7 +52,7 @@
         </div>
       </div>
 
-      <div class="px-2 xl:px-6">
+      <div class="px-1 xl:px-6">
         <span>основные <br />параметры:</span>
         <div
           class="flex justify-between"
@@ -63,7 +63,7 @@
           <span class="ml-1">{{ param.value }}</span>
         </div>
       </div>
-      <div class="px-2 xl:px-6">
+      <div class="px-1 xl:px-6">
         <span> дополнительные <br /></span>
         <span>параметры:</span>
         <div
