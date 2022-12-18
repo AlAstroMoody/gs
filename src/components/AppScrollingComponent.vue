@@ -1,11 +1,9 @@
 <template>
   <div class="flex flex-row h-full w-full">
-    <div class="h-full hidden px-2" ref="scrollbar" @click="trackClick">
-      <div
-        class="scrollbar__track z-background ease-out duration-1000 h-full rounded-lg w-[1px]"
-      >
+    <div class="h-full px-2" ref="scrollbar" @click="trackClick">
+      <div class="bg-second ease-out duration-1000 h-full rounded-lg w-one">
         <div
-          class="scrollbar__thumb bg-red-100"
+          class="transition-all duration-1000 bg-red rounded-lg w-[3px] -ml-one"
           ref="thumb"
           :style="{
             transform: `translateY(${thumbTransformY}px)`,
@@ -14,9 +12,9 @@
         />
       </div>
     </div>
-    <div class="ease-out duration-1000 w-full" ref="main">
-      <div ref="body">
-        <slot />
+    <div class="ease-out duration-1000 w-full pr-2" ref="main">
+      <div ref="body" class="h-full md:px-0 lg:px-2">
+        <slot ref="slot" />
       </div>
     </div>
   </div>
@@ -27,141 +25,118 @@ import {
   computed,
   nextTick,
   onMounted,
-  onUnmounted,
+  onBeforeUnmount,
   ref,
   toRefs,
   watch,
 } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
-  isResize: {
-    default: false,
-    type: Boolean,
-  },
+  isResize: { default: false, type: Boolean },
+  needReset: { default: false, type: Boolean },
 })
-const { isResize } = toRefs(props)
+const { isResize, needReset } = toRefs(props)
+
+const router = useRouter()
+
+router.beforeEach(() => {
+  needReset.value ? resize() : null
+
+  return true
+})
 
 // scrollbar logic
 const scrollbar = ref(null)
 const thumb = ref(null)
-const thumbHeight = computed(() => {
-  return scrollbar.value
-    ? (100 * scrollbar.value.clientHeight) / blockHeight.value
-    : null
-})
-
-const thumbTransformY = computed(() =>
-  scrollbar.value
-    ? (-scrollbar.value.clientHeight * currentYPosition.value) /
-      blockHeight.value
-    : 0
-)
 
 //body logic
 const main = ref(null)
 const body = ref(null)
 const blockHeight = ref(0)
+const thumbHeight = ref(0)
 
 const currentYPosition = ref(0)
 
+const thumbTransformY = computed(
+  () =>
+    (-scrollbar.value?.clientHeight * currentYPosition.value) /
+      blockHeight.value || 0
+)
+
 const wheelWatcher = (event) => {
-  if (main.value) {
-    const heightDifference = main.value.scrollHeight - main.value.clientHeight
-    if (!heightDifference) return
+  useScroll(event)
+}
 
-    if (currentYPosition.value + event.deltaY < 0) {
-      if (event.deltaY > 0) {
-        currentYPosition.value += event.deltaY * 4
-      } else {
-        if (-currentYPosition.value + event.deltaY < heightDifference) {
-          currentYPosition.value = currentYPosition.value += event.deltaY * 4
-        }
-      }
+// хрень какая-то
+const useScroll = (event) => {
+  const heightDifference = main.value.scrollHeight - main.value.clientHeight
+  if (!heightDifference) return
+
+  if (event.deltaY < 0) {
+    currentYPosition.value -= event.deltaY * 4
+  } else {
+    if (currentYPosition.value - event.deltaY > -heightDifference) {
+      currentYPosition.value = currentYPosition.value -= event.deltaY * 4
     }
-    // extremum points
-    currentYPosition.value >= 0 ? (currentYPosition.value = 0) : null
-    currentYPosition.value + heightDifference < 0
-      ? (currentYPosition.value = -heightDifference)
-      : null
-
-    main.value.style.transform = `translateY(${currentYPosition.value}px)`
   }
-}
 
-const addWheelHandler = () => {
-  main.value ? main.value.addEventListener('wheel', wheelWatcher) : null
-}
-const removeWheelHandler = () => {
-  main.value ? main.value.removeEventListener('wheel', wheelWatcher) : null
-}
+  // extremum points
+  currentYPosition.value >= 0 ? (currentYPosition.value = 0) : null
+  currentYPosition.value + heightDifference < 0
+    ? (currentYPosition.value = -heightDifference)
+    : null
 
-const resize = () => {
-  main.value ? (main.value.style.transform = 'translateY(0px)') : null
+  main.value.style.transform = `translateY(${currentYPosition.value}px)`
+
   changeBlockHeight()
-  currentYPosition.value = 0
+}
+
+const resize = async () => {
+  await nextTick()
+  main.value ? (main.value.style.transform = 'translateY(0px)') : null
+  currentYPosition.value = 1
+  changeBlockHeight()
 }
 
 onMounted(() => {
-  nextTick(() => {
-    addWheelHandler()
-    changeBlockHeight()
-    window.addEventListener('resize', resize)
-  })
+  main.value.addEventListener('wheel', wheelWatcher)
+  window.addEventListener('resize', resize)
+  resize()
 })
 
-onUnmounted(() => {
-  removeWheelHandler()
+onBeforeUnmount(() => {
+  main.value.removeEventListener('wheel', wheelWatcher)
   window.removeEventListener('resize', resize)
 })
 
 const changeBlockHeight = () => {
-  if (main.value && scrollbar.value && body.value) {
-    if (main.value.clientHeight !== body.value.scrollHeight) {
-      scrollbar.value.style.display = 'block'
+  nextTick(() => {
+    if (main?.value?.scrollHeight !== body?.value?.scrollHeight) {
+      scrollbar.value.classList.add('md:block')
     }
-  }
-
-  nextTick(() =>
-    main.value ? (blockHeight.value = main.value.scrollHeight) : null
-  )
+    blockHeight.value = main.value?.scrollHeight || null
+    thumbHeight.value =
+      (100 * scrollbar.value?.clientHeight) / blockHeight?.value || 0
+  })
 }
 
-const route = useRoute()
-const routePath = computed(() => route.path)
-watch(routePath, async () => {
+watch(isResize, () => {
   resize()
 })
 
-watch(isResize, async () => {
-  resize()
-})
-
+// клик по треку - переписать логику
 const trackClick = (event) => {
-  const eventShift =
-    event.clientY < -currentYPosition.value ? event.offsetY : event.clientY
-  if (main.value) {
-    const heightDifference = main.value.scrollHeight - main.value.clientHeight
-    if (eventShift >= heightDifference) {
-      currentYPosition.value = -heightDifference
-    } else {
-      currentYPosition.value = -eventShift
-    }
-    main.value.style.transform = `translateY(${currentYPosition.value}px)`
-  }
+  // const eventShift =
+  //   event.clientY < -currentYPosition.value ? event.offsetY : event.clientY
+  // if (main.value) {
+  //   const heightDifference = main.value.scrollHeight - main.value.clientHeight
+  //   if (eventShift >= heightDifference) {
+  //     currentYPosition.value = -heightDifference
+  //   } else {
+  //     currentYPosition.value = -eventShift
+  //   }
+  //   main.value.style.transform = `translateY(${currentYPosition.value}px)`
+  // }
 }
 </script>
-
-<style scoped lang="scss">
-.scrollbar {
-  &__thumb {
-    height: 30px;
-    width: 3px;
-    margin: 0 0 0 -1px;
-    border: 1 ps solid var(--color-text);
-    border-radius: 10px;
-    background: var(--color-text-hover);
-    transition: 1s all;
-  }
-}
-</style>

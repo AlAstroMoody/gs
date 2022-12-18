@@ -1,11 +1,12 @@
 <template>
   <div
-    class="bg-gray-300 w-full h-4 rounded-lg"
+    class="w-full h-4 rounded-lg"
     ref="slider"
     @click.self="onSliderClick"
+    :class="custom"
   >
-    <div
-      class="slider__thumb rounded-lg relative left-0 h-6 w-3 -top-1"
+    <label
+      class="rounded-lg relative left-0 h-6 w-3 -top-1 bg-second block"
       ref="thumb"
       @mousedown="onMouseDown"
       @dragstart="OnDragStart"
@@ -14,7 +15,18 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch, toRefs } from 'vue'
+
+import { throttle } from '@/common/throttle'
+
+const props = defineProps({
+  custom: {
+    default: () => '',
+    type: String,
+  },
+})
+
+const { custom } = toRefs(props)
 
 const emit = defineEmits(['thumbShift'])
 const thumb = ref(null)
@@ -41,8 +53,13 @@ const thumbShift = computed(() => {
   return 0
 })
 
-watch(travelDistance, async () => {
+// проброс результата наверх
+const emitShift = () => {
   emit('thumbShift', thumbShift.value)
+}
+
+watch(travelDistance, () => {
+  throttle(emitShift, 150)
 })
 
 const onMouseDown = (event) => {
@@ -97,15 +114,3 @@ onUnmounted(() => {
   window.removeEventListener('resize', resize)
 })
 </script>
-
-<style scoped lang="scss">
-.slider {
-  &__thumb {
-    // width: 10px;
-    // height: 25px;
-
-    background: var(--color-text);
-    cursor: url(/src/assets/images/cursor_gauntlet2.png), auto;
-  }
-}
-</style>

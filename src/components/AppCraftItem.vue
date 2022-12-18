@@ -1,14 +1,23 @@
 <template>
   <ol>
-    <div :class="{ 'font-bold': isHasParents }" @click="toggle">
-      <router-link :to="`/item/${item.id}`">{{ item.name }}</router-link>
-      <span v-if="isHasParents" class="dark:text-orange-300 text-green-700">
+    <div
+      :class="{ 'font-bold': isHasParents }"
+      @click="toggle"
+      class="flex items-center"
+    >
+      <router-link :to="`/item/${item.id}`" class="mr-2">
+        <LoupeIcon />
+      </router-link>
+      {{ count ? `${count}шт` : '' }}
+      {{ item.name }}
+      <span v-if="isHasParents" class="text-orange-300">
         [ {{ isOpen ? '-' : '+' }} ]
       </span>
     </div>
-    <ul v-show="isOpen" v-if="isHasParents" class="pl-3">
+    <ul v-if="isHasParents && isOpen" class="pl-3">
       <AppCraftItem
         v-for="(parent, index) in currentItem?.parents"
+        :count="Number(currentItem.parents_count[parent.id] || 0)"
         :key="index"
         :item="parent"
       />
@@ -19,12 +28,17 @@
 import { computed, ref, toRefs } from 'vue'
 
 import AppCraftItem from '@/components/AppCraftItem.vue'
-import { useItemsStore } from '@/stores/items'
+import { useState } from '@/components/composibles/useState'
+import LoupeIcon from '@/components/icons/LoupeIcon.vue'
 
 const props = defineProps({
   item: {
     default: () => {},
     type: Object,
+  },
+  count: {
+    type: Number,
+    default: 0,
   },
 })
 
@@ -38,9 +52,8 @@ const toggle = () => {
   isHasParents.value ? (isOpen.value = !isOpen.value) : null
 }
 
-const itemsStore = useItemsStore()
-// текущий предмет со всеми свойствами
-const currentItem = computed(() =>
-  itemsStore.allItems.find((i) => i.id === item.value.id)
-)
+const { currentItem } = await useState({
+  entity: 'items',
+  id: item?.value?.id || 0,
+})
 </script>

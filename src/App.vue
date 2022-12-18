@@ -1,87 +1,70 @@
 <template>
-  <div class="lg:block hidden">
-    <AppGears />
-    <AppSidenav class="sidenav mt-48" />
-    <!-- <AppIconLamp class="absolute z-10 -right-2 top-0" /> -->
-  </div>
+  <AppGears class="lg:block hidden" />
+  <Suspense>
+    <AppSidenav />
+  </Suspense>
 
   <div
-    class="page mr-auto h-full relative overflow-hidden flex flex-col pl-3 xl:pl-6 justify-between"
-    :class="
-      isBigPage
-        ? 'w-full'
-        : 'xl:w-[calc(100%-670px)] lg:w-[calc(100%-490px)] w-[calc(100%-310px)]'
-    "
+    class="mr-auto h-full w-full relative overflow-hidden flex lg:pl-3 xxl:pl-6"
   >
-    <router-view v-slot="{ Component }">
-      <transition name="page" mode="out-in">
-        <div class="h-full relative">
-          <AppScrollingComponent>
-            <component
-              :is="Component"
-              :key="$route.path"
-              class="overflow-hidden"
-            />
-          </AppScrollingComponent>
-          <AppUserBoard class="absolute bottom-0 xl:flex" v-show="!isBigPage" />
-        </div>
-      </transition>
-    </router-view>
+    <Suspense>
+      <div class="flex justify-center md:justify-between h-full w-full">
+        <router-view v-slot="{ Component }">
+          <div class="h-full w-full relative flex-1">
+            <AppScrollingComponent :needReset="true" :is-resize="resized">
+              <transition name="scale" mode="out-in">
+                <component
+                  :is="Component"
+                  :key="$route.path"
+                  class="min-h-full"
+                  @resize="resized = !resized"
+                  :app-width="appWidth"
+                />
+              </transition>
+            </AppScrollingComponent>
+          </div>
+        </router-view>
+        <AppSidebar class="hidden md:block ml-1" v-if="isShowSidebar" />
+      </div>
+    </Suspense>
   </div>
-
-  <AppSidebar class="sidebar" ref="sidebar" v-show="!isBigPage" />
+  <resize-observer @notify="handleResize" :showTrigger="true" />
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import AppGears from '@/components/AppGears.vue'
 import AppScrollingComponent from '@/components/AppScrollingComponent.vue'
-import AppIconLamp from '@/components/icons/AppIconLamp.vue'
 import AppSidebar from '@/components/layouts/AppSidebar.vue'
 import AppSidenav from '@/components/layouts/AppSidenav.vue'
-import AppUserBoard from '@/components/layouts/AppUserBoard.vue'
-import { useBossStore } from '@/stores/bosses'
-import { useGoblinsStore } from '@/stores/goblins'
-import { useItemsStore } from '@/stores/items'
-import { useUserStore } from '@/stores/user'
 
 const route = useRoute()
-const isBigPage = computed(
-  () => route.path !== '/goblins' && !route.path.includes('/item')
+
+// отображать сайдбар на отдельных страницах
+const isShowSidebar = computed(
+  () => route.path === '/goblins' || route.path.includes('/item')
 )
 
-const userStore = useUserStore()
+const resized = ref(false)
+const appWidth = ref(0)
 
-onMounted(async () => {
-  await useGoblinsStore().getGoblins()
-  await useBossStore().getBosses()
-  userStore.choiceGoblin(useGoblinsStore().allGoblins[0])
-  await useItemsStore().getItems()
-})
+// следим за шириной экрана
+const handleResize = ({ width }) => {
+  appWidth.value = width
+}
 </script>
 
-<style lang="scss">
-.page {
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-  }
-
-  &-enter-active,
-  &-leave-active {
-    transition: opacity 0.3s ease-out;
-  }
+<style scoped>
+.scale-enter-active,
+.scale-leave-active {
+  transition: all 0.3s ease;
 }
-
-.sidebar {
-  width: 300px;
-  inset: 0 0 0 calc(100% - 300px);
-
-  @media (min-width: $l) {
-    inset: 0 0 0 calc(100% - 400px);
-    width: 400px;
-  }
+.scale-enter-from,
+.scale-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+  filter: blur(10px);
 }
 </style>

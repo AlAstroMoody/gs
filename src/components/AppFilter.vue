@@ -1,48 +1,43 @@
 <template>
   <div
-    class="w-full pl-3 px-3 rounded-2xl my-2 flex bg-white-300 border border-solid dark:border-white-400 border-gray-300 ease-out text-gray-500 dark:text-white-400 dark:bg-gray-300"
+    class="w-full pl-3 px-3 rounded-2xl my-2 flex border border-solid border-second ease-out text-second bg-gray"
   >
     <input
       v-model="filterFields.name"
       placeholder=" "
-      id="name"
-      class="subtitle w-full py-2"
+      id="input"
+      class="w-full py-4 relative z-10"
+      @input="searchItem($event)"
     />
-    <label for="name" class="absolute p-2 ease-out duration-300">
+    <label for="input" class="absolute p-2 ease-out duration-300">
       поиск по названию
     </label>
   </div>
   уровень предмета от: {{ Math.round(filterFields.level) }}
-  <div class="flex">
+  <div class="flex items-center">
     0
-    <AppCommonSlider class="" @thumbShift="sliderThumbShift" />
+    <AppCommonSlider
+      @thumbShift="sliderThumbShift"
+      class="mx-1"
+      custom="bg-silver"
+    />
     200
   </div>
 
   игровой класс:
   <AppCommonSelect
-    :data-fg="filteredItems"
     :options="goblins"
     @getOption="goblinSelection"
     default-value="--для всех классов--"
   />
 </template>
 <script setup>
-import { computed, reactive } from 'vue'
-import { useItemsStore } from '@/stores/items'
-import { useGoblinsStore } from '@/stores/goblins'
+import { reactive } from 'vue'
+
 import AppCommonSelect from '@/components/common/AppCommonSelect.vue'
 import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
+import { useState } from '@/components/composibles/useState'
 
-// эмит отфильтрованных артов
-const emit = defineEmits(['filteredItems'])
-
-// подключаем стор с артами
-const itemsStore = useItemsStore()
-
-// получаем арты реактивно
-const items = computed(() => itemsStore.allItems)
-emit('filteredItems', items)
 // поля фильтрации
 const filterFields = reactive({
   name: '',
@@ -50,28 +45,41 @@ const filterFields = reactive({
   goblins: [],
 })
 
-// получаем гоблинов
-const goblinsStore = useGoblinsStore()
-const goblins = computed(() => goblinsStore.allGoblins)
+const { entities } = await useState()
+
+const goblins = entities.goblins
+const items = entities.items
+
+// эмит отфильтрованных артов
+const emit = defineEmits(['filteredItems'])
+emit('filteredItems', items)
 
 // сдвигаем положение на слайдере
 const sliderThumbShift = (distance) => {
   filterFields.level = 200 * distance
+  getItemsSample()
 }
 
 // добавляем в фильтр текущего гоблина
 const goblinSelection = (value) => {
   filterFields.goblins = []
+  // теряем реактивность
   value.id ? filterFields.goblins.push(value.id) : null
+  getItemsSample()
+}
+
+const searchItem = (event) => {
+  filterFields.name = event.target.value
+  getItemsSample()
 }
 
 // при изменении любого из полей фильтра меняем выборку
-const filteredItems = computed(() => {
-  let sampleItems = items.value
+const getItemsSample = () => {
+  let sampleItems = items
 
   if (filterFields.name) {
     sampleItems = sampleItems.filter((item) =>
-      item.name.includes(filterFields.name)
+      item.name.toLowerCase().includes(filterFields.name.toLowerCase())
     )
   }
   if (filterFields.level) {
@@ -85,6 +93,5 @@ const filteredItems = computed(() => {
     )
   }
   emit('filteredItems', sampleItems)
-  return sampleItems
-})
+}
 </script>

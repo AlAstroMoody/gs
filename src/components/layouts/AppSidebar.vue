@@ -1,20 +1,47 @@
 <template>
   <div
-    ref="sidebar"
-    class="sidebar_hidden flex flex-col overflow-hidden py-2 px-1 -translate-y-full animate-side delay-300 border-l border-solid dark:border-white-400 border-gray-300 absolute bg-white-100 xl:w-96"
+    class="w-80 py-2 px-1 -translate-y-full animate-topToBottom transform border-l border-second xxl:w-96 h-full mx-auto"
   >
     <div
-      class="w-full dark:bg-white-200 bg-gray-200 relative z-10 rounded-2xl border border-white-400 my-2 p-2 opacity-0 animate-filter"
+      class="w-full bg-primary relative z-10 rounded-2xl border border-second my-2 p-2 opacity-0 animate-filter"
     >
       <AppFilter @filteredItems="changeItemsKit($event)" />
     </div>
 
-    <div class="sidebar__body">
-      <AppScrollingComponent :is-resize="isResize">
-        <div class="sidebar__items" ref="itemsBlock">
-          <AppItemLine v-for="item in items" :key="item.id" :item="item" />
+    <div
+      class="flex overflow-hidden h-full justify-between opacity-0 animate-opacity animation-delay-1500"
+    >
+      <AppScrollingComponent :is-resize="resized">
+        <div
+          class="relative h-full flex-1 z-10 ease-out duration-1000 transition-all"
+          ref="itemsBlock"
+        >
+          <router-link
+            v-for="item in items"
+            :key="item.id"
+            :to="'/item/' + item.id"
+            class="flex w-full rounded-2xl my-1 border border-second transition-all hover:bg-second hover:text-primary"
+            :class="
+              $route.params.id === String(item.id)
+                ? 'text-primary bg-second'
+                : 'bg-primary text-second'
+            "
+          >
+            <img
+              v-if="item.src"
+              :src="item.src"
+              class="w-16 h-16 rounded-l-2xl"
+              alt="img"
+            />
+            <QuestionIcon
+              v-else
+              color="purple"
+              class="w-16 h-16 mr-3 rounded-lg"
+            />
+            <div class="ml-2 my-auto">{{ item.name }}</div>
+          </router-link>
         </div>
-        <div v-if="!items.length" class="w-full text-center">
+        <div v-if="!items?.length" class="w-full text-center">
           совпадений не найдено
         </div>
       </AppScrollingComponent>
@@ -23,92 +50,18 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref } from 'vue'
 
 import AppFilter from '@/components/AppFilter.vue'
-import AppItemLine from '@/components/AppItemLine.vue'
 import AppScrollingComponent from '@/components/AppScrollingComponent.vue'
+import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
-const route = useRoute()
-// отображать sidebar
-const isShow = computed(
-  () => route.path === '/goblins' || route.path.includes('/item/')
-)
-
-const isResize = ref(false)
 const items = ref([])
+const resized = ref(false)
+
 // изменяем набор артов
 const changeItemsKit = (filteredItems) => {
   items.value = filteredItems
-  isResize.value = true
-  setTimeout(() => (isResize.value = false), 500)
+  resized.value = !resized.value
 }
-
-const sidebar = ref(null)
-
-watch(isShow, async () => {
-  if (sidebar.value) {
-    sidebar.value.classList.add(
-      isShow.value ? 'sidebar_show' : 'sidebar_hidden'
-    )
-    sidebar.value.classList.remove(
-      isShow.value ? 'sidebar_hidden' : 'sidebar_show'
-    )
-  }
-})
 </script>
-
-<style scoped lang="scss">
-.sidebar {
-  @media (min-width: $l) {
-    padding: 16px 24px;
-  }
-
-  &_show {
-    animation: show 0.5s ease-in forwards;
-    transform: translateY(0);
-  }
-
-  &_hidden {
-    animation: hidden 0.5s ease-in forwards;
-    transform: translateY(0);
-  }
-
-  &__body {
-    justify-content: space-between;
-    display: flex;
-    overflow: hidden;
-    opacity: 0;
-    animation: opacity 1s ease-out forwards;
-    animation-delay: 1.8s;
-    height: 100%;
-  }
-
-  &__items {
-    position: relative;
-    z-index: 1;
-    height: 100%;
-    transition: all 1s ease-out;
-    flex: 1;
-  }
-}
-
-@keyframes show {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes hidden {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(100%);
-  }
-}
-</style>

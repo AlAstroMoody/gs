@@ -1,94 +1,115 @@
 <template>
-  <main v-if="item" class="p-4">
-    <div class="headline">{{ item.name }}</div>
-    <div class="flex mt-10 mb-4">
-      <img :src="item.src" alt="logo" v-if="item.src" class="h-16 w-16" />
-      <QuestionIcon v-else color="red" />
-
-      <div class="ml-4 flex flex-col justify-center content-center">
-        <div v-if="item.level">требуемый уровень: {{ item.level }}</div>
-        <div v-else>Нет ограничения по уровню</div>
-        <div v-if="item.goblins.length">
-          Только для класса:
-          <span class="text-red-100 text-lg">
-            {{ item.goblins.map((item) => item.attributes.name).join(', ') }}
-          </span>
+  <div class="lg:mx-4 flex flex-col justify-between flex-1" v-if="currentItem">
+    <div>
+      <div class="headline mt-6">{{ currentItem.name }}</div>
+      <div class="flex mt-10 mb-4 flex-wrap items-center">
+        <div class="flex w-full xs:w-auto">
+          <img
+            :src="currentItem.src"
+            alt="logo"
+            v-if="currentItem.src"
+            class="h-24 w-24"
+          />
+          <QuestionIcon v-else color="red" />
+          <div class="flex flex-col justify-center content-center ml-4">
+            <div v-if="currentItem.level">
+              требуемый уровень: {{ currentItem.level }}
+            </div>
+            <div v-else>Нет ограничения по уровню</div>
+            <div v-if="currentItem.goblins.length">
+              Только для класса:
+              <span class="text-red text-lg">
+                {{ goblinClasses }}
+              </span>
+            </div>
+            <div v-else>Подходит для всех классов</div>
+          </div>
         </div>
-        <div v-else>Подходит для всех классов</div>
-      </div>
-      <div class="flex-1 flex justify-end ml-2">
-        <button
-          class="dark:text-white-400 text-gray-300 text-md p-2 rounded-2xl border dark:border-white-400 border-gray-300 border-solid ease-out hover:border-red-100 hover:text-red-100"
-          @click="addItem"
+        <div
+          class="flex-1 flex justify-end ml-2 text-second whitespace-nowrap h-fit text-md"
         >
-          {{ buttonText }}
-        </button>
+          <button
+            class="px-2 py-4 rounded-2xl border border-second border-solid ease-out hover:border-red hover:text-red"
+            @click="add"
+          >
+            {{ buttonText }}
+          </button>
+        </div>
+      </div>
+      <div class="my-2 body" v-html="currentItem.description" />
+
+      <ul class="my-2" v-if="currentItem.params">
+        Бонусы предмета:
+
+        <li
+          v-for="(key, index) in Object.keys(currentItem.params)"
+          :key="index"
+          class="ml-7"
+        >
+          <div v-if="currentItem.params[key] && itemParams[key]">
+            <span v-if="key === 'manaburn'">
+              {{ itemParams[key] }} {{ currentItem.params[key] }} маны
+              противнику
+            </span>
+            <span v-else>
+              {{ itemParams[key] }}: {{ currentItem.params[key] }}
+            </span>
+            <span
+              v-if="
+                ['as', 'mp_regeneration', 'resist', 'distant_resist'].includes(
+                  key
+                )
+              "
+            >
+              %
+            </span>
+          </div>
+        </li>
+      </ul>
+
+      <div
+        class="rounded-lg p-2 border border-bg-silver"
+        v-if="currentItem.children.length"
+      >
+        Из предмета "{{ currentItem.name }}" можно скрафтить:
+        <span
+          v-for="(child, index) in currentItem.children"
+          class="text-end text-md"
+          :key="child.id"
+        >
+          <router-link :to="`/item/${child.id}`">
+            <span class="text-red hover:border-b"> {{ child.name }} </span>
+            <span v-if="index !== currentItem.children.length - 1">, </span>
+            <span v-else>; </span>
+          </router-link>
+        </span>
+      </div>
+
+      <div
+        class="rounded-lg p-2 border border-silver my-2"
+        v-if="currentItem.parents.length"
+      >
+        Предмет "{{ currentItem.name }}" крафтится из:
+        <span
+          v-for="(parent, index) in currentItem.parents"
+          class="text-end text-md"
+          :key="parent.id"
+        >
+          <router-link :to="`/item/${parent.id}`">
+            <span class="text-red hover:border-b"> {{ parent.name }} </span>
+            <span v-if="index !== currentItem.parents.length - 1">, </span>
+            <span v-else>; </span>
+          </router-link>
+        </span>
       </div>
     </div>
-    <div class="my-2 body" v-html="item.description" />
-
-    <ul class="my-2" v-if="item.params">
-      Бонусы предмета:
-
-      <li
-        v-for="(key, index) in Object.keys(item.params)"
-        :key="index"
-        class="ml-7"
-      >
-        <div v-if="item.params[key] && itemParams[key]">
-          <span v-if="key === 'manaburn'">
-            {{ itemParams[key] }} {{ item.params[key] }} маны противнику
-          </span>
-          <span v-else>{{ itemParams[key] }}: {{ item.params[key] }}</span>
-          <span
-            v-if="
-              ['as', 'mp_regeneration', 'resist', 'distant_resist'].includes(
-                key
-              )
-            "
-          >
-            %
-          </span>
-        </div>
-      </li>
-    </ul>
-
-    <div
-      class="rounded-lg p-2 border border-white-300"
-      v-if="item.children.length"
-    >
-      Из предмета "{{ item.name }}" можно скрафтить:
-      <span
-        v-for="(child, index) in item.children"
-        class="text-end text-md"
-        :key="child.id"
-      >
-        <router-link :to="`/item/${child.id}`">
-          <span class="text-red-100 hover:border-b"> {{ child.name }} </span>
-          <span v-if="index !== item.children.length - 1">, </span>
-          <span v-else>; </span>
-        </router-link>
-      </span>
-    </div>
-
-    <div
-      class="rounded-lg p-2 border border-white-300 my-2"
-      v-if="item.parents.length"
-    >
-      Предмет "{{ item.name }}" крафтится из:
-      <span
-        v-for="(parent, index) in item.parents"
-        class="text-end text-md"
-        :key="parent.id"
-      >
-        <router-link :to="`/item/${parent.id}`">
-          <span class="text-red-100 hover:border-b"> {{ parent.name }} </span>
-          <span v-if="index !== item.parents.length - 1">, </span>
-          <span v-else>; </span>
-        </router-link>
-      </span>
-    </div>
-  </main>
+    <AppUserBoard class="mt-auto" />
+    <Teleport to="body">
+      <AppItemsPopup
+        class="absolute top-16 right-4 bg-second block md:hidden"
+      />
+    </Teleport>
+  </div>
   <div v-else>Такого предмета нет</div>
 </template>
 
@@ -96,27 +117,31 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
-import { itemParams } from '@/common/enums'
+import { itemParams } from '@/common/itemParams'
+import AppItemsPopup from '@/components/AppItemsPopup.vue'
+import { useGoblinState } from '@/components/composibles/useGoblinState'
+import { useState } from '@/components/composibles/useState'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
-import { useItemsStore } from '@/stores/items'
-import { useUserStore } from '@/stores/user'
+import AppUserBoard from '@/components/layouts/AppUserBoard.vue'
+
+const { user, addItem } = useGoblinState()
 
 const route = useRoute()
 
-const itemsStore = useItemsStore()
-let item = computed(() =>
-  itemsStore.allItems.find((item) => item.id === Number(route.params.id))
-)
+const { currentItem } = await useState({ id: route.params.id, entity: 'items' })
 
-const userStore = useUserStore()
 const buttonText = computed(() =>
-  userStore.userInventory.length < 6
-    ? 'добавить в инвентарь'
-    : 'инвентарь переполнен'
+  user.inventory.length < 6 ? 'добавить в инвентарь' : 'инвентарь переполнен'
 )
-const addItem = () => {
-  if (userStore.userInventory.length < 6) {
-    userStore.addItem(item.value)
+const add = () => {
+  if (user.inventory.length < 6) {
+    addItem(currentItem.value)
   }
 }
+
+const goblinClasses = computed(() =>
+  currentItem.value.goblins
+    .map((currentItem) => currentItem.attributes.name)
+    .join(', ')
+)
 </script>

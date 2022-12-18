@@ -15,11 +15,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: [
-          `@import "@/assets/scss/fonts/fonts.scss"; 
-           @import "@/assets/scss/_screens.scss";
-           @import "@/assets/scss/_mixins.scss";`,
-        ],
+        additionalData: [`@import "@/assets/css/fonts/fonts.css";`],
       },
     },
   },
