@@ -1,7 +1,7 @@
 <template>
   <div class="lg:mx-4 flex flex-col justify-between flex-1" v-if="currentItem">
     <div>
-      <div class="headline">{{ currentItem.name }}</div>
+      <div class="headline mt-6">{{ currentItem.name }}</div>
       <div class="flex mt-10 mb-4 flex-wrap items-center">
         <div class="flex w-full xs:w-auto">
           <img
@@ -104,9 +104,11 @@
       </div>
     </div>
     <AppUserBoard class="mt-auto" />
-    <AppItemsPopup
-      class="absolute top-4 right-4 border border-gray bg-second block md:hidden"
-    />
+    <Teleport to="body">
+      <AppItemsPopup
+        class="absolute top-16 right-4 bg-second block md:hidden"
+      />
+    </Teleport>
   </div>
   <div v-else>Такого предмета нет</div>
 </template>

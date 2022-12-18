@@ -14,7 +14,7 @@
         [ {{ isOpen ? '-' : '+' }} ]
       </span>
     </div>
-    <ul v-show="isOpen" v-if="isHasParents" class="pl-3">
+    <ul v-if="isHasParents && isOpen" class="pl-3">
       <AppCraftItem
         v-for="(parent, index) in currentItem?.parents"
         :count="Number(currentItem.parents_count[parent.id] || 0)"

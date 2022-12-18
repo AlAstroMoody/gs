@@ -33,7 +33,10 @@
               <div class="flex justify-between">
                 <span>1</span> <span>200</span>
               </div>
-              <AppCommonSlider @thumbShift="sliderThumbShift" />
+              <AppCommonSlider
+                @thumbShift="sliderThumbShift"
+                custom="bg-primary"
+              />
             </div>
 
             <div class="w-full mt-6 flex flex-wrap">
@@ -44,14 +47,20 @@
                   <div class="flex justify-between">
                     <span>0</span> <span>85</span>
                   </div>
-                  <AppCommonSlider @thumbShift="attackSliderThumbShift" />
+                  <AppCommonSlider
+                    @thumbShift="attackSliderThumbShift"
+                    custom="bg-primary"
+                  />
                 </div>
                 <div class="w-full xs:w-1/2">
                   уровень защиты
                   <div class="flex justify-between">
                     <span>0</span> <span>85</span>
                   </div>
-                  <AppCommonSlider @thumbShift="defenseSliderThumbShift" />
+                  <AppCommonSlider
+                    @thumbShift="defenseSliderThumbShift"
+                    custom="bg-primary"
+                  />
                 </div>
               </div>
             </div>
@@ -60,9 +69,9 @@
       </div>
     </div>
     <AppUserBoard />
-    <AppItemsPopup
-      class="absolute top-4 right-4 border border-gray bg-second block md:hidden"
-    />
+    <Teleport to="body">
+      <AppItemsPopup class="absolute top-4 right-4 bg-second block md:hidden" />
+    </Teleport>
   </div>
 </template>
 
@@ -145,7 +154,7 @@ img {
     );
   }
 
-  50% {
+  75% {
     transform: rotate(50%);
     clip-path: polygon(
       82% 14%,
@@ -166,7 +175,7 @@ img {
       19% 46%
     );
   }
-  75% {
+  90% {
     transform: rotate(80%);
     clip-path: polygon(
       82% 14%,

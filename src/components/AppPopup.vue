@@ -7,8 +7,11 @@
       @keydown.esc="close"
       @scroll.prevent.passive
     >
+      <div class="absolute -right-8 top-2 z-10">
+        <ExitIcon @click="close" color="#d4cece" />
+      </div>
       <div
-        class="bg-gray md:px-16 xs:px-8 md:py-16 rounded xs:w-max w-full border mt-20 max-h-[80%] overflow-hidden"
+        class="bg-gray md:px-16 xs:px-8 md:py-16 rounded xs:w-max w-full border my-auto max-h-[90%] overflow-hidden"
       >
         <slot name="default" />
       </div>
@@ -17,6 +20,8 @@
 </template>
 <script setup>
 import { ref } from 'vue'
+
+import ExitIcon from '@/components/icons/ExitIcon.vue'
 
 // попап скрыт
 const isOpen = ref(false)

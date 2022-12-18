@@ -14,9 +14,13 @@
     </label>
   </div>
   уровень предмета от: {{ Math.round(filterFields.level) }}
-  <div class="flex">
+  <div class="flex items-center">
     0
-    <AppCommonSlider @thumbShift="sliderThumbShift" />
+    <AppCommonSlider
+      @thumbShift="sliderThumbShift"
+      class="mx-1"
+      custom="bg-silver"
+    />
     200
   </div>
 

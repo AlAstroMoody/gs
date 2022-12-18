@@ -1,8 +1,9 @@
 <template>
   <div
-    class="bg-gray w-full h-4 rounded-lg"
+    class="w-full h-4 rounded-lg"
     ref="slider"
     @click.self="onSliderClick"
+    :class="custom"
   >
     <label
       class="rounded-lg relative left-0 h-6 w-3 -top-1 bg-second block"
@@ -14,9 +15,18 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch, toRefs } from 'vue'
 
 import { throttle } from '@/common/throttle'
+
+const props = defineProps({
+  custom: {
+    default: () => '',
+    type: String,
+  },
+})
+
+const { custom } = toRefs(props)
 
 const emit = defineEmits(['thumbShift'])
 const thumb = ref(null)

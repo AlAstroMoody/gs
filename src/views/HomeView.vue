@@ -1,7 +1,15 @@
 <template>
   <main class="flex flex-col align-center relative z-50 mb-20">
-    <img src="/src/assets/images/header.jpg" alt="main" class="mb-4 w-full" />
-    <div class="headline">Goblin Survival</div>
+    <img
+      src="/src/assets/images/header.jpg"
+      alt="main"
+      class="mb-4 w-full min-h-[150px] object-cover"
+    />
+    <div class="headline">
+      G
+      <GrenadeIcon class="inline mb-2" :class="grenadeClass" />
+      blin Survival
+    </div>
     <div class="subtitle my-6">
       <span>
         Интерактивный редактор персонажа, дерево крафта и библиотека оружия для
@@ -30,7 +38,13 @@
     </div>
 
     <div class="mt-12 mx-auto mb-2">
-      Проект "Goblin Survival" создан
+      Проект
+      <span
+        class="before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-silver"
+      >
+        <span class="relative text-primary">"Goblin Survival"</span>
+      </span>
+      создан
       <a
         href="http://goblinworkshop.ru/"
         target="_blank"
@@ -44,11 +58,40 @@
       <a
         href="https://discord.gg/uzJDPcuv"
         target="_blank"
-        class="text-red font-medium"
+        class="text-red font-medium pb-20"
       >
         Discord-сообщество
       </a>
       проекта
     </div>
+    <ExploseIcon class="opacity-30 absolute bottom-0 -right-1/4" color="red" />
   </main>
 </template>
+<script setup>
+import { ref, toRefs, watch, onMounted } from 'vue'
+
+import ExploseIcon from '@/components/icons/ExploseIcon.vue'
+import GrenadeIcon from '@/components/icons/GrenadeIcon.vue'
+
+const props = defineProps({
+  appWidth: {
+    default: 0,
+    type: Number,
+  },
+})
+
+const { appWidth } = toRefs(props)
+const grenadeClass = ref('w-5')
+watch(appWidth, (e) => {
+  changeGrenadeClass(e)
+})
+
+/* меняем классы svg в зависимости от ширины экрана, 
+   может вынести в стор словарь с размерами, и брать там
+ */
+const changeGrenadeClass = (e) => {
+  grenadeClass.value = e > 1440 ? 'w-10 -ml-2 -mr-3' : 'w-5 -mr-1'
+}
+
+onMounted(() => changeGrenadeClass(appWidth.value))
+</script>

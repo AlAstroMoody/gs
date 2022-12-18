@@ -12,8 +12,8 @@
         />
       </div>
     </div>
-    <div class="ease-out duration-1000 w-full" ref="main">
-      <div ref="body" class="h-full px-2 md:px-0 lg:px-2">
+    <div class="ease-out duration-1000 w-full pr-2" ref="main">
+      <div ref="body" class="h-full md:px-0 lg:px-2">
         <slot ref="slot" />
       </div>
     </div>
@@ -28,7 +28,7 @@ import {
   onBeforeUnmount,
   ref,
   toRefs,
-  watchEffect,
+  watch,
 } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -41,7 +41,6 @@ const { isResize, needReset } = toRefs(props)
 const router = useRouter()
 
 router.beforeEach(() => {
-  console.log(needReset.value)
   needReset.value ? resize() : null
 
   return true
@@ -94,14 +93,13 @@ const useScroll = (event) => {
 }
 
 const resize = async () => {
+  await nextTick()
   main.value ? (main.value.style.transform = 'translateY(0px)') : null
   currentYPosition.value = 1
-  await nextTick()
   changeBlockHeight()
 }
 
 onMounted(() => {
-  console.log('mount')
   main.value.addEventListener('wheel', wheelWatcher)
   window.addEventListener('resize', resize)
   resize()
@@ -123,7 +121,7 @@ const changeBlockHeight = () => {
   })
 }
 
-watchEffect(isResize, () => {
+watch(isResize, () => {
   resize()
 })
 

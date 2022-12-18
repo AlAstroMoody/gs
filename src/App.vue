@@ -11,12 +11,14 @@
       <div class="flex justify-center md:justify-between h-full w-full">
         <router-view v-slot="{ Component }">
           <div class="h-full w-full relative flex-1">
-            <AppScrollingComponent :needReset="true">
+            <AppScrollingComponent :needReset="true" :is-resize="resized">
               <transition name="scale" mode="out-in">
                 <component
                   :is="Component"
                   :key="$route.path"
                   class="min-h-full"
+                  @resize="resized = !resized"
+                  :app-width="appWidth"
                 />
               </transition>
             </AppScrollingComponent>
@@ -26,10 +28,11 @@
       </div>
     </Suspense>
   </div>
+  <resize-observer @notify="handleResize" :showTrigger="true" />
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import AppGears from '@/components/AppGears.vue'
@@ -43,6 +46,14 @@ const route = useRoute()
 const isShowSidebar = computed(
   () => route.path === '/goblins' || route.path.includes('/item')
 )
+
+const resized = ref(false)
+const appWidth = ref(0)
+
+// следим за шириной экрана
+const handleResize = ({ width }) => {
+  appWidth.value = width
+}
 </script>
 
 <style scoped>
@@ -54,6 +65,6 @@ const isShowSidebar = computed(
 .scale-leave-to {
   opacity: 0;
   transform: scale(0.9);
-  filter: grayscale(1);
+  filter: blur(10px);
 }
 </style>

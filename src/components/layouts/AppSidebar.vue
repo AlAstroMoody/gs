@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-80 py-2 px-1 -translate-y-full animate-topToBottom transform border-l border-second xxl:w-96 md:h-full h-[75vh] mx-auto"
+    class="w-80 py-2 px-1 -translate-y-full animate-topToBottom transform border-l border-second xxl:w-96 h-full mx-auto"
   >
     <div
       class="w-full bg-primary relative z-10 rounded-2xl border border-second my-2 p-2 opacity-0 animate-filter"
@@ -9,7 +9,7 @@
     </div>
 
     <div
-      class="flex overflow-hidden h-[75vh] md:h-full justify-between opacity-0 animate-opacity animation-delay-1500"
+      class="flex overflow-hidden h-full justify-between opacity-0 animate-opacity animation-delay-1500"
     >
       <AppScrollingComponent :is-resize="resized">
         <div
