@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { ref, watch, toRefs, onMounted } from 'vue'
+import { ref, watch, toRefs, onMounted, nextTick } from 'vue'
 
 import AppCraftItem from '@/components/AppCraftItem.vue'
 import AppFilter from '@/components/AppFilter.vue'
@@ -80,5 +80,5 @@ watch(appWidth, (e) => {
   isMobile.value = e < 768
 })
 
-onMounted(() => (isMobile.value = appWidth.value < 768))
+onMounted(() => nextTick(() => (isMobile.value = appWidth.value < 768)))
 </script>

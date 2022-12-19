@@ -101,12 +101,14 @@ const resize = async () => {
 
 onMounted(() => {
   main.value.addEventListener('wheel', wheelWatcher)
+  main.value.addEventListener('touchmove', wheelWatcher)
   window.addEventListener('resize', resize)
   resize()
 })
 
 onBeforeUnmount(() => {
   main.value.removeEventListener('wheel', wheelWatcher)
+  main.value.removeEventListener('touchmove', wheelWatcher)
   window.removeEventListener('resize', resize)
 })
 

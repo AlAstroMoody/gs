@@ -68,7 +68,7 @@
   </main>
 </template>
 <script setup>
-import { ref, toRefs, watch, onMounted } from 'vue'
+import { ref, toRefs, watch, onMounted, nextTick } from 'vue'
 
 import ExploseIcon from '@/components/icons/ExploseIcon.vue'
 import GrenadeIcon from '@/components/icons/GrenadeIcon.vue'
@@ -93,5 +93,7 @@ const changeGrenadeClass = (e) => {
   grenadeClass.value = e > 1440 ? 'w-10 -ml-2 -mr-3' : 'w-5 -mr-1'
 }
 
-onMounted(() => changeGrenadeClass(appWidth.value))
+onMounted(() => {
+  nextTick(() => changeGrenadeClass(appWidth.value))
+})
 </script>

@@ -1,8 +1,8 @@
 <template>
   <main>
-    <tabs v-model="activeTab" class="p-2" variant="underline">
+    <tabs v-model="activeTab" class="p-2 relative" variant="underline">
       <tab
-        :name="boss.name"
+        :name="String(boss.id)"
         :title="boss.name"
         v-for="boss in entities"
         :key="boss.id"
@@ -20,6 +20,10 @@
             </router-link>
           </div>
         </div>
+        <component
+          :is="currentIcon"
+          class="opacity-10 absolute inset-0 w-96 m-auto pointer-events-none"
+        />
       </tab>
     </tabs>
   </main>
@@ -27,14 +31,34 @@
 
 <script setup>
 import { Tabs, Tab } from 'flowbite-vue'
-import { ref } from 'vue'
+import { ref, watchEffect, shallowRef } from 'vue'
 
 import { useState } from '@/components/composibles/useState'
+import SpiderIcon from '@/components/icons/bosses/SpiderIcon.vue'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
 const { entities } = await useState({ entity: 'bosses' })
-const activeTab = ref(entities[0].name)
+const activeTab = ref(String(entities[0].id))
 
 const items = await useState({ entity: 'items' })
 const src = (id) => items.entities.find((item) => item.id === id)?.src
+
+const currentIcon = shallowRef(SpiderIcon)
+watchEffect(() => {
+  let boss
+  switch (activeTab.value) {
+    case '1':
+      boss = 'SpiderIcon'
+      break
+    case '5':
+      boss = 'GirlIcon'
+      break
+    default:
+      boss = 'SpiderIcon'
+      break
+  }
+  import(`../components/icons/bosses/${boss}.vue`).then((val) => {
+    currentIcon.value = val.default
+  })
+})
 </script>
