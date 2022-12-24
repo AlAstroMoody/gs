@@ -64,7 +64,17 @@ const thumbTransformY = computed(
       blockHeight.value || 0
 )
 
+let ticking = ref(false)
 const wheelWatcher = (event) => {
+  if (!ticking.value) {
+    window.requestAnimationFrame(() => {
+      useScroll(event)
+      ticking.value = false
+      console.log(event)
+    })
+
+    ticking.value = true
+  }
   useScroll(event)
 }
 
@@ -101,14 +111,12 @@ const resize = async () => {
 
 onMounted(() => {
   main.value.addEventListener('wheel', wheelWatcher)
-  main.value.addEventListener('touchmove', wheelWatcher)
   window.addEventListener('resize', resize)
   resize()
 })
 
 onBeforeUnmount(() => {
   main.value.removeEventListener('wheel', wheelWatcher)
-  main.value.removeEventListener('touchmove', wheelWatcher)
   window.removeEventListener('resize', resize)
 })
 

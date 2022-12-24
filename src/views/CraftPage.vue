@@ -62,9 +62,7 @@ const items = ref(entities)
 
 // фильтр для мобилок
 const popup = ref(null)
-const openPopup = () => {
-  popup.value.open()
-}
+const openPopup = () => popup.value.open()
 
 const props = defineProps({
   appWidth: {
@@ -76,9 +74,7 @@ const props = defineProps({
 const { appWidth } = toRefs(props)
 
 const isMobile = ref(false)
-watch(appWidth, (e) => {
-  isMobile.value = e < 768
-})
+watch(appWidth, (e) => (isMobile.value = e < 768))
 
 onMounted(() => nextTick(() => (isMobile.value = appWidth.value < 768)))
 </script>
