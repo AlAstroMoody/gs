@@ -1,50 +1,39 @@
 <template>
   <div
-    class="w-80 py-2 px-1 -translate-y-full animate-topToBottom transform border-l border-second xxl:w-96 h-full mx-auto"
+    class="fixed inset-y-0 right-0 mx-auto h-full -translate-y-full animate-topToBottom border-l border-second py-2 px-1"
   >
     <div
-      class="w-full bg-primary relative z-10 rounded-2xl border border-second my-2 p-2 opacity-0 animate-filter"
+      class="relative z-10 my-2 w-full animate-filter rounded-2xl border border-second bg-primary p-2 opacity-0"
     >
       <AppFilter @filteredItems="changeItemsKit($event)" />
     </div>
 
     <div
-      class="flex overflow-hidden h-full justify-between opacity-0 animate-opacity animation-delay-1500"
+      class="h-[calc(100%-215px)] animate-opacity justify-between overflow-y-auto opacity-0 animation-delay-1500"
     >
-      <AppScrollingComponent :is-resize="resized">
-        <div
-          class="relative h-full flex-1 z-10 ease-out duration-1000 transition-all"
-          ref="itemsBlock"
-        >
-          <router-link
-            v-for="item in items"
-            :key="item.id"
-            :to="'/item/' + item.id"
-            class="flex w-full rounded-2xl my-1 border border-second transition-all hover:bg-second hover:text-primary"
-            :class="
-              $route.params.id === String(item.id)
-                ? 'text-primary bg-second'
-                : 'bg-primary text-second'
-            "
-          >
-            <img
-              v-if="item.src"
-              :src="item.src"
-              class="w-16 h-16 rounded-l-2xl"
-              alt="img"
-            />
-            <QuestionIcon
-              v-else
-              color="purple"
-              class="w-16 h-16 mr-3 rounded-lg"
-            />
-            <div class="ml-2 my-auto">{{ item.name }}</div>
-          </router-link>
-        </div>
-        <div v-if="!items?.length" class="w-full text-center">
-          совпадений не найдено
-        </div>
-      </AppScrollingComponent>
+      <router-link
+        v-for="item in items"
+        :key="item.id"
+        :to="'/item/' + item.id"
+        class="my-1 flex w-full rounded-2xl border border-second transition-all"
+        :class="
+          $route.params.id === String(item.id)
+            ? 'bg-second text-primary'
+            : 'bg-primary text-second hover:bg-second hover:text-primary'
+        "
+      >
+        <img
+          v-if="item.src"
+          :src="item.src"
+          class="h-16 w-16 rounded-l-2xl"
+          alt="img"
+        />
+        <QuestionIcon v-else color="purple" class="mr-3 h-16 w-16 rounded-lg" />
+        <div class="my-auto ml-2">{{ item.name }}</div>
+      </router-link>
+      <div v-if="!items?.length" class="w-full text-center">
+        совпадений не найдено
+      </div>
     </div>
   </div>
 </template>
@@ -53,15 +42,15 @@
 import { ref } from 'vue'
 
 import AppFilter from '@/components/AppFilter.vue'
-import AppScrollingComponent from '@/components/AppScrollingComponent.vue'
+import { useState } from '@/components/composibles/useState'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
-const items = ref([])
-const resized = ref(false)
+const { entities } = await useState({ entity: 'items' })
+const items = ref(entities)
 
-// изменяем набор артов
-const changeItemsKit = (filteredItems) => {
-  items.value = filteredItems
-  resized.value = !resized.value
-}
+/** изменяем набор артов */
+const changeItemsKit = (filteredItems) =>
+  (items.value = filteredItems.sort(
+    (a, b) => a.src?.data?.attributes?.url > b.src?.data?.attributes?.url
+  ))
 </script>

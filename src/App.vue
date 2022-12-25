@@ -1,70 +1,53 @@
 <template>
-  <AppGears class="lg:block hidden" />
   <Suspense>
-    <AppSidenav />
-  </Suspense>
-
-  <div
-    class="mr-auto h-full w-full relative overflow-hidden flex lg:pl-3 xxl:pl-6"
-  >
-    <Suspense>
-      <div class="flex justify-center md:justify-between h-full w-full">
+    <div class="relative mr-auto flex min-h-screen w-full overflow-x-hidden">
+      <router-view name="left" v-slot="{ Component }">
+        <component :is="Component" />
+      </router-view>
+      <div class="h-full w-full lg:ml-48 lg:pl-3 xxl:ml-64" :class="pageClass">
         <router-view v-slot="{ Component }">
-          <div class="h-full w-full relative flex-1">
-            <AppScrollingComponent :needReset="true" :is-resize="resized">
-              <transition name="scale" mode="out-in">
-                <component
-                  :is="Component"
-                  :key="$route.path"
-                  class="min-h-full"
-                  @resize="resized = !resized"
-                  :app-width="appWidth"
-                />
-              </transition>
-            </AppScrollingComponent>
-          </div>
+          <transition name="page" mode="out-in">
+            <component :is="Component" :key="$route.path" class="h-full" />
+          </transition>
         </router-view>
-        <AppSidebar class="hidden md:block ml-1" v-if="isShowSidebar" />
+        <router-view name="bottom" v-slot="{ Component }">
+          <component
+            :is="Component"
+            class="fixed inset-x-0 bottom-0 mx-auto mb-16 animate-opacity lg:my-0"
+            :class="pageClass"
+          />
+        </router-view>
       </div>
-    </Suspense>
-  </div>
+      <router-view name="right" v-slot="{ Component }">
+        <component :is="Component" class="ml-1 hidden w-80 md:block" />
+      </router-view>
+    </div>
+  </Suspense>
   <resize-observer @notify="handleResize" :showTrigger="true" />
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
-import AppGears from '@/components/AppGears.vue'
-import AppScrollingComponent from '@/components/AppScrollingComponent.vue'
-import AppSidebar from '@/components/layouts/AppSidebar.vue'
-import AppSidenav from '@/components/layouts/AppSidenav.vue'
+import { useAppState } from '@/components/composibles/useAppState'
+
+const { setSize } = useAppState({})
+
+let ticking = ref(false)
+/** следим за шириной экрана, тест requestAnimationFrame */
+const handleResize = ({ width, height }) => {
+  if (!ticking.value) {
+    window.requestAnimationFrame(() => {
+      ticking.value = false
+      setSize({ width, height })
+    })
+    ticking.value = true
+  }
+}
 
 const route = useRoute()
-
-// отображать сайдбар на отдельных страницах
-const isShowSidebar = computed(
-  () => route.path === '/goblins' || route.path.includes('/item')
-)
-
-const resized = ref(false)
-const appWidth = ref(0)
-
-// следим за шириной экрана
-const handleResize = ({ width }) => {
-  appWidth.value = width
-}
+const pageClass = computed(() => {
+  return ['item', 'goblins'].includes(route.name) ? 'md:mr-80' : ''
+})
 </script>
-
-<style scoped>
-.scale-enter-active,
-.scale-leave-active {
-  transition: all 0.3s ease;
-}
-.scale-enter-from,
-.scale-leave-to {
-  opacity: 0;
-  transform: scale(0.9);
-  filter: blur(10px);
-}
-</style>

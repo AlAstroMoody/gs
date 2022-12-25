@@ -1,8 +1,9 @@
 <template>
-  <div class="lg:mx-4 flex flex-col justify-between flex-1" v-if="currentItem">
+  <div v-if="!currentItem">Такого предмета нет</div>
+  <div class="mx-4 mb-96 flex flex-1 flex-col justify-between" v-else>
     <div>
       <div class="headline mt-6">{{ currentItem.name }}</div>
-      <div class="flex mt-10 mb-4 flex-wrap items-center">
+      <div class="mt-10 mb-4 flex flex-wrap items-center">
         <div class="flex w-full xs:w-auto">
           <img
             :src="currentItem.src"
@@ -11,14 +12,14 @@
             class="h-24 w-24"
           />
           <QuestionIcon v-else color="red" />
-          <div class="flex flex-col justify-center content-center ml-4">
+          <div class="ml-4 flex flex-col content-center justify-center">
             <div v-if="currentItem.level">
               требуемый уровень: {{ currentItem.level }}
             </div>
             <div v-else>Нет ограничения по уровню</div>
             <div v-if="currentItem.goblins.length">
               Только для класса:
-              <span class="text-red text-lg">
+              <span class="text-lg text-red">
                 {{ goblinClasses }}
               </span>
             </div>
@@ -26,17 +27,17 @@
           </div>
         </div>
         <div
-          class="flex-1 flex justify-end ml-2 text-second whitespace-nowrap h-fit text-md"
+          class="text-md ml-2 flex h-fit flex-1 justify-end whitespace-nowrap text-second"
         >
           <button
-            class="px-2 py-4 rounded-2xl border border-second border-solid ease-out hover:border-red hover:text-red"
+            class="rounded-2xl border border-solid border-second px-2 py-4 ease-out hover:border-red hover:text-red"
             @click="add"
           >
             {{ buttonText }}
           </button>
         </div>
       </div>
-      <div class="my-2 body" v-html="currentItem.description" />
+      <div class="body my-2" v-html="currentItem.description" />
 
       <ul class="my-2" v-if="currentItem.params">
         Бонусы предмета:
@@ -68,13 +69,13 @@
       </ul>
 
       <div
-        class="rounded-lg p-2 border border-bg-silver"
+        class="border-bg-silver rounded-lg border p-2"
         v-if="currentItem.children.length"
       >
         Из предмета "{{ currentItem.name }}" можно скрафтить:
         <span
           v-for="(child, index) in currentItem.children"
-          class="text-end text-md"
+          class="text-md text-end"
           :key="child.id"
         >
           <router-link :to="`/item/${child.id}`">
@@ -86,13 +87,13 @@
       </div>
 
       <div
-        class="rounded-lg p-2 border border-silver my-2"
+        class="my-2 rounded-lg border border-silver p-2"
         v-if="currentItem.parents.length"
       >
         Предмет "{{ currentItem.name }}" крафтится из:
         <span
           v-for="(parent, index) in currentItem.parents"
-          class="text-end text-md"
+          class="text-md text-end"
           :key="parent.id"
         >
           <router-link :to="`/item/${parent.id}`">
@@ -103,14 +104,13 @@
         </span>
       </div>
     </div>
-    <AppUserBoard class="mt-auto" />
+
     <Teleport to="body">
       <AppItemsPopup
-        class="absolute top-16 right-4 bg-second block md:hidden"
+        class="absolute top-12 right-2 block bg-second md:hidden"
       />
     </Teleport>
   </div>
-  <div v-else>Такого предмета нет</div>
 </template>
 
 <script setup>
@@ -122,7 +122,6 @@ import AppItemsPopup from '@/components/AppItemsPopup.vue'
 import { useGoblinState } from '@/components/composibles/useGoblinState'
 import { useState } from '@/components/composibles/useState'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
-import AppUserBoard from '@/components/layouts/AppUserBoard.vue'
 
 const { user, addItem } = useGoblinState()
 
@@ -133,12 +132,12 @@ const { currentItem } = await useState({ id: route.params.id, entity: 'items' })
 const buttonText = computed(() =>
   user.inventory.length < 6 ? 'добавить в инвентарь' : 'инвентарь переполнен'
 )
+/** добавить в инвентарь */
 const add = () => {
-  if (user.inventory.length < 6) {
-    addItem(currentItem.value)
-  }
+  if (user.inventory.length < 6) addItem(currentItem.value)
 }
 
+/** join классов гоблинов шмотки */
 const goblinClasses = computed(() =>
   currentItem.value.goblins
     .map((currentItem) => currentItem.attributes.name)

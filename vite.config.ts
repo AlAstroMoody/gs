@@ -1,3 +1,4 @@
+import path from 'path'
 import { fileURLToPath, URL } from 'url'
 
 import vue from '@vitejs/plugin-vue'
@@ -10,6 +11,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      'tailwind.config.js': path.resolve(__dirname, 'tailwind.config.js'),
     },
   },
   css: {
@@ -17,6 +19,16 @@ export default defineConfig({
       scss: {
         additionalData: [`@import "@/assets/css/fonts/fonts.css";`],
       },
+    },
+  },
+  optimizeDeps: {
+    include: [
+      'tailwind.config.js',
+    ]
+  },
+  build: {
+    commonjsOptions: {
+      include: ['tailwind.config.js', 'node_modules/**'],
     },
   },
 })

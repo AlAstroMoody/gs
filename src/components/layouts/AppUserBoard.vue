@@ -1,15 +1,15 @@
 <template>
   <div
-    class="lg:my-0 mx-auto px-2 xl:px-6 h-fit w-full lg:w-fit mb-16 bg-gray border-silver rounded-t-2xl border border-b-0 animate-opacity"
+    class="h-fit w-full rounded-t-2xl border border-b-0 border-silver bg-gray px-2 md:w-fit xl:px-6"
   >
-    <div class="flex mb-2 justify-center">
+    <div class="mb-2 flex justify-center">
       <div class="overflow-hidden">
         <img :src="user.goblin.src" alt="logo" class="h-16 w-16" />
       </div>
-      <div class="w-56 ml-4">
-        <div class="mx-auto subtitle">'Крягз "Ядро"'</div>
+      <div class="ml-4 w-56">
+        <div class="subtitle mx-auto">'Крягз "Ядро"'</div>
         <div
-          class="w-full mx-auto text-center p-1 rounded-lg border border-second"
+          class="mx-auto w-full rounded-lg border border-second p-1 text-center"
         >
           Уровень {{ user.level }}, {{ user.goblin.name }}
         </div>
@@ -17,12 +17,12 @@
     </div>
 
     <div class="flex justify-center">
-      <div class="flex flex-col flex-wrap w-fit h-fit max-w-[132px]">
-        <div class="w-full flex-wrap xs:flex hidden">
+      <div class="flex h-fit w-fit max-w-[132px] flex-col flex-wrap">
+        <div class="hidden w-full flex-wrap xs:flex">
           <div
             v-for="i in 6"
             :key="i"
-            class="bg-slot relative border-second h-16 w-16 m-one"
+            class="relative m-one h-16 w-16 border-second bg-slot"
             @mouseenter="showDescription(user.inventory[i - 1], i)"
             @mouseleave="showDescription({})"
           >
@@ -30,7 +30,7 @@
               v-show="
                 isShowPopup && activeItem?.name && activeItem?.index === i
               "
-              class="absolute -top-12 bg-silver border rounded-md text-primary p-2 whitespace-nowrap border-primary"
+              class="absolute -top-12 whitespace-nowrap rounded-md border border-primary bg-silver p-2 text-primary"
             >
               {{ activeItem.name }}
             </div>
@@ -43,7 +43,7 @@
             />
             <div
               v-if="user.inventory[i - 1] && !user.inventory[i - 1].src"
-              class="flex w-16 h-16 bg-silver"
+              class="flex h-16 w-16 bg-silver"
               @click="removeItem(i)"
             >
               <QuestionIcon class="m-auto" />
@@ -52,7 +52,7 @@
         </div>
       </div>
 
-      <div class="px-1 xl:px-6">
+      <div class="flex-1 pl-1 pr-4 xl:px-6">
         <span>основные <br />параметры:</span>
         <div
           class="flex justify-between"
