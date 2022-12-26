@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute">
+  <div>
     <svg
       width="128"
       height="128"
@@ -7,12 +7,11 @@
       xmlns="http://www.w3.org/2000/svg"
       @click="isGearsTurn = !isGearsTurn"
       :class="[positions[index], `${isGearsTurn ? angle[0] : angle[1]}`]"
-      class="absolute transition ease-in-out duration-1000"
+      class="absolute transition ease-in-out duration-1000 fill-second"
       v-for="(angle, index) in angles"
       :key="index"
     >
       <path
-        fill="rgba(235, 235, 235, 0.64)"
         fill-rule="evenodd"
         d="M.974 8.504l1.728-.825a.94.94 0 00.323-1.439l-1.21-1.498a7.009 7.009 0 011.494-1.895l1.727.847a.931.931
             0 001.32-.642l.407-1.88a6.96 6.96 0 012.412.001L9.6 3.057a.934.934 0 001.323.637l1.721-.847a7.053 7.053 0

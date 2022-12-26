@@ -30,19 +30,19 @@ export function useGoblinState() {
   const strength = computed(() =>
     Math.floor(
       user.goblin.stats_increase.strength * user.level +
-      user.goblin.stats.strength
+        user.goblin.stats.strength
     )
   )
   const agility = computed(() =>
     Math.floor(
       user.goblin.stats_increase.agility * user.level +
-      user.goblin.stats.agility
+        user.goblin.stats.agility
     )
   )
   const intelligence = computed(() =>
     Math.floor(
       user.goblin.stats_increase.intelligence * user.level +
-      user.goblin.stats.intelligence
+        user.goblin.stats.intelligence
     )
   )
 
@@ -50,29 +50,29 @@ export function useGoblinState() {
   const itemsStats = computed(() =>
     user.inventory.reduce(
       (sum, item) =>
-      (sum = {
-        strength: (sum.strength += item?.params?.strength || 0),
-        agility: (sum.agility += item?.params?.agility || 0),
-        intelligence: (sum.intelligence += item?.params?.intelligence || 0),
-        mp: (sum.mp += item?.params?.mp || 0),
-        hp: (sum.hp += item?.params?.hp || 0),
-        defence: (sum.defence += item?.params?.defence || 0),
-        attack: (sum.attack += item?.params?.attack || 0),
-        luck: (sum.luck += item?.params?.luck || 0),
-        resist:
-          item?.params?.resist > sum.resist
-            ? item?.params?.resist
-            : sum.resist,
-        as: (sum.as += item?.params?.as || 0),
-        ms: item?.params?.ms > sum.ms ? item?.params?.ms : sum.ms,
-        hp_regeneration: (sum.hp_regeneration +=
-          item?.params?.hp_regeneration || 0),
-        mp_regeneration: (sum.mp_regeneration +=
-          item?.params?.mp_regeneration || 0),
-        description: (sum.description += sum.description
-          ? `<br/> ${item?.description || ''} `
-          : item?.description || ''),
-      }),
+        (sum = {
+          strength: (sum.strength += item?.params?.strength || 0),
+          agility: (sum.agility += item?.params?.agility || 0),
+          intelligence: (sum.intelligence += item?.params?.intelligence || 0),
+          mp: (sum.mp += item?.params?.mp || 0),
+          hp: (sum.hp += item?.params?.hp || 0),
+          defence: (sum.defence += item?.params?.defence || 0),
+          attack: (sum.attack += item?.params?.attack || 0),
+          luck: (sum.luck += item?.params?.luck || 0),
+          resist:
+            item?.params?.resist > sum.resist
+              ? item?.params?.resist
+              : sum.resist,
+          as: (sum.as += item?.params?.as || 0),
+          ms: item?.params?.ms > sum.ms ? item?.params?.ms : sum.ms,
+          hp_regeneration: (sum.hp_regeneration +=
+            item?.params?.hp_regeneration || 0),
+          mp_regeneration: (sum.mp_regeneration +=
+            item?.params?.mp_regeneration || 0),
+          description: (sum.description += sum.description
+            ? `<br/> ${item?.description || ''} `
+            : item?.description || ''),
+        }),
       {
         strength: strength.value,
         agility: agility.value,
@@ -92,13 +92,8 @@ export function useGoblinState() {
     )
   )
 
-  const changeAttack = (points) => {
-    user.attackPoints = points
-  }
-
-  const changeDefence = (points) => {
-    user.defencePoints = points
-  }
+  const changeAttack = (points) => (user.attackPoints = points)
+  const changeDefense = (points) => (user.defencePoints = points)
 
   return {
     user,
@@ -108,6 +103,6 @@ export function useGoblinState() {
     addItem,
     removeItem,
     changeAttack,
-    changeDefence,
+    changeDefense,
   }
 }

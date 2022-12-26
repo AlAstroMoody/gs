@@ -1,14 +1,14 @@
 <template>
-  <div class="flex flex-col justify-between flex-1">
-    <div class="flex flex-col mb-10">
+  <div class="mb-96 flex flex-1 flex-col justify-between px-2">
+    <div class="mb-10 flex flex-col">
       <div class="headline mb-8">Доступные персонажи</div>
       <div class="xl:flex">
-        <div class="md:mr-2 flex flex-wrap mb-2 xl:flex-col">
+        <div class="mb-2 flex flex-wrap md:mr-2 xl:flex-col">
           <div
             v-for="goblin in entities"
             :key="goblin.id"
             @click="choiceGoblin(goblin)"
-            class="font-medium lg:text-xl px-4 py-2 rounded w-fit"
+            class="w-fit rounded px-4 py-2 font-medium lg:text-xl"
             :class="{ 'border border-second ': goblin === user.goblin }"
           >
             {{ goblin.name }}
@@ -16,7 +16,7 @@
         </div>
 
         <div
-          class="p-2 flex flex-col rounded-lg bg-second md:mr-5 text-primary"
+          class="flex flex-col rounded-lg bg-second p-2 text-primary md:mr-5"
           v-if="user.goblin?.name"
         >
           <div class="flex">
@@ -27,9 +27,9 @@
             </div>
           </div>
           <div class="lg:p-4">{{ user.goblin.description }}</div>
-          <div class="flex flex-wrap items-center lg:my-4 p-4">
-            <div class="text-xl mr-4">апнуть уровень:</div>
-            <div class="xs:mx-4 w-80">
+          <div class="flex flex-wrap items-center p-4 lg:my-4">
+            <div class="mr-4 text-xl">апнуть уровень:</div>
+            <div class="w-80 xs:mx-4">
               <div class="flex justify-between">
                 <span>1</span> <span>200</span>
               </div>
@@ -39,11 +39,11 @@
               />
             </div>
 
-            <div class="w-full mt-6 flex flex-wrap">
-              <span class="text-xl mr-4">точки:</span>
-              <div class="w-80 flex flex-wrap xs:flex-nowrap">
-                <div class="w-full xs:w-1/2 xs:mr-8">
-                  уровень атаки
+            <div class="mt-6 flex w-full flex-wrap">
+              <span class="mr-4 text-xl">точки:</span>
+              <div class="flex w-80 flex-wrap xs:flex-nowrap">
+                <div class="w-full xs:mr-8 xs:w-1/2">
+                  уровень атаки: {{ params.attack }}
                   <div class="flex justify-between">
                     <span>0</span> <span>85</span>
                   </div>
@@ -53,7 +53,7 @@
                   />
                 </div>
                 <div class="w-full xs:w-1/2">
-                  уровень защиты
+                  уровень защиты: {{ params.defense }}
                   <div class="flex justify-between">
                     <span>0</span> <span>85</span>
                   </div>
@@ -68,40 +68,43 @@
         </div>
       </div>
     </div>
-    <AppUserBoard />
     <Teleport to="body">
-      <AppItemsPopup class="absolute top-4 right-4 bg-second block md:hidden" />
+      <AppItemsPopup
+        class="absolute top-12 right-2 block bg-second md:hidden"
+      />
     </Teleport>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
 import AppItemsPopup from '@/components/AppItemsPopup.vue'
 import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
 import { useGoblinState } from '@/components/composibles/useGoblinState'
 import { useState } from '@/components/composibles/useState'
-import AppUserBoard from '@/components/layouts/AppUserBoard.vue'
 
 const { entities } = await useState({ entity: 'goblins' })
-const { user, setGoblin, setLevel, changeAttack, changeDefence } =
+const { user, setGoblin, setLevel, changeAttack, changeDefense } =
   useGoblinState()
 
-// меняем гоблина
+/** меняем гоблина */
 const choiceGoblin = (goblin) => setGoblin(goblin)
 
-// меняем лвл
-const sliderThumbShift = (distance) => {
-  setLevel(Math.round(200 * distance) || 1)
-}
+/** меняем лвл*/
+const sliderThumbShift = (distance) => setLevel(Math.round(200 * distance) || 1)
 
-// точки атаки
+const params = ref({ attack: 0, defense: 0 })
+/** точки атаки */
 const attackSliderThumbShift = (distance) => {
-  changeAttack(Math.round(85 * distance) || 0)
+  params.value.attack = Math.round(85 * distance) || 0
+  changeAttack(params.value.attack)
 }
 
-// точки защиты
+/** точки защиты */
 const defenseSliderThumbShift = (distance) => {
-  changeDefence(Math.round(85 * distance) || 0)
+  params.value.defense = Math.round(85 * distance) || 0
+  changeDefense(params.value.defense)
 }
 </script>
 

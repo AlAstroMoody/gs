@@ -1,14 +1,9 @@
 <template>
   <div>
-    <FilterIcon
-      color="black"
-      @click.native="openPopup"
-      :width="40"
-      :height="40"
-    />
+    <FilterIcon color="black" @click="openPopup" :width="40" :height="40" />
     <AppPopup ref="popup" @wheel.stop>
       <template #default>
-        <AppSidebar />
+        <AppSidebar class="w-full" />
       </template>
     </AppPopup>
   </div>

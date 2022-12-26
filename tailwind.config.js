@@ -17,17 +17,17 @@ module.exports = {
     },
     extend: {
       colors: {
-        primary: '#181818', // bg
-        second: 'rgba(235, 235, 235, 0.64)', // text
-        silver: '#d4cece', // второй бг
+        primary: '#181818',
+        second: 'rgba(235, 235, 235, 0.64)',
+        silver: '#d4cece',
         red: 'rgba(255, 3, 3, 0.82)',
         gray: '#222222',
       },
       animation: {
-        filter: 'opacity 3s 0.8s ease-out forwards',
+        filter: 'opacity 1s 0.3s ease-out forwards',
         topToBottom: 'topToBottom 0.5s ease-in forwards',
         show: 'show 0.5s ease-in forwards',
-        opacity: 'opacity 1s ease-out forwards',
+        opacity: 'opacity 0.5s ease-out forwards',
         leftToRight: 'leftToRight 1s ease-out forwards',
       },
       backgroundImage: {

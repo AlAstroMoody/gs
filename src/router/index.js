@@ -6,27 +6,46 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('@/views/HomeView.vue'),
+      components: {
+        default: () => import('@/views/HomeView.vue'),
+        left: () => import('@/components/layouts/AppSidenav.vue'),
+      },
     },
     {
       path: '/item/:id',
       name: 'item',
-      component: () => import('@/views/ItemPage.vue'),
+      components: {
+        default: () => import('@/views/ItemPage.vue'),
+        left: () => import('@/components/layouts/AppSidenav.vue'),
+        right: () => import('@/components/layouts/AppSidebar.vue'),
+        bottom: () => import('@/components/layouts/AppUserBoard.vue'),
+      },
     },
     {
       path: '/goblins',
       name: 'goblins',
-      component: () => import('@/views/GoblinsPage.vue'),
+      components: {
+        default: () => import('@/views/GoblinsPage.vue'),
+        left: () => import('@/components/layouts/AppSidenav.vue'),
+        right: () => import('@/components/layouts/AppSidebar.vue'),
+        bottom: () => import('@/components/layouts/AppUserBoard.vue'),
+      },
     },
     {
       path: '/craft',
       name: 'craft',
-      component: () => import('@/views/CraftPage.vue'),
+      components: {
+        default: () => import('@/views/CraftPage.vue'),
+        left: () => import('@/components/layouts/AppSidenav.vue'),
+      },
     },
     {
       path: '/boss',
       name: 'boss',
-      component: () => import('@/views/BossPage.vue'),
+      components: {
+        default: () => import('@/views/BossPage.vue'),
+        left: () => import('@/components/layouts/AppSidenav.vue'),
+      },
     },
   ],
 })
