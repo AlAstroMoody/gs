@@ -1,17 +1,28 @@
 <template>
+  <img
+    :src="user.goblin.src"
+    alt="logo"
+    class="right-2 bottom-2 h-16 w-16"
+    v-if="!isShowBoard"
+    @click="isShowBoard = !isShowBoard"
+  />
   <div
-    class="h-fit w-full rounded-t-2xl border border-b-0 border-silver bg-gray px-2 md:w-fit xl:px-6"
+    v-else
+    class="inset-x-0 h-fit w-full rounded-t-2xl border border-b-0 border-silver bg-gray px-2 md:w-fit xl:px-6"
   >
     <div class="mb-2 flex justify-center">
       <div class="overflow-hidden">
         <img :src="user.goblin.src" alt="logo" class="h-16 w-16" />
       </div>
-      <div class="ml-4 w-56">
-        <div class="subtitle mx-auto">'Крягз "Ядро"'</div>
-        <div
-          class="mx-auto w-full rounded-lg border border-second p-1 text-center"
-        >
-          Уровень {{ user.level }}, {{ user.goblin.name }}
+      <div class="ml-4 w-3/4">
+        <div class="subtitle mx-auto">Крягз "Ядро"</div>
+        <div class="flex justify-between">
+          <div
+            class="mr-auto w-56 rounded-lg border border-second p-1 text-center"
+          >
+            Уровень {{ user.level }}, {{ user.goblin.name }}
+          </div>
+          <CollapseIcon @click="isShowBoard = !isShowBoard" />
         </div>
       </div>
     </div>
@@ -83,6 +94,7 @@
 import { computed, ref } from 'vue'
 
 import { useGoblinState } from '@/components/composibles/useGoblinState'
+import CollapseIcon from '@/components/icons/CollapseIcon.vue'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
 const { user, itemsStats, removeItem } = useGoblinState()
@@ -198,4 +210,6 @@ const secondParams = computed(() => [
     }%`,
   },
 ])
+
+const isShowBoard = ref(false)
 </script>

@@ -9,7 +9,7 @@
     </div>
 
     <div
-      class="h-[calc(100%-215px)] animate-opacity justify-between overflow-y-auto opacity-0 animation-delay-1500"
+      class="h-[calc(100%-215px)] animate-opacity justify-between overflow-y-auto opacity-0 animation-delay-500"
     >
       <router-link
         v-for="item in items"
@@ -49,8 +49,12 @@ const { entities } = await useState({ entity: 'items' })
 const items = ref(entities)
 
 /** изменяем набор артов */
-const changeItemsKit = (filteredItems) =>
-  (items.value = filteredItems.sort(
-    (a, b) => a.src?.data?.attributes?.url > b.src?.data?.attributes?.url
-  ))
+const changeItemsKit = (filteredItems) => {
+  items.value = filteredItems.sort((a, b) => {
+    if (!a.src) return 1
+    if (!b.src) return -1
+
+    return a.src.localeCompare(b.src)
+  })
+}
 </script>

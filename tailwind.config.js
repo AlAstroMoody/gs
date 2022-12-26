@@ -24,7 +24,7 @@ module.exports = {
         gray: '#222222',
       },
       animation: {
-        filter: 'opacity 3s 0.8s ease-out forwards',
+        filter: 'opacity 1s 0.3s ease-out forwards',
         topToBottom: 'topToBottom 0.5s ease-in forwards',
         show: 'show 0.5s ease-in forwards',
         opacity: 'opacity 0.5s ease-out forwards',
