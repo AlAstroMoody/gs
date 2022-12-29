@@ -1,1 +1,0 @@
-import{s as r,c as i,v as m}from"./index.725b42b6.js";const e=r({items:[],bosses:[],goblins:[]});async function d({id:t,getAll:a,entity:s}={}){const n=async()=>{e[s].length||(e[s]=await a())},o=i(()=>e[s].find(c=>c.id===Number(t)));return{entities:s?m(e[s]):e,setItems:n,currentItem:o}}export{d as u};
