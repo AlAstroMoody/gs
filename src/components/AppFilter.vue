@@ -1,15 +1,15 @@
 <template>
   <div
-    class="w-full pl-3 px-3 rounded-2xl my-2 flex border border-solid border-second ease-out text-second bg-gray"
+    class="my-2 flex w-full rounded-2xl border border-solid border-second bg-gray px-3 pl-3 text-second ease-out"
   >
     <input
       v-model="filterFields.name"
       placeholder=" "
       id="input"
-      class="w-full py-4 relative z-10"
+      class="relative z-10 w-full py-4"
       @input="searchItem($event)"
     />
-    <label for="input" class="absolute p-2 ease-out duration-300">
+    <label for="input" class="absolute p-2 duration-300 ease-out">
       поиск по названию
     </label>
   </div>
@@ -32,11 +32,11 @@
   />
 </template>
 <script setup>
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 
 import AppCommonSelect from '@/components/common/AppCommonSelect.vue'
 import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
-import { useState } from '@/components/composibles/useState'
+import { store } from '@/components/composibles/store.js'
 
 // поля фильтрации
 const filterFields = reactive({
@@ -45,14 +45,15 @@ const filterFields = reactive({
   goblins: [],
 })
 
-const { entities } = await useState()
+const items = computed(() => store.entities.items)
+if (!items.value.length) await store.setItems('items')
 
-const goblins = entities.goblins
-const items = entities.items
+const goblins = computed(() => store.entities.goblins)
+if (!goblins.value.length) await store.setItems('goblins')
 
 // эмит отфильтрованных артов
 const emit = defineEmits(['filteredItems'])
-emit('filteredItems', items)
+emit('filteredItems', items.value)
 
 // сдвигаем положение на слайдере
 const sliderThumbShift = (distance) => {
@@ -75,7 +76,7 @@ const searchItem = (event) => {
 
 // при изменении любого из полей фильтра меняем выборку
 const getItemsSample = () => {
-  let sampleItems = items
+  let sampleItems = items.value
 
   if (filterFields.name) {
     sampleItems = sampleItems.filter((item) =>

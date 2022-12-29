@@ -119,27 +119,29 @@ import { useRoute } from 'vue-router'
 
 import { itemParams } from '@/common/itemParams'
 import AppItemsPopup from '@/components/AppItemsPopup.vue'
+import { store } from '@/components/composibles/store.js'
 import { useGoblinState } from '@/components/composibles/useGoblinState'
-import { useState } from '@/components/composibles/useState'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
 const { user, addItem } = useGoblinState()
 
 const route = useRoute()
 
-const { currentItem } = await useState({ id: route.params.id, entity: 'items' })
+const currentItem = store.currentItem('items', route.params.id)
+const items = computed(() => store.entities.items)
+if (!items.value.length) await store.setItems('items')
 
 const buttonText = computed(() =>
   user.inventory.length < 6 ? 'добавить в инвентарь' : 'инвентарь переполнен'
 )
 /** добавить в инвентарь */
 const add = () => {
-  if (user.inventory.length < 6) addItem(currentItem.value)
+  if (user.inventory.length < 6) addItem(currentItem)
 }
 
 /** join классов гоблинов шмотки */
 const goblinClasses = computed(() =>
-  currentItem.value.goblins
+  currentItem.goblins
     .map((currentItem) => currentItem.attributes.name)
     .join(', ')
 )

@@ -1,10 +1,13 @@
 <template>
   <main class="align-center relative mb-20 flex flex-col">
-    <img
-      src="/src/assets/images/header.jpg"
-      alt="main"
-      class="mb-4 min-h-[150px] w-full object-cover"
-    />
+    <picture>
+      <source srcset="/src/assets/images/header.webp" type="image/webp" />
+      <img
+        src="/src/assets/images/header.jpg"
+        alt="main"
+        class="mb-4 min-h-[150px] w-full object-cover"
+      />
+    </picture>
     <div class="px-2">
       <div class="headline">
         G
@@ -39,7 +42,7 @@
         сумасшедших изобретениях...
       </div>
 
-      <div class="mx-auto mt-12 mb-2">
+      <div class="mx-auto mt-12 mb-2 text-center">
         Проект
         <span
           class="before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-silver"
@@ -56,7 +59,7 @@
         </a>
         , все права принадлежат ей же.
       </div>
-      <div class="mx-auto mb-auto text-right">
+      <div class="mr-20 mb-auto text-right">
         <a
           href="https://discord.gg/uzJDPcuv"
           target="_blank"
@@ -73,11 +76,11 @@
 <script setup>
 import { computed } from 'vue'
 
-import { useAppState } from '@/components/composibles/useAppState'
+import { useSizeState } from '@/components/composibles/useSizeState'
 import ExploseIcon from '@/components/icons/ExploseIcon.vue'
 import GrenadeIcon from '@/components/icons/GrenadeIcon.vue'
 
-const { width } = useAppState()
+const { width } = useSizeState()
 
 /**
  * меняем классы svg в зависимости от ширины экрана

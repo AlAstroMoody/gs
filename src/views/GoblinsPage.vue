@@ -1,11 +1,11 @@
 <template>
   <div class="mb-96 flex flex-1 flex-col justify-between px-2">
     <div class="mb-10 flex flex-col">
-      <div class="headline mb-8">Доступные персонажи</div>
+      <div class="headline my-8">Доступные персонажи</div>
       <div class="xl:flex">
         <div class="mb-2 flex flex-wrap md:mr-2 xl:flex-col">
           <div
-            v-for="goblin in entities"
+            v-for="goblin in goblins"
             :key="goblin.id"
             @click="choiceGoblin(goblin)"
             class="w-fit rounded px-4 py-2 font-medium lg:text-xl"
@@ -41,8 +41,10 @@
 
             <div class="mt-6 flex w-full flex-wrap">
               <span class="mr-4 text-xl">точки:</span>
-              <div class="flex w-80 flex-wrap xs:flex-nowrap">
-                <div class="w-full xs:mr-8 xs:w-1/2">
+              <div
+                class="flex flex-1 flex-wrap sm:flex-nowrap md:flex-wrap lg:flex-nowrap"
+              >
+                <div class="w-full sm:mr-8 md:mr-0 lg:mr-8 lg:w-1/2">
                   уровень атаки: {{ params.attack }}
                   <div class="flex justify-between">
                     <span>0</span> <span>85</span>
@@ -52,7 +54,7 @@
                     custom="bg-primary"
                   />
                 </div>
-                <div class="w-full xs:w-1/2">
+                <div class="w-full lg:w-1/2">
                   уровень защиты: {{ params.defense }}
                   <div class="flex justify-between">
                     <span>0</span> <span>85</span>
@@ -77,14 +79,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 import AppItemsPopup from '@/components/AppItemsPopup.vue'
 import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
+import { store } from '@/components/composibles/store.js'
 import { useGoblinState } from '@/components/composibles/useGoblinState'
-import { useState } from '@/components/composibles/useState'
 
-const { entities } = await useState({ entity: 'goblins' })
+const goblins = computed(() => store.entities.goblins)
+if (!goblins.value.length) await store.setItems('goblins')
+
 const { user, setGoblin, setLevel, changeAttack, changeDefense } =
   useGoblinState()
 

@@ -9,7 +9,7 @@ const screens = fullConfig.theme.screens
 const size = ref({})
 const width = ref(0)
 // размеры экрана
-export function useAppState() {
+export function useSizeState() {
   const setSize = (newState) => {
     size.value = newState
     let max = 0

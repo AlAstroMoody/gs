@@ -3,7 +3,7 @@
     <ul>
       <AppCraftItem
         :item="item"
-        v-for="item in items
+        v-for="item in craftItems
           .filter((item) => item?.parents?.length)
           .sort((a, b) => a.level - b.level)"
         :key="item.id"
@@ -47,19 +47,21 @@ import { ref, computed } from 'vue'
 import AppCraftItem from '@/components/AppCraftItem.vue'
 import AppFilter from '@/components/AppFilter.vue'
 import AppPopup from '@/components/AppPopup.vue'
-import { useAppState } from '@/components/composibles/useAppState'
-import { useState } from '@/components/composibles/useState'
+import { store } from '@/components/composibles/store.js'
+import { useSizeState } from '@/components/composibles/useSizeState'
 import FilterIcon from '@/components/icons/FilterIcon.vue'
 
-const { entities } = await useState({ entity: 'items' })
-const items = ref(entities)
+const items = computed(() => store.entities.items)
+if (!items.value.length) await store.setItems('items')
+
+const craftItems = ref(items.value)
 
 /**меняем набор на отфильтрованный */
-const changeItemsKit = (filteredItems) => (items.value = filteredItems)
+const changeItemsKit = (filteredItems) => (craftItems.value = filteredItems)
 
 const popup = ref(null)
 const openPopup = () => popup.value.open()
 
-const { width } = useAppState()
+const { width } = useSizeState()
 const isMobile = computed(() => ['xxs', 'xs', 'sm'].includes(width.value))
 </script>

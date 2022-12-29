@@ -12,7 +12,7 @@
       class="h-[calc(100%-215px)] animate-opacity justify-between overflow-y-auto opacity-0 animation-delay-500"
     >
       <router-link
-        v-for="item in items"
+        v-for="item in craftItems"
         :key="item.id"
         :to="'/item/' + item.id"
         class="my-1 flex w-full rounded-2xl border border-second transition-all"
@@ -31,7 +31,7 @@
         <QuestionIcon v-else color="purple" class="mr-3 h-16 w-16 rounded-lg" />
         <div class="my-auto ml-2">{{ item.name }}</div>
       </router-link>
-      <div v-if="!items?.length" class="w-full text-center">
+      <div v-if="!craftItems?.length" class="w-full text-center">
         совпадений не найдено
       </div>
     </div>
@@ -39,18 +39,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 import AppFilter from '@/components/AppFilter.vue'
-import { useState } from '@/components/composibles/useState'
+import { store } from '@/components/composibles/store.js'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
-const { entities } = await useState({ entity: 'items' })
-const items = ref(entities)
+const items = computed(() => store.entities.items)
+if (!items.value.length) await store.setItems('items')
+const craftItems = ref(items.value)
 
 /** изменяем набор артов */
 const changeItemsKit = (filteredItems) => {
-  items.value = filteredItems.sort((a, b) => {
+  craftItems.value = filteredItems.sort((a, b) => {
     if (!a.src) return 1
     if (!b.src) return -1
 

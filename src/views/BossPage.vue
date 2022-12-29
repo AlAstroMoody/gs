@@ -1,11 +1,12 @@
 <template>
-  <main>
-    <tabs v-model="activeTab" class="p-2 relative" variant="underline">
+  <flowbite-themable theme="purple">
+    <tabs v-model="activeTab" class="relative p-2" variant="underline">
       <tab
         :name="String(boss.id)"
         :title="boss.name"
-        v-for="boss in entities"
+        v-for="boss in bosses"
         :key="boss.id"
+        class="h-full"
       >
         <div class="my-2">волна №{{ boss.wave }}</div>
         <div class="my-2">Особенности босса:</div>
@@ -13,8 +14,8 @@
           Дроп:
           <div v-for="item in boss.items" :key="item.id" class="ml-4">
             <router-link :to="`/item/${item.id}`" class="flex items-center">
-              <img :src="src(item.id)" class="mr-2 mb-2" v-if="src(item.id)" />
-              <QuestionIcon v-else color="purple" class="w-16 h-16 mr-2 mb-2" />
+              <img :src="src(item.id)" class="mr-2 mb-2" v-if="src(item?.id)" />
+              <QuestionIcon v-else color="purple" class="mr-2 mb-2 h-16 w-16" />
               {{ item.name }}
               x%
             </router-link>
@@ -22,26 +23,29 @@
         </div>
         <component
           :is="currentIcon"
-          class="opacity-10 absolute inset-0 w-96 m-auto pointer-events-none"
+          class="pointer-events-none absolute inset-0 m-auto w-96 opacity-10"
         />
       </tab>
     </tabs>
-  </main>
+  </flowbite-themable>
 </template>
 
 <script setup>
-import { Tabs, Tab } from 'flowbite-vue'
-import { ref, watchEffect, shallowRef } from 'vue'
+import { Tabs, Tab, FlowbiteThemable } from 'flowbite-vue'
+import { ref, watchEffect, shallowRef, computed } from 'vue'
 
-import { useState } from '@/components/composibles/useState'
+import { store } from '@/components/composibles/store.js'
 import SpiderIcon from '@/components/icons/bosses/SpiderIcon.vue'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
-const { entities } = await useState({ entity: 'bosses' })
-const activeTab = ref(String(entities[0].id))
+const bosses = computed(() => store.entities.bosses)
+if (!bosses.value.length) await store.setItems('bosses')
 
-const items = await useState({ entity: 'items' })
-const src = (id) => items.entities.find((item) => item.id === id)?.src
+const items = computed(() => store.entities.items)
+if (!items.value.length) await store.setItems('items')
+
+const activeTab = ref(String(bosses.value[0]?.id))
+const src = (id) => items.value.find((item) => item.id === id)?.src
 
 const currentIcon = shallowRef(SpiderIcon)
 watchEffect(() => {

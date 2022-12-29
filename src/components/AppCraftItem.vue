@@ -28,7 +28,7 @@
 import { computed, ref, toRefs } from 'vue'
 
 import AppCraftItem from '@/components/AppCraftItem.vue'
-import { useState } from '@/components/composibles/useState'
+import { store } from '@/components/composibles/store.js'
 import LoupeIcon from '@/components/icons/LoupeIcon.vue'
 
 const props = defineProps({
@@ -45,15 +45,12 @@ const props = defineProps({
 const { item } = toRefs(props)
 const isOpen = ref(false)
 // есть ли предки
-const isHasParents = computed(() => !!currentItem?.value?.parents?.length)
+const isHasParents = computed(() => !!currentItem?.parents?.length)
 
 // открыть составляющие
 const toggle = () => {
   isHasParents.value ? (isOpen.value = !isOpen.value) : null
 }
 
-const { currentItem } = await useState({
-  entity: 'items',
-  id: item?.value?.id || 0,
-})
+const currentItem = store.currentItem('items', item.value?.id || 0)
 </script>

@@ -91,9 +91,10 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import { useGoblinState } from '@/components/composibles/useGoblinState'
+import { useSizeState } from '@/components/composibles/useSizeState'
 import CollapseIcon from '@/components/icons/CollapseIcon.vue'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
@@ -211,5 +212,10 @@ const secondParams = computed(() => [
   },
 ])
 
-const isShowBoard = ref(false)
+const isShowBoard = ref(true)
+
+const { width } = useSizeState()
+if (['xxs', 'xs', 'sm'].includes(width.value)) {
+  isShowBoard.value = false
+}
 </script>

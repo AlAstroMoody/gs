@@ -1,16 +1,16 @@
 <template>
-  <section class="lg:block hidden h-screen fixed">
+  <section class="fixed hidden h-screen lg:block">
     <AppGears />
     <div
-      class="mt-48 h-fit rounded-r-2xl py-5 pr-5 bg-second -translate-x-full animate-leftToRight"
+      class="mt-48 h-fit -translate-x-full animate-leftToRight rounded-r-2xl bg-second py-5 pr-5"
     >
       <router-link
-        class="link block relative py-4 px-2 hover:bg-second hover:text-primary w-max rounded-r-2xl my-2 animate-leftToRight -translate-x-full shadow-xl"
+        class="link relative my-2 block w-max -translate-x-full animate-leftToRight rounded-r-2xl py-4 px-2 shadow-xl"
         v-for="(point, index) in menu"
         :class="
           point.link === $route.path
             ? 'bg-second text-primary'
-            : 'text-second bg-primary'
+            : 'bg-primary text-second hover:bg-second hover:text-primary'
         "
         :style="linkStyle(index)"
         :key="index"
@@ -21,12 +21,12 @@
     </div>
   </section>
   <section
-    class="bg-primary flex justify-around fixed bottom-0 inset-x-0 lg:hidden z-10"
+    class="fixed inset-x-0 bottom-0 z-10 flex justify-around bg-primary lg:hidden"
   >
     <router-link :to="point.link" v-for="point in menu" :key="point.link">
       <component
         :is="icon(point.icon)"
-        class="p-1 w-full rounded-full border hover:border-red"
+        class="w-full rounded-full border p-1 hover:border-red"
         :class="{ 'border-red': point.link === $route.path }"
         :width="64"
         color="white"
@@ -38,37 +38,19 @@
 <script setup>
 import { defineAsyncComponent } from 'vue'
 
-import { getBosses } from '@/api/boss'
-import { getGoblins } from '@/api/goblin'
-import { getItems } from '@/api/items'
-import { menu } from '@/common/menu'
 import AppGears from '@/components/AppGears.vue'
-import { useGoblinState } from '@/components/composibles/useGoblinState'
-import { useState } from '@/components/composibles/useState'
 
 const linkStyle = (index) => {
-  return `animation-delay: ${index / 2 + 0.3}s`
+  return `animation-delay: ${index / 4 + 0.3}s`
 }
+
+const menu = [
+  { title: 'что происходит?', link: '/', icon: 'QuestionIcon' },
+  { title: 'снарядить персонажа', link: '/goblins', icon: 'ItemsIcon' },
+  { title: 'смотреть боссов', link: '/boss', icon: 'BossIcon' },
+  { title: 'дерево крафта', link: '/craft', icon: 'CraftIcon' },
+]
 
 const icon = (name) =>
   defineAsyncComponent(() => import(`../icons/${name}.vue`))
-
-// сущности, информацию о которых получаем : функция получения
-const allEntities = {
-  items: getItems,
-  bosses: getBosses,
-  goblins: getGoblins,
-}
-
-for (const key in allEntities) {
-  let { setItems } = await useState({
-    getAll: allEntities[key],
-    entity: key,
-  })
-  await setItems()
-}
-
-const { entities } = await useState({ entity: 'goblins' })
-const { user, setGoblin } = useGoblinState()
-user.goblin?.id ? null : setGoblin(entities[0])
 </script>

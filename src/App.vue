@@ -13,8 +13,7 @@
         <router-view name="bottom" v-slot="{ Component }">
           <component
             :is="Component"
-            class="fixed bottom-0 mx-auto mb-16 animate-opacity lg:my-0"
-            :class="pageClass"
+            class="lg: fixed bottom-0 mb-16 mr-4 animate-opacity lg:my-0"
           />
         </router-view>
       </div>
@@ -30,9 +29,9 @@
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
-import { useAppState } from '@/components/composibles/useAppState'
+import { useSizeState } from '@/components/composibles/useSizeState'
 
-const { setSize } = useAppState({})
+const { setSize } = useSizeState({})
 
 let ticking = ref(false)
 /** следим за шириной экрана, тест requestAnimationFrame */
@@ -47,7 +46,7 @@ const handleResize = ({ width, height }) => {
 }
 
 const route = useRoute()
-const pageClass = computed(() => {
-  return ['item', 'goblins'].includes(route.name) ? 'md:mr-80' : ''
-})
+const pageClass = computed(() =>
+  ['item', 'goblins'].includes(route.name) ? 'md:mr-80' : ''
+)
 </script>
