@@ -127,9 +127,9 @@ const { user, addItem } = useGoblinState()
 
 const route = useRoute()
 
-const currentItem = store.currentItem('items', route.params.id)
 const items = computed(() => store.entities.items)
 if (!items.value.length) await store.setItems('items')
+const currentItem = store.currentItem('items', route.params.id)
 
 const buttonText = computed(() =>
   user.inventory.length < 6 ? 'добавить в инвентарь' : 'инвентарь переполнен'

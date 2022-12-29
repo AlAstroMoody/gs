@@ -34,11 +34,33 @@ main {
 
 .page-enter-active,
 .page-leave-active {
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 .page-enter-from,
 .page-leave-to {
   opacity: 0;
   transform: scale(0.9);
   filter: blur(10px);
+}
+
+/* стили скроллбара */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #181818;
+  border-radius: 100px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 100px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  background-color: #d4cece;
+}
+
+html {
+  scrollbar-color: #d4cece #181818;
+  scrollbar-width: thin;
 }
