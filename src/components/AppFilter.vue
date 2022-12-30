@@ -64,8 +64,7 @@ const sliderThumbShift = (distance) => {
 // добавляем в фильтр текущего гоблина
 const goblinSelection = (value) => {
   filterFields.goblins = []
-  // теряем реактивность
-  value.id ? filterFields.goblins.push(value.id) : null
+  value.name ? filterFields.goblins.push(value.name) : null
   getItemsSample()
 }
 
@@ -90,7 +89,7 @@ const getItemsSample = () => {
   }
   if (filterFields.goblins?.length) {
     sampleItems = sampleItems.filter((item) =>
-      item.goblins.some((goblin) => filterFields.goblins[0] === goblin.id)
+      item.goblins.some((goblin) => filterFields.goblins[0] === goblin)
     )
   }
   emit('filteredItems', sampleItems)

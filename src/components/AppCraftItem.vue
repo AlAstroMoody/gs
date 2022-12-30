@@ -17,7 +17,7 @@
     <ul v-if="isHasParents && isOpen" class="pl-3">
       <AppCraftItem
         v-for="(parent, index) in currentItem?.parents"
-        :count="Number(currentItem.parents_count[parent.id] || 0)"
+        :count="parentsCount(parent.id)"
         :key="index"
         :item="parent"
       />
@@ -53,4 +53,7 @@ const toggle = () => {
 }
 
 const currentItem = store.currentItem('items', item.value?.id || 0)
+
+const parentsCount = (id) =>
+  currentItem?.count ? Number(currentItem.count[id]) : 0
 </script>

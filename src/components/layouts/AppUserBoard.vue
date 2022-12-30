@@ -2,7 +2,7 @@
   <img
     :src="user.goblin.src"
     alt="logo"
-    class="right-2 bottom-2 h-16 w-16"
+    class="md:left-2 md:right-auto right-2 bottom-2 h-16 w-16"
     v-if="!isShowBoard"
     @click="isShowBoard = !isShowBoard"
   />

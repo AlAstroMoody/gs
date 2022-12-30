@@ -17,10 +17,10 @@
               требуемый уровень: {{ currentItem.level }}
             </div>
             <div v-else>Нет ограничения по уровню</div>
-            <div v-if="currentItem.goblins.length">
+            <div v-if="currentItem.goblins?.length">
               Только для класса:
               <span class="text-lg text-red">
-                {{ goblinClasses }}
+                {{ currentItem.goblins.join(', ') }}
               </span>
             </div>
             <div v-else>Подходит для всех классов</div>
@@ -97,7 +97,9 @@
           :key="parent.id"
         >
           <router-link :to="`/item/${parent.id}`">
-            <span class="text-red hover:border-b"> {{ parent.name }} </span>
+            <span class="text-red hover:border-b">
+              {{ parentsCount(parent.id) }} {{ parent.name }}
+            </span>
             <span v-if="index !== currentItem.parents.length - 1">, </span>
             <span v-else>; </span>
           </router-link>
@@ -139,10 +141,8 @@ const add = () => {
   if (user.inventory.length < 6) addItem(currentItem)
 }
 
-/** join классов гоблинов шмотки */
-const goblinClasses = computed(() =>
-  currentItem.goblins
-    .map((currentItem) => currentItem.attributes.name)
-    .join(', ')
-)
+const parentsCount = (id) =>
+  currentItem?.count && currentItem.count[id]
+    ? `${currentItem.count[id]}шт`
+    : ''
 </script>

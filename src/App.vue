@@ -13,7 +13,7 @@
         <router-view name="bottom" v-slot="{ Component }">
           <component
             :is="Component"
-            class="lg: fixed bottom-0 mb-16 mr-4 animate-opacity lg:my-0"
+            class="fixed bottom-0 mb-16 mr-4 animate-opacity lg:my-0"
           />
         </router-view>
       </div>
