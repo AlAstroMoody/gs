@@ -10,5 +10,9 @@ export const getGoblins = async () => {
   // })
   // return response.data
 
+  goblins.forEach((goblin) => {
+    if (goblin.src) goblin.src = `/gs${goblin.src}`
+  })
+
   return goblins
 }

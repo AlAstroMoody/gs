@@ -10,5 +10,9 @@ export const getItems = async () => {
   // })
   // return response.data
 
+  items.forEach((item) => {
+    if (item.src) item.src = `/gs${item.src}`
+  })
+
   return items
 }
