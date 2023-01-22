@@ -1,12 +1,12 @@
 <template>
   <div
-    class="w-full h-4 rounded-lg"
+    class="h-4 w-full rounded-lg"
     ref="slider"
     @click.self="onSliderClick"
     :class="custom"
   >
     <label
-      class="rounded-lg relative left-0 h-6 w-3 -top-1 bg-second block"
+      class="relative left-0 -top-1 block h-6 w-3 rounded-lg bg-second"
       ref="thumb"
       @mousedown="onMouseDown"
       @dragstart="OnDragStart"
@@ -17,7 +17,7 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch, toRefs } from 'vue'
 
-import { throttle } from '@/common/throttle'
+import { useDebounceFn } from '@vueuse/core'
 
 const props = defineProps({
   custom: {
@@ -59,8 +59,12 @@ const emitShift = () => {
 }
 
 watch(travelDistance, () => {
-  throttle(emitShift, 150)
+  debouncedFn()
 })
+
+const debouncedFn = useDebounceFn(() => {
+  emitShift()
+}, 100)
 
 const onMouseDown = (event) => {
   event.preventDefault()

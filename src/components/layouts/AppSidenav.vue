@@ -49,7 +49,6 @@ const menu = [
   { title: 'снарядить персонажа', link: '/goblins', icon: 'ItemsIcon' },
   { title: 'смотреть боссов', link: '/boss', icon: 'BossIcon' },
   { title: 'дерево крафта', link: '/craft', icon: 'CraftIcon' },
-  { title: 'для тестов', link: '/test', icon: 'LoupeIcon' },
 ]
 
 const icon = (name) =>

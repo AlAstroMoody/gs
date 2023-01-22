@@ -1,14 +1,14 @@
 <template>
-  <div class="bg-gray rounded-2xl p-2 border-silver border">
-    <label class="w-full block" @click="selectClick">
+  <div class="rounded-2xl border border-silver bg-gray p-2">
+    <label class="block w-full" @click="selectClick">
       {{ currentValue?.name || defaultValue }}
     </label>
-    <div class="opacity-100" v-if="isSelectClick">
+    <div class="opacity-100" v-if="isSelectClick" ref="select">
       <label
         v-for="option in filteredOptions"
         :key="option.id"
         @click="selectValue(option.id)"
-        class="py-0 px-2 w-full block transition-all hover:text-primary hover:bg-second"
+        class="block w-full py-0 px-2 transition-all hover:bg-second hover:text-primary"
       >
         {{ option.name || option }}
       </label>
@@ -18,6 +18,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import { onClickOutside } from '@vueuse/core'
 
 const emit = defineEmits(['getOption'])
 const props = defineProps({
@@ -38,14 +39,9 @@ const filteredOptions = computed(() => {
 })
 
 const isSelectClick = ref(false)
-const changeOptionsVisibility = () => {
-  isSelectClick.value = !isSelectClick.value
-  !isSelectClick.value ? removeHandler() : null
-}
 
-const selectClick = () => (isSelectClick.value ? null : addHandler())
+const selectClick = () => (isSelectClick.value = !isSelectClick.value)
 const selectValue = (id) => {
-  removeHandler()
   isSelectClick.value = !isSelectClick.value
   if (id || id === 0) {
     currentValue.value = props.options.find((option) => option?.id === id)
@@ -57,10 +53,6 @@ const selectValue = (id) => {
 
 const currentValue = ref({ name: '', id: 0 })
 
-const addHandler = () => {
-  window.addEventListener('click', changeOptionsVisibility)
-}
-const removeHandler = () => {
-  window.removeEventListener('click', changeOptionsVisibility)
-}
+const select = ref(null)
+onClickOutside(select, () => (isSelectClick.value = !isSelectClick.value))
 </script>

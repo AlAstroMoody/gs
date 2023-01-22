@@ -47,14 +47,6 @@ const router = createRouter({
         left: () => import('@/components/layouts/AppSidenav.vue'),
       },
     },
-    {
-      path: '/test',
-      name: 'test',
-      components: {
-        default: () => import('@/views/TestPage.vue'),
-        left: () => import('@/components/layouts/AppSidenav.vue'),
-      },
-    },
   ],
 })
 

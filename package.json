@@ -8,11 +8,10 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
+    "@vueuse/core": "^9.11.1",
     "axios": "^0.26.0",
     "flowbite": "^1.5.5",
     "flowbite-vue": "^0.0.9",
-    "three": "^0.134.0",
-    "troisjs": "^0.3.4",
     "vue": "^3.2.41",
     "vue-eslint-parser": "^9.1.0",
     "vue-router": "^4.0.12",
