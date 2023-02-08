@@ -3,7 +3,7 @@ import { reactive } from 'vue'
 import { getBosses } from '@/api/boss'
 import { getGoblins } from '@/api/goblin'
 import { getItems } from '@/api/items'
-import { useGoblinState } from '@/components/composibles/useGoblinState'
+import { useGoblinState } from '@/components/composables/useGoblinState'
 
 const apiDictionary = {
   bosses: getBosses,

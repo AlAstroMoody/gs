@@ -47,8 +47,8 @@ import { ref, computed } from 'vue'
 import AppCraftItem from '@/components/AppCraftItem.vue'
 import AppFilter from '@/components/AppFilter.vue'
 import AppPopup from '@/components/AppPopup.vue'
-import { store } from '@/components/composibles/store.js'
-import { useSizeState } from '@/components/composibles/useSizeState'
+import { store } from '@/components/composables/store.js'
+import { useSizeState } from '@/components/composables/useSizeState'
 import FilterIcon from '@/components/icons/FilterIcon.vue'
 
 const items = computed(() => store.entities.items)

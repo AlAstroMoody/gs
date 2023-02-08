@@ -85,8 +85,8 @@ import { ref, computed } from 'vue'
 
 import AppItemsPopup from '@/components/AppItemsPopup.vue'
 import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
-import { store } from '@/components/composibles/store.js'
-import { useGoblinState } from '@/components/composibles/useGoblinState'
+import { store } from '@/components/composables/store.js'
+import { useGoblinState } from '@/components/composables/useGoblinState'
 
 const goblins = computed(() => store.entities.goblins)
 if (!goblins.value.length) await store.setItems('goblins')

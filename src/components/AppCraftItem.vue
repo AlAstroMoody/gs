@@ -28,7 +28,7 @@
 import { computed, ref, toRefs } from 'vue'
 
 import AppCraftItem from '@/components/AppCraftItem.vue'
-import { store } from '@/components/composibles/store.js'
+import { store } from '@/components/composables/store.js'
 import LoupeIcon from '@/components/icons/LoupeIcon.vue'
 
 const props = defineProps({

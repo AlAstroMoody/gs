@@ -36,7 +36,7 @@ import { reactive, computed } from 'vue'
 
 import AppCommonSelect from '@/components/common/AppCommonSelect.vue'
 import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
-import { store } from '@/components/composibles/store.js'
+import { store } from '@/components/composables/store.js'
 
 // поля фильтрации
 const filterFields = reactive({

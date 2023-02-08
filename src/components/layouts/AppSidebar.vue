@@ -42,7 +42,7 @@
 import { ref, computed } from 'vue'
 
 import AppFilter from '@/components/AppFilter.vue'
-import { store } from '@/components/composibles/store.js'
+import { store } from '@/components/composables/store.js'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
 const items = computed(() => store.entities.items)

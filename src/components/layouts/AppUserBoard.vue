@@ -2,7 +2,7 @@
   <img
     :src="user.goblin.src"
     alt="logo"
-    class="md:left-2 md:right-auto right-2 bottom-2 h-16 w-16"
+    class="right-2 bottom-2 h-16 w-16 md:left-2 md:right-auto"
     v-if="!isShowBoard"
     @click="isShowBoard = !isShowBoard"
   />
@@ -93,8 +93,8 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 
-import { useGoblinState } from '@/components/composibles/useGoblinState'
-import { useSizeState } from '@/components/composibles/useSizeState'
+import { useGoblinState } from '@/components/composables/useGoblinState'
+import { useSizeState } from '@/components/composables/useSizeState'
 import CollapseIcon from '@/components/icons/CollapseIcon.vue'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
@@ -215,7 +215,9 @@ const secondParams = computed(() => [
 const isShowBoard = ref(true)
 
 const { width } = useSizeState()
-if (['xxs', 'xs', 'sm'].includes(width.value)) {
-  isShowBoard.value = false
-}
+watch(width, () => {
+  if (['xxs', 'xs', 'sm'].includes(width.value)) {
+    isShowBoard.value = false
+  }
+})
 </script>

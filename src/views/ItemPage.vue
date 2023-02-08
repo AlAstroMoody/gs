@@ -121,8 +121,8 @@ import { useRoute } from 'vue-router'
 
 import { itemParams } from '@/common/itemParams'
 import AppItemsPopup from '@/components/AppItemsPopup.vue'
-import { store } from '@/components/composibles/store.js'
-import { useGoblinState } from '@/components/composibles/useGoblinState'
+import { store } from '@/components/composables/store.js'
+import { useGoblinState } from '@/components/composables/useGoblinState'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
 const { user, addItem } = useGoblinState()

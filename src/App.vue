@@ -22,31 +22,34 @@
       </router-view>
     </div>
   </Suspense>
-  <resize-observer @notify="handleResize" :showTrigger="true" />
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { useWindowSize } from '@vueuse/core'
+import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
-import { useSizeState } from '@/components/composibles/useSizeState'
+import { useSizeState } from '@/components/composables/useSizeState'
 
+const { width } = useWindowSize()
 const { setSize } = useSizeState({})
 
+setSize({ width })
 let ticking = ref(false)
+
 /** следим за шириной экрана, тест requestAnimationFrame */
-const handleResize = ({ width, height }) => {
+watch(width, () => {
   if (!ticking.value) {
     window.requestAnimationFrame(() => {
       ticking.value = false
-      setSize({ width, height })
+      setSize({ width })
     })
     ticking.value = true
   }
-}
+})
 
 const route = useRoute()
 const pageClass = computed(() =>
-  ['item', 'goblins'].includes(route.name) ? 'md:mr-80' : ''
+  ['item', 'goblins', 'bosses'].includes(route.name) ? 'md:mr-80' : ''
 )
 </script>

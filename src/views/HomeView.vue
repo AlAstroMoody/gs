@@ -76,7 +76,7 @@
 <script setup>
 import { computed } from 'vue'
 
-import { useSizeState } from '@/components/composibles/useSizeState'
+import { useSizeState } from '@/components/composables/useSizeState'
 import ExploseIcon from '@/components/icons/ExploseIcon.vue'
 import GrenadeIcon from '@/components/icons/GrenadeIcon.vue'
 

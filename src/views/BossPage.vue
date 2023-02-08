@@ -34,7 +34,7 @@
 import { Tabs, Tab, FlowbiteThemable } from 'flowbite-vue'
 import { ref, watchEffect, shallowRef, computed } from 'vue'
 
-import { store } from '@/components/composibles/store.js'
+import { store } from '@/components/composables/store.js'
 import SpiderIcon from '@/components/icons/bosses/SpiderIcon.vue'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 

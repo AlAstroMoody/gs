@@ -2,16 +2,14 @@
   <Transition name="modal">
     <div
       v-if="isOpen"
-      class="fixed inset-0 flex justify-center z-10 bg-opacity-20 bg-silver backdrop-blur-[6px] transition-all"
+      class="fixed inset-0 z-10 flex justify-center bg-silver bg-opacity-20 backdrop-blur-[6px] transition-all"
       @click.self="close"
-      @keydown.esc="close"
-      @scroll.prevent.passive
     >
       <div class="absolute -right-8 top-2 z-10">
         <ExitIcon @click="close" color="#d4cece" />
       </div>
       <div
-        class="bg-gray md:px-16 xs:px-8 md:py-16 rounded xs:w-max w-full md:border my-auto max-h-[90%] overflow-hidden"
+        class="my-auto max-h-[90%] w-full overflow-hidden rounded bg-gray xs:w-max xs:px-8 md:border md:px-16 md:py-16"
       >
         <slot name="default" />
       </div>
