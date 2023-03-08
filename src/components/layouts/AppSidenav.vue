@@ -21,7 +21,7 @@
     </div>
   </section>
   <section
-    class="fixed inset-x-0 bottom-0 z-10 flex justify-around bg-primary lg:hidden"
+    class="fixed inset-x-0 bottom-0 z-10 flex justify-around bg-primary py-1 lg:hidden"
   >
     <router-link :to="point.link" v-for="point in menu" :key="point.link">
       <component

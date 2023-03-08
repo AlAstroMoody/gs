@@ -1,10 +1,5 @@
 module.exports = {
-  content: [
-    './index.html',
-    './src/**/*.{vue,js,ts,jsx,tsx}',
-    'node_modules/flowbite-vue/**/*.{js,jsx,ts,tsx}',
-    'node_modules/flowbite/**/*.{js,jsx,ts,tsx}',
-  ],
+  content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
     screens: {
       xxs: '320px',
@@ -22,6 +17,7 @@ module.exports = {
         silver: '#d4cece',
         red: 'rgba(255, 3, 3, 0.82)',
         gray: '#222222',
+        purple: '#800080',
       },
       animation: {
         filter: 'opacity 1s 0.3s ease-out forwards',
@@ -60,5 +56,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require('tailwindcss-animation-delay'), require('flowbite/plugin')],
+  plugins: [require('tailwindcss-animation-delay')],
 }

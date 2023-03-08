@@ -8,7 +8,7 @@
         class="mb-4 min-h-[150px] w-full object-cover"
       />
     </picture>
-    <div class="px-2">
+    <div class="px-4 lg:px-2">
       <div class="headline">
         G
         <GrenadeIcon class="mb-2 inline" :class="grenadeClass" />
