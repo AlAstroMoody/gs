@@ -22,7 +22,7 @@
           v-if="user.goblin?.name"
         >
           <div class="flex">
-            <img :src="user.goblin.src" alt="img" class="mr-4 h-32 w-32" />
+            <img :src="user.goblin.src" alt="img" class="mr-4 h-24 w-24" />
             <div>
               <div class="subtitle">{{ user.goblin.name }}</div>
               <div>Основной параметр: {{ user.goblin.mainParam }}</div>

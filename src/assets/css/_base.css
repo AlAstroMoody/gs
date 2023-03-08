@@ -2,23 +2,21 @@
 @import './_typography.css';
 
 body {
-  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: Inter, system-ui, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  cursor: url(/src/assets/images/cursor_gauntlet.png), auto;
+  cursor: url(/images/cursor_gauntlet.png), auto;
 }
 
 a:hover,
 button:hover {
-  cursor: url(/src/assets/images/cursor_sword.png), auto;
+  cursor: url(/images/cursor_sword.png), auto;
 }
 
 input,
 label {
-  cursor: url(/src/assets/images/cursor_gauntlet2.png), auto;
+  cursor: url(/images/cursor_gauntlet2.png), auto;
 }
 
 input:focus + label,

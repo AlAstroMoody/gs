@@ -25,9 +25,10 @@ module.exports = {
         show: 'show 0.5s ease-in forwards',
         opacity: 'opacity 0.5s ease-out forwards',
         leftToRight: 'leftToRight 1s ease-out forwards',
+        increase: 'increase 1s ease-out forwards',
       },
       backgroundImage: {
-        slot: "url('/src/assets/images/slot.png')",
+        slot: "url('/images/slot.png')",
       },
       keyframes: {
         opacity: {
@@ -49,6 +50,10 @@ module.exports = {
         leftToRight: {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(0)' },
+        },
+        increase: {
+          '0%': { transform: 'scale(0)' },
+          '100%': { transform: 'scale(1)' },
         },
       },
       spacing: {

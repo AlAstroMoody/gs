@@ -28,7 +28,7 @@
       <Teleport to="body">
         <component
           :is="currentIcon"
-          class="pointer-events-none absolute inset-0 m-auto w-96 opacity-10"
+          class="pointer-events-none absolute inset-0 m-auto w-96 animate-increase opacity-20"
         />
       </Teleport>
     </div>
@@ -55,21 +55,22 @@ const currentBoss = computed(
     bosses.value.find((boss) => boss.id === activeTab.value) || bosses.value[0]
 )
 
+const bossIcons = {
+  1: 'Spider',
+  2: 'SlaveOwner',
+  3: 'Guardian',
+  4: 'Excavator',
+  5: 'Lust',
+  7: 'Greed',
+  9: 'Fear',
+  12: 'Shizzl',
+  13: 'Death',
+}
 const currentIcon = shallowRef(SpiderIcon)
 watchEffect(() => {
-  let boss
-  switch (activeTab.value) {
-    case '1':
-      boss = 'SpiderIcon'
-      break
-    case '5':
-      boss = 'GirlIcon'
-      break
-    default:
-      boss = 'SpiderIcon'
-      break
-  }
-  import(`../components/icons/bosses/${boss}.vue`).then((val) => {
+  let boss = bossIcons[activeTab.value] || 'Spider'
+
+  import(`../components/icons/bosses/${boss}Icon.vue`).then((val) => {
     currentIcon.value = val.default
   })
 })

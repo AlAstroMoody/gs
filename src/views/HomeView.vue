@@ -1,11 +1,11 @@
 <template>
   <main class="align-center relative mb-20 flex flex-col">
     <picture>
-      <source srcset="/src/assets/images/header.webp" type="image/webp" />
+      <source srcset="/header.webp" type="image/webp" />
       <img
-        src="/src/assets/images/header.jpg"
+        src="/header.jpg"
         alt="main"
-        class="mb-4 min-h-[150px] w-full object-cover"
+        class="mb-4 min-h-[150px] w-full animate-topToBottom object-cover"
       />
     </picture>
     <div class="px-4 lg:px-2">
@@ -45,7 +45,7 @@
       <div class="mx-auto mt-12 mb-2 text-center">
         Проект
         <span
-          class="before:absolute before:-inset-1 before:block before:-skew-y-3 before:bg-silver"
+          class="before:absolute before:-inset-1 before:mx-1 before:block before:-skew-y-3 before:bg-silver"
         >
           <span class="relative text-primary">"Goblin Survival"</span>
         </span>
@@ -70,7 +70,7 @@
         проекта
       </div>
     </div>
-    <ExploseIcon class="absolute bottom-0 -right-1/4 opacity-30" color="red" />
+    <ExploseIcon class="absolute bottom-0 -right-1/4 opacity-20" color="red" />
   </main>
 </template>
 <script setup>

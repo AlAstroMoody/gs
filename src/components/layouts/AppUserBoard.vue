@@ -190,7 +190,7 @@ const secondParams = computed(() => [
   },
   {
     title: 'cкорость бега:',
-    value: itemsStats.value.ms || 0,
+    value: (itemsStats.value.ms || 0) + user.goblin.stats_increase.ms,
   },
   {
     title: 'cкорость атаки:',
