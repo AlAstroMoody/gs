@@ -6,6 +6,9 @@ export const getItems = async () => {
   //   .get(`items`)
   //   .catch((error) => console.log(error))
   // return response.data
+  items.forEach((item) => {
+    if (item.src) item.src = `/gs${item.src}`
+  })
 
   return items
 }
