@@ -3,7 +3,7 @@
     <FilterIcon color="black" @click="openPopup" :width="40" :height="40" />
     <AppPopup ref="popup" @wheel.stop>
       <template #default>
-        <AppSidebar class="w-full" />
+        <AppSidebar class="h-full w-full py-2 px-1" />
       </template>
     </AppPopup>
   </div>

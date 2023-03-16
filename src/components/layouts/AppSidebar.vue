@@ -1,15 +1,15 @@
 <template>
   <div
-    class="fixed inset-y-0 right-0 mx-auto h-full -translate-y-full animate-topToBottom border-l border-second py-2 px-1"
+    class="fixed inset-y-0 right-0 mx-auto -translate-y-full animate-topToBottom border-l border-second"
   >
     <div
-      class="relative z-10 my-2 w-full animate-filter rounded-2xl border border-second bg-primary p-2 opacity-0"
+      class="relative z-10 my-1 w-full animate-filter rounded-2xl border border-second bg-primary p-2 opacity-0"
     >
       <AppFilter @filteredItems="changeItemsKit($event)" />
     </div>
 
     <div
-      class="h-[calc(100%-215px)] animate-opacity justify-between overflow-y-auto opacity-0 animation-delay-500"
+      class="h-[calc(100%-266px)] animate-opacity justify-between overflow-y-auto opacity-0 animation-delay-500"
     >
       <router-link
         v-for="item in craftItems"
@@ -24,7 +24,7 @@
       >
         <img
           v-if="item.src"
-          :src="item.src"
+          :src="`.${item.src}`"
           class="h-16 w-16 rounded-l-2xl"
           alt="img"
         />

@@ -25,7 +25,7 @@ input {
 
 button,
 input {
-  appearance: unset;
+  /* appearance: unset; */
   background: unset;
   border: unset;
   outline: unset;

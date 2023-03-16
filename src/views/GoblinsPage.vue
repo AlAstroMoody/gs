@@ -8,12 +8,14 @@
             v-for="goblin in goblins"
             :key="goblin.id"
             @click="choiceGoblin(goblin)"
-            class="w-fit rounded border px-4 py-2 font-medium lg:text-xl"
+            class="w-fit rounded border font-medium lg:text-xl"
             :class="
               goblin === user.goblin ? 'border-second ' : 'border-primary'
             "
           >
-            {{ goblin.name }}
+            <button class="px-4 py-2">
+              {{ goblin.name }}
+            </button>
           </div>
         </div>
 

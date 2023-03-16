@@ -30,9 +30,25 @@
     @getOption="goblinSelection"
     default-value="--для всех классов--"
   />
+  <label class="my-1 flex items-center">
+    <input
+      type="checkbox"
+      class="mr-2 h-5 w-5 bg-silver accent-black"
+      v-model="filterFields.luck"
+    />
+    с удачей
+  </label>
+  <label class="my-1 flex items-center">
+    <input
+      type="checkbox"
+      class="mr-2 h-5 w-5 bg-silver accent-black"
+      v-model="filterFields.stealth"
+    />
+    обнаружение невидимок
+  </label>
 </template>
 <script setup>
-import { reactive, computed } from 'vue'
+import { reactive, computed, watch } from 'vue'
 
 import AppCommonSelect from '@/components/common/AppCommonSelect.vue'
 import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
@@ -43,6 +59,8 @@ const filterFields = reactive({
   name: '',
   level: 0,
   goblins: [],
+  luck: false,
+  stealth: false,
 })
 
 const items = computed(() => store.entities.items)
@@ -58,19 +76,17 @@ emit('filteredItems', items.value)
 // сдвигаем положение на слайдере
 const sliderThumbShift = (distance) => {
   filterFields.level = 200 * distance
-  getItemsSample()
 }
 
 // добавляем в фильтр текущего гоблина
 const goblinSelection = (value) => {
   filterFields.goblins = []
-  value.name ? filterFields.goblins.push(value.name) : null
-  getItemsSample()
+  console.log(value)
+  value.id ? filterFields.goblins.push(value.name) : null
 }
 
 const searchItem = (event) => {
   filterFields.name = event.target.value
-  getItemsSample()
 }
 
 // при изменении любого из полей фильтра меняем выборку
@@ -92,6 +108,15 @@ const getItemsSample = () => {
       item.goblins.some((goblin) => filterFields.goblins[0] === goblin)
     )
   }
+  if (filterFields.luck) {
+    sampleItems = sampleItems.filter((item) => item?.params?.luck)
+  }
+  if (filterFields.stealth) {
+    sampleItems = sampleItems.filter((item) => item?.params?.stealth_detection)
+  }
+
   emit('filteredItems', sampleItems)
 }
+
+watch(filterFields, () => getItemsSample())
 </script>

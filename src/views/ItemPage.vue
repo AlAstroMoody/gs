@@ -24,6 +24,9 @@
               </span>
             </div>
             <div v-else>Подходит для всех классов</div>
+            <div v-if="currentItem.craft">
+              крафт в: <span class="text-red">{{ currentItem.craft }}</span>
+            </div>
           </div>
         </div>
         <div
