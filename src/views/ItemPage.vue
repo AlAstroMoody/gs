@@ -27,6 +27,15 @@
             <div v-if="currentItem.craft">
               крафт в: <span class="text-red">{{ currentItem.craft }}</span>
             </div>
+            <div v-if="currentItem.boss">
+              Босс:
+              <router-link
+                :to="`/boss?name=${currentItem.boss?.name}`"
+                class="mr-2 text-red"
+              >
+                {{ currentItem.boss?.name }}
+              </router-link>
+            </div>
           </div>
         </div>
         <div

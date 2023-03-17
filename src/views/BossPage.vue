@@ -18,7 +18,11 @@
         Дроп:
         <div v-for="item in currentBoss.items" :key="item.id" class="ml-4">
           <router-link :to="`/item/${item.id}`" class="flex items-center">
-            <img :src="src(item.id)" class="mr-2 mb-2" v-if="src(item?.id)" />
+            <img
+              :src="`.${src(item.id)}`"
+              class="mr-2 mb-2"
+              v-if="src(item?.id)"
+            />
             <QuestionIcon v-else color="purple" class="mr-2 mb-2 h-16 w-16" />
             {{ item.name }}
             x%
@@ -37,10 +41,14 @@
 
 <script setup>
 import { ref, watchEffect, shallowRef, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import { store } from '@/components/composables/store.js'
 import SpiderIcon from '@/components/icons/bosses/SpiderIcon.vue'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
+
+const route = useRoute()
+const router = useRouter()
 
 const bosses = computed(() => store.entities.bosses)
 if (!bosses.value.length) await store.setItems('bosses')
@@ -49,6 +57,12 @@ const items = computed(() => store.entities.items)
 if (!items.value.length) await store.setItems('items')
 
 const activeTab = ref(bosses.value[0]?.id)
+if (route.query.name) {
+  activeTab.value = bosses.value.find(
+    (boss) => boss.name === route.query.name
+  )?.id
+}
+
 const src = (id) => items.value.find((item) => item.id === id)?.src
 const currentBoss = computed(
   () =>
@@ -68,6 +82,7 @@ const bossIcons = {
 }
 const currentIcon = shallowRef(SpiderIcon)
 watchEffect(() => {
+  router.push({ query: { name: currentBoss.value.name } })
   let boss = bossIcons[activeTab.value] || 'Spider'
 
   import(`../components/icons/bosses/${boss}Icon.vue`).then((val) => {
