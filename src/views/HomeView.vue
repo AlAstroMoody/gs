@@ -1,9 +1,9 @@
 <template>
   <main class="align-center relative mb-20 flex flex-col">
     <picture>
-      <source srcset="/header.webp" type="image/webp" />
+      <source srcset="/images/header.webp" type="image/webp" />
       <img
-        src="/header.jpg"
+        src="/images/header.jpg"
         alt="main"
         class="mb-4 min-h-[150px] w-full animate-topToBottom object-cover"
       />

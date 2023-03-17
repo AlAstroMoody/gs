@@ -6,7 +6,7 @@
       <div class="mt-10 mb-4 flex flex-wrap items-center">
         <div class="flex w-full xs:w-auto">
           <img
-            :src="currentItem.src"
+            :src="`.${currentItem.src}`"
             alt="logo"
             v-if="currentItem.src"
             class="h-24 w-24"

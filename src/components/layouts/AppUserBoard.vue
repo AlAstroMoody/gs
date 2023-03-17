@@ -1,6 +1,6 @@
 <template>
   <img
-    :src="user.goblin.src"
+    :src="`.${user.goblin.src}`"
     alt="logo"
     class="right-2 bottom-2 h-16 w-16 md:left-2 md:right-auto"
     v-if="!isShowBoard"
@@ -12,7 +12,7 @@
   >
     <div class="mb-2 flex justify-center">
       <div class="overflow-hidden">
-        <img :src="user.goblin.src" alt="logo" class="h-16 w-16" />
+        <img :src="`.${user.goblin.src}`" alt="logo" class="h-16 w-16" />
       </div>
       <div class="ml-4 w-3/4">
         <div class="subtitle mx-auto">Крягз "Ядро"</div>
@@ -48,7 +48,7 @@
 
             <img
               v-if="user.inventory[i - 1] && user.inventory[i - 1].src"
-              :src="user.inventory[i - 1].src"
+              :src="`.${user.inventory[i - 1].src}`"
               alt="img"
               @click="removeItem(i)"
             />
