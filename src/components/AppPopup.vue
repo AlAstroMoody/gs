@@ -5,8 +5,13 @@
       class="fixed inset-0 z-10 flex justify-center bg-silver bg-opacity-20 backdrop-blur-[6px] transition-all"
       @click.self="close"
     >
-      <div class="absolute -right-8 top-2 z-10">
-        <ExitIcon @click="close" color="#d4cece" />
+      <div class="absolute -right-1 top-2 z-10">
+        <button
+          class="rounded-full bg-gray backdrop-blur-[20px]"
+          ref="closeBtn"
+        >
+          <ExitIcon @click="close" color="#d4cece" />
+        </button>
       </div>
       <div
         class="my-auto max-h-[90%] w-full overflow-hidden rounded bg-gray xs:w-max xs:px-8 md:border md:px-16 md:py-16"
@@ -17,9 +22,12 @@
   </Transition>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 
+import { elTurn } from '@/components/composables/transitions'
 import ExitIcon from '@/components/icons/ExitIcon.vue'
+
+const closeBtn = ref(null)
 
 // попап скрыт
 const isOpen = ref(false)
@@ -27,6 +35,9 @@ const isOpen = ref(false)
 // показать попап
 const open = () => {
   isOpen.value = true
+  nextTick(() =>
+    elTurn({ el: closeBtn.value, transformOrigin: 'top', rotate: 180 })
+  )
 }
 
 // скрыть попап

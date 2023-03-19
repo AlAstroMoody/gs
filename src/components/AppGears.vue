@@ -24,17 +24,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 
 const isGearsTurn = ref(false)
-const router = useRouter()
-router.beforeEach(() => {
+
+onBeforeRouteLeave(() => {
   isGearsTurn.value = !isGearsTurn.value
 
   return true
 })
 
+onMounted(() => (isGearsTurn.value = !isGearsTurn.value))
 // начальные позиции  шестеренок
 const positions = [
   'top-[-18px] left-[-18px]',

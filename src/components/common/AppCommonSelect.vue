@@ -17,8 +17,8 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
 import { onClickOutside } from '@vueuse/core'
+import { computed, ref } from 'vue'
 
 const emit = defineEmits(['getOption'])
 const props = defineProps({
@@ -40,7 +40,9 @@ const filteredOptions = computed(() => {
 
 const isSelectClick = ref(false)
 
-const selectClick = () => (isSelectClick.value = !isSelectClick.value)
+const selectClick = () => {
+  isSelectClick.value = !isSelectClick.value
+}
 const selectValue = (id) => {
   isSelectClick.value = !isSelectClick.value
   if (id || id === 0) {

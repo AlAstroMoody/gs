@@ -1,9 +1,9 @@
 <template>
   <div class="mb-96 flex flex-1 flex-col justify-between px-2">
     <div class="mb-10 flex flex-col">
-      <div class="headline my-8">Доступные персонажи</div>
+      <div class="headline my-8" ref="title">Доступные персонажи</div>
       <div class="xl:flex">
-        <div class="mb-2 flex flex-wrap md:mr-2 xl:flex-col">
+        <div class="mb-2 flex flex-wrap md:mr-2 xl:flex-col" ref="goblinsList">
           <div
             v-for="goblin in goblins"
             :key="goblin.id"
@@ -22,6 +22,7 @@
         <div
           class="flex flex-col rounded-lg bg-second p-2 text-primary md:mr-5"
           v-if="user.goblin?.name"
+          ref="goblinCard"
         >
           <div class="flex">
             <img
@@ -88,11 +89,16 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 import AppItemsPopup from '@/components/AppItemsPopup.vue'
 import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
 import { store } from '@/components/composables/store.js'
+import {
+  animateChildren,
+  elTurn,
+  scaleUp,
+} from '@/components/composables/transitions'
 import { useGoblinState } from '@/components/composables/useGoblinState'
 
 const goblins = computed(() => store.entities.goblins)
@@ -119,4 +125,14 @@ const defenseSliderThumbShift = (distance) => {
   params.value.defense = Math.round(85 * distance) || 0
   changeDefense(params.value.defense)
 }
+
+const goblinsList = ref(null)
+const title = ref(null)
+const goblinCard = ref(null)
+
+onMounted(() => {
+  animateChildren([goblinsList])
+  elTurn({ el: title.value, transformOrigin: 'left top' })
+  scaleUp({ el: goblinCard.value, from: 0.5 })
+})
 </script>

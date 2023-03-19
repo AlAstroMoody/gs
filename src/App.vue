@@ -6,9 +6,7 @@
       </router-view>
       <div class="h-full w-full lg:ml-48 lg:pl-3 xxl:ml-64" :class="pageClass">
         <router-view v-slot="{ Component }">
-          <transition name="page" mode="out-in">
-            <component :is="Component" :key="$route.path" class="h-full" />
-          </transition>
+          <component :is="Component" :key="$route.path" class="h-full" />
         </router-view>
         <router-view name="bottom" v-slot="{ Component }">
           <component

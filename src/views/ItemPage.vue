@@ -1,7 +1,7 @@
 <template>
   <div v-if="!currentItem">Такого предмета нет</div>
   <div class="mx-4 mb-96 flex flex-1 flex-col justify-between" v-else>
-    <div>
+    <div ref="content">
       <div class="headline mt-6">{{ currentItem.name }}</div>
       <div class="mt-10 mb-4 flex flex-wrap items-center">
         <div class="flex w-full xs:w-auto">
@@ -128,12 +128,13 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { itemParams } from '@/common/itemParams'
 import AppItemsPopup from '@/components/AppItemsPopup.vue'
 import { store } from '@/components/composables/store.js'
+import { animateChildren } from '@/components/composables/transitions'
 import { useGoblinState } from '@/components/composables/useGoblinState'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
@@ -157,4 +158,9 @@ const parentsCount = (id) =>
   currentItem?.count && currentItem.count[id]
     ? `${currentItem.count[id]}шт`
     : ''
+
+const content = ref(null)
+onMounted(() => {
+  animateChildren([content])
+})
 </script>

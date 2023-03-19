@@ -20,19 +20,21 @@
       </router-link>
     </div>
   </section>
-  <section
-    class="fixed inset-x-0 bottom-0 z-10 flex justify-around bg-primary py-1 lg:hidden"
-  >
-    <router-link :to="point.link" v-for="point in menu" :key="point.link">
-      <component
-        :is="icon(point.icon)"
-        class="w-full rounded-full border p-1 hover:border-red"
-        :class="{ 'border-red': point.link === $route.path }"
-        :width="64"
-        color="white"
-      />
-    </router-link>
-  </section>
+  <Teleport to="body">
+    <section
+      class="fixed inset-x-0 bottom-0 z-10 flex justify-around bg-primary py-1 lg:hidden"
+    >
+      <router-link :to="point.link" v-for="point in menu" :key="point.link">
+        <component
+          :is="icon(point.icon)"
+          class="w-full rounded-full border p-1 hover:border-red"
+          :class="{ 'border-red': point.link === $route.path }"
+          :width="64"
+          color="white"
+        />
+      </router-link>
+    </section>
+  </Teleport>
 </template>
 
 <script setup>

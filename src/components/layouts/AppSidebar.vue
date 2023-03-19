@@ -3,13 +3,13 @@
     class="fixed inset-y-0 right-0 mx-auto -translate-y-full animate-topToBottom border-l border-second"
   >
     <div
-      class="relative z-10 my-1 w-full animate-filter rounded-2xl border border-second bg-primary p-2 opacity-0"
+      class="relative z-10 my-1 ml-1 w-full animate-filter rounded-2xl border border-second bg-primary p-2 opacity-0"
     >
       <AppFilter @filteredItems="changeItemsKit($event)" />
     </div>
 
     <div
-      class="h-[calc(100%-266px)] animate-opacity justify-between overflow-y-auto opacity-0 animation-delay-500"
+      class="ml-1 h-[calc(100%-266px)] animate-opacity justify-between overflow-y-auto opacity-0 animation-delay-500"
     >
       <router-link
         v-for="item in craftItems"

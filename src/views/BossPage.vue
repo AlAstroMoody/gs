@@ -1,6 +1,6 @@
 <template>
   <div class="relative p-2">
-    <div class="flex flex-wrap border-b border-silver">
+    <div class="flex flex-wrap" ref="bossList">
       <span
         v-for="boss in bosses"
         @click="activeTab = boss.id"
@@ -11,12 +11,17 @@
         {{ boss.name }}
       </span>
     </div>
-    <div class="px-2">
+    <hr class="border-b border-silver" ref="hr" />
+    <div class="px-2" ref="dataList">
       <div class="my-2">волна №{{ currentBoss.wave }}</div>
       <div class="my-2">Особенности босса:</div>
-      <div>
+      <div ref="itemsList">
         Дроп:
-        <div v-for="item in currentBoss.items" :key="item.id" class="ml-4">
+        <div
+          v-for="item in currentBoss.items"
+          :key="item.id"
+          class="ml-4 w-fit"
+        >
           <router-link :to="`/item/${item.id}`" class="flex items-center">
             <img
               :src="`.${src(item.id)}`"
@@ -30,22 +35,52 @@
         </div>
       </div>
       <Teleport to="body">
-        <component
-          :is="currentIcon"
-          class="pointer-events-none absolute inset-0 m-auto w-96 animate-increase opacity-20"
-        />
+        <div ref="bossWrapper" class="pointer-events-none absolute inset-0">
+          <component
+            :is="currentIcon"
+            class="absolute inset-0 m-auto w-96 opacity-20"
+          />
+        </div>
       </Teleport>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watchEffect, shallowRef, computed } from 'vue'
+import gsap from 'gsap'
+import {
+  ref,
+  watchEffect,
+  shallowRef,
+  computed,
+  watch,
+  nextTick,
+  onMounted,
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { onBeforeRouteLeave } from 'vue-router'
 
 import { store } from '@/components/composables/store.js'
+import { animateChildren, scaleUp } from '@/components/composables/transitions'
 import SpiderIcon from '@/components/icons/bosses/SpiderIcon.vue'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
+
+const bossList = ref(null)
+const itemsList = ref(null)
+const dataList = ref(null)
+const hr = ref(null)
+
+onMounted(() => {
+  animateChildren([bossList, itemsList, dataList])
+  iconShift()
+  gsap.from(hr.value, {
+    duration: 1,
+    width: 0,
+    scale: 0.1,
+    autoAlpha: 0,
+    ease: 'power1.out',
+  })
+})
 
 const route = useRoute()
 const router = useRouter()
@@ -87,6 +122,33 @@ watchEffect(() => {
 
   import(`../components/icons/bosses/${boss}Icon.vue`).then((val) => {
     currentIcon.value = val.default
+  })
+})
+
+const bossWrapper = ref(null)
+watch(currentIcon, () => {
+  nextTick(() => {
+    iconShift()
+  })
+})
+
+const iconShift = () => {
+  gsap.from(bossWrapper.value.children[0], {
+    duration: 1,
+    rotate: 45,
+    scale: 0.1,
+    autoAlpha: 0,
+    ease: 'back.out(1)',
+  })
+}
+
+onBeforeRouteLeave(() => {
+  scaleUp({ el: bossWrapper.value.children[0], to: 3 })
+  gsap.to(hr.value, {
+    duration: 1,
+    width: 0,
+    scale: 0.1,
+    autoAlpha: 0,
   })
 })
 </script>

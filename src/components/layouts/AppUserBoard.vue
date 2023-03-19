@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <div class="flex justify-center">
+    <div class="mb-2 flex justify-center">
       <div class="flex h-fit w-fit max-w-[132px] flex-col flex-wrap">
         <div class="hidden w-full flex-wrap xs:flex">
           <div
@@ -220,4 +220,5 @@ watch(width, () => {
     isShowBoard.value = false
   }
 })
+isShowBoard.value = false
 </script>

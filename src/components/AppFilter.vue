@@ -3,6 +3,7 @@
     class="my-2 flex w-full rounded-2xl border border-solid border-second bg-gray px-3 pl-3 text-second ease-out"
   >
     <input
+      autocomplete="off"
       v-model="filterFields.name"
       placeholder=" "
       id="input"
@@ -81,7 +82,6 @@ const sliderThumbShift = (distance) => {
 // добавляем в фильтр текущего гоблина
 const goblinSelection = (value) => {
   filterFields.goblins = []
-  console.log(value)
   value.id ? filterFields.goblins.push(value.name) : null
 }
 
