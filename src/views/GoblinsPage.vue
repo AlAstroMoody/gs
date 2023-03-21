@@ -132,7 +132,7 @@ const goblinCard = ref(null)
 
 onMounted(() => {
   animateChildren([goblinsList])
-  elTurn({ el: title.value, transformOrigin: 'left top' })
+  elTurn({ el: title.value, transformOrigin: 'top right' })
   scaleUp({ el: goblinCard.value, from: 0.5 })
 })
 </script>

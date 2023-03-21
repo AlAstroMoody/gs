@@ -9,5 +9,5 @@ import '@/assets/css/tailwind.css'
 const app = createApp(App)
 app
   .use(router)
-  .use(initYandexMetrika, { id: 89703948, router: router })
+  .use(initYandexMetrika, { id: 89703948, router: router, env: 'production' })
   .mount('#app')
