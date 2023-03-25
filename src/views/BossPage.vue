@@ -110,10 +110,16 @@ const bossIcons = {
   3: 'Guardian',
   4: 'Excavator',
   5: 'Lust',
+  6: 'Artillery',
   7: 'Greed',
+  8: 'Hazul',
   9: 'Fear',
+  10: 'Handler',
+  11: 'Envy',
   12: 'Shizzl',
   13: 'Death',
+  14: 'Evil',
+  15: 'Dejavu',
 }
 const currentIcon = shallowRef(SpiderIcon)
 watchEffect(() => {
