@@ -23,6 +23,7 @@ export function useGoblinState() {
   const setGoblin = (goblin) => (user.goblin = goblin)
   const setLevel = (level) => (user.level = level)
   const addItem = (item) => user.inventory.push(item)
+  const userTest = computed(() => user.level)
 
   // порядковый номер удаленного предмета (1-6)
   const removeItem = (number) => user.inventory.splice(number - 1, 1)
@@ -97,6 +98,7 @@ export function useGoblinState() {
 
   return {
     user,
+    userTest,
     setGoblin,
     setLevel,
     itemsStats,

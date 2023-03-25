@@ -111,7 +111,8 @@ const { user, setGoblin, setLevel, changeAttack, changeDefense } =
 const choiceGoblin = (goblin) => setGoblin(goblin)
 
 /** меняем лвл*/
-const sliderThumbShift = (distance) => setLevel(Math.round(200 * distance) || 1)
+const sliderThumbShift = (distance) =>
+  setLevel(Math.round(200 * distance) || user.level)
 
 const params = ref({ attack: 0, defense: 0 })
 /** точки атаки */
