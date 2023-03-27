@@ -6944,9 +6944,9 @@ export const items = [
     craft: 'Великая кузница',
     params: {
       id: 328,
-      attack: 700,
-      defence: 700,
-      evade: 700,
+      agility: 700,
+      intelligence: 700,
+      strength: 700,
       active: 'Призывает 2х Воителей Черной Кости на 60с',
     },
     parents: [

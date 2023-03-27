@@ -69,9 +69,13 @@
             </span>
             <span
               v-if="
-                ['as', 'mp_regeneration', 'resist', 'distant_resist'].includes(
-                  key
-                )
+                [
+                  'as',
+                  'mp_regeneration',
+                  'resist',
+                  'distant_resist',
+                  'evade',
+                ].includes(key)
               "
             >
               %
