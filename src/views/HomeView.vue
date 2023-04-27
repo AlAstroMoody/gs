@@ -41,7 +41,7 @@
       сумасшедших изобретениях...
     </div>
 
-    <div class="mx-auto mt-12 mb-2 px-4 text-center lg:px-2">
+    <div class="mx-auto mb-2 mt-12 px-4 text-center lg:px-2">
       Проект
       <span
         class="before:absolute before:-inset-1 before:mx-1 before:block before:-skew-y-3 before:bg-silver"
@@ -58,7 +58,7 @@
       </a>
       , все права принадлежат ей же.
     </div>
-    <div class="mr-20 mb-20 px-4 text-right lg:px-2">
+    <div class="mb-20 mr-20 px-4 text-right lg:px-2">
       <a
         href="https://discord.gg/uzJDPcuv"
         target="_blank"
@@ -68,32 +68,22 @@
       </a>
       проекта
     </div>
-
-    <div ref="explosion" class="absolute top-1/3 -right-1/4">
-      <ExploseIcon class="opacity-20" color="red" />
-    </div>
   </main>
 </template>
 <script setup>
 import gsap from 'gsap'
 import { computed, ref, onMounted } from 'vue'
 
-import { scaleUp } from '@/components/composables/transitions'
 import { useSizeState } from '@/components/composables/useSizeState'
-import ExploseIcon from '@/components/icons/ExploseIcon.vue'
 import GrenadeIcon from '@/components/icons/GrenadeIcon.vue'
 
 const { width } = useSizeState()
 
-/**
- * меняем классы svg в зависимости от ширины экрана
- */
 const grenadeClass = computed(() =>
   width.value === 'xxl' ? 'w-10 -ml-2 -mr-3' : 'w-5 -mr-1'
 )
 
 const container = ref(null)
-const explosion = ref(null)
 
 onMounted(() => {
   gsap.from(container.value.children, {
@@ -102,13 +92,6 @@ onMounted(() => {
     autoAlpha: 0,
     stagger: 0.25,
     ease: 'back.out(1.7)',
-  })
-  scaleUp({
-    el: explosion.value.children[0],
-    from: 0.01,
-    to: 1,
-    autoAlpha: 0.2,
-    duration: 2,
   })
 })
 </script>

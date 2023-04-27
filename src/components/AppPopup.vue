@@ -2,7 +2,8 @@
   <Transition name="modal">
     <div
       v-if="isOpen"
-      class="fixed inset-0 z-10 flex justify-center bg-silver bg-opacity-20 backdrop-blur-[6px] transition-all"
+      class="fixed inset-0 z-10 flex justify-center bg-silver bg-opacity-20 
+      backdrop-blur-[6px] transition-all overscroll-contain overflow-y-auto"
       @click.self="close"
     >
       <div class="absolute -right-1 top-2 z-10">

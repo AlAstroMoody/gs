@@ -14,17 +14,15 @@
       поиск по названию
     </label>
   </div>
-  уровень предмета от: {{ Math.round(filterFields.level) }}
-  <div class="flex items-center">
-    0
-    <AppCommonSlider
-      @thumbShift="sliderThumbShift"
-      class="mx-1"
-      custom="bg-silver"
+  уровень предмета от: {{ Math.round(filterFields.level[0]) }} до:
+  {{ Math.round(filterFields.level[1]) }}
+  <div class="mx-5 my-1">
+    <RangeSlider
+      :value="filterFields.level"
+      :range="{ min: 0, max: 200 }"
+      @change="sliderThumbShift"
     />
-    200
   </div>
-
   игровой класс:
   <AppCommonSelect
     :options="goblins"
@@ -52,13 +50,13 @@
 import { reactive, computed, watch } from 'vue'
 
 import AppCommonSelect from '@/components/common/AppCommonSelect.vue'
-import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
+import RangeSlider from '@/components/common/RangeSlider.vue'
 import { store } from '@/components/composables/store.js'
 
 // поля фильтрации
 const filterFields = reactive({
   name: '',
-  level: 0,
+  level: [0, 200],
   goblins: [],
   luck: false,
   stealth: false,
@@ -76,7 +74,8 @@ emit('filteredItems', items.value)
 
 // сдвигаем положение на слайдере
 const sliderThumbShift = (distance) => {
-  filterFields.level = 200 * distance
+  filterFields.level = distance
+  getItemsSample()
 }
 
 // добавляем в фильтр текущего гоблина
@@ -98,11 +97,13 @@ const getItemsSample = () => {
       item.name.toLowerCase().includes(filterFields.name.toLowerCase())
     )
   }
-  if (filterFields.level) {
-    sampleItems = sampleItems.filter((item) =>
-      item.level || 0 ? item.level >= filterFields.level : null
-    )
-  }
+
+  sampleItems = sampleItems.filter(
+    (item) =>
+      Number(filterFields.level[1]) >= (item.level || 0) &&
+      (item.level || 0) >= Number(filterFields.level[0])
+  )
+
   if (filterFields.goblins?.length) {
     sampleItems = sampleItems.filter((item) =>
       item.goblins.some((goblin) => filterFields.goblins[0] === goblin)

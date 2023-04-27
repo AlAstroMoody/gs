@@ -6,7 +6,7 @@
     :class="custom"
   >
     <label
-      class="relative left-0 -top-1 block h-6 w-3 rounded-lg bg-second"
+      class="relative -top-1 left-0 block h-6 w-3 rounded-lg bg-second"
       ref="thumb"
       @mousedown="onMouseDown"
       @dragstart="OnDragStart"
@@ -15,9 +15,8 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onUnmounted, ref, watch, toRefs } from 'vue'
-
 import { useDebounceFn } from '@vueuse/core'
+import { computed, onMounted, onUnmounted, ref, watch, toRefs } from 'vue'
 
 const props = defineProps({
   custom: {

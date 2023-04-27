@@ -9,7 +9,7 @@
     </div>
 
     <div
-      class="ml-1 h-[calc(100%-270px)] animate-opacity justify-between overflow-y-auto opacity-0 animation-delay-500"
+      class="ml-1 h-[calc(100%-275px)] animate-opacity justify-between overflow-y-auto opacity-0 animation-delay-500"
     >
       <router-link
         v-for="item in craftItems"

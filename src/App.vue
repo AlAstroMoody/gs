@@ -1,4 +1,5 @@
 <template>
+  <AppCanvas />
   <Suspense>
     <div class="relative mr-auto flex min-h-screen w-full overflow-x-hidden">
       <router-view name="left" v-slot="{ Component }">
@@ -27,6 +28,7 @@ import { useWindowSize } from '@vueuse/core'
 import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
+import AppCanvas from '@/components/AppCanvas.vue'
 import { useSizeState } from '@/components/composables/useSizeState'
 
 const { width } = useWindowSize()
