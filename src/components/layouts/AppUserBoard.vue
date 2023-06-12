@@ -1,11 +1,22 @@
 <template>
-  <img
-    :src="`.${user.goblin.src}`"
-    alt="logo"
-    class="right-2 bottom-2 h-16 w-16 md:left-2 md:right-auto"
+  <div
     v-if="!isShowBoard"
-    @click="isShowBoard = !isShowBoard"
-  />
+    class="bottom-2 right-2 h-16 w-16 md:left-2 md:right-auto"
+  >
+    <button>
+      <img
+        class="relative z-10"
+        src="/images/slot.png"
+        alt="logo"
+        @click="isShowBoard = !isShowBoard"
+      />
+      <span
+        class="absolute left-0 top-0 inline-flex h-full w-full rounded-full bg-silver bg-gradient-to-r from-purple opacity-75"
+        ref="collapse"
+      />
+    </button>
+  </div>
+
   <div
     v-else
     class="inset-x-0 h-fit w-full rounded-t-2xl border border-b-0 border-silver bg-gray px-2 md:w-fit xl:px-6"
@@ -46,19 +57,32 @@
               {{ activeItem.name }}
             </div>
 
-            <img
-              v-if="user.inventory[i - 1] && user.inventory[i - 1].src"
-              :src="`.${user.inventory[i - 1].src}`"
-              alt="img"
-              @click="removeItem(i)"
-            />
-            <div
-              v-if="user.inventory[i - 1] && !user.inventory[i - 1].src"
-              class="flex h-16 w-16 bg-silver"
-              @click="removeItem(i)"
+            <router-link
+              v-if="user.inventory[i - 1]"
+              :to="`/item/${user.inventory[i - 1].id}`"
             >
-              <QuestionIcon class="m-auto" />
-            </div>
+              <button
+                v-if="isShowPopup && activeItem?.index === i"
+                class="absolute right-0 top-0 z-10 rounded-full border border-double border-white"
+              >
+                <ExitIcon
+                  @click.prevent="removeItem(i)"
+                  :width="30"
+                  :height="30"
+                  color="white"
+                  class="duration-500 hover:rotate-90"
+                />
+              </button>
+
+              <img
+                v-if="user.inventory[i - 1].src"
+                :src="`.${user.inventory[i - 1].src}`"
+                alt="img"
+              />
+              <div v-else class="flex h-16 w-16 bg-silver">
+                <QuestionIcon class="m-auto" />
+              </div>
+            </router-link>
           </div>
         </div>
       </div>
@@ -91,11 +115,13 @@
 </template>
 
 <script setup>
+import { promiseTimeout } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
 
 import { useGoblinState } from '@/components/composables/useGoblinState'
 import { useSizeState } from '@/components/composables/useSizeState'
 import CollapseIcon from '@/components/icons/CollapseIcon.vue'
+import ExitIcon from '@/components/icons/ExitIcon.vue'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
 const { user, itemsStats, removeItem } = useGoblinState()
@@ -220,5 +246,19 @@ watch(width, () => {
     isShowBoard.value = false
   }
 })
+
+const collapse = ref(null)
+
+watch(
+  () => user,
+  async () => {
+    if (!isShowBoard.value) {
+      collapse.value.classList.add('animate-ping')
+      await promiseTimeout(600)
+      collapse.value.classList.remove('animate-ping')
+    }
+  },
+  { deep: true }
+)
 isShowBoard.value = false
 </script>

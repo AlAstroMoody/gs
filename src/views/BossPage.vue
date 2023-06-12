@@ -25,10 +25,10 @@
           <router-link :to="`/item/${item.id}`" class="flex items-center">
             <img
               :src="`.${src(item.id)}`"
-              class="mr-2 mb-2"
+              class="mb-2 mr-2"
               v-if="src(item?.id)"
             />
-            <QuestionIcon v-else color="purple" class="mr-2 mb-2 h-16 w-16" />
+            <QuestionIcon v-else color="purple" class="mb-2 mr-2 h-16 w-16" />
             {{ item.name }}
             x%
           </router-link>
@@ -48,21 +48,29 @@
 
 <script setup>
 import gsap from 'gsap'
-import {
-  ref,
-  watchEffect,
-  shallowRef,
-  computed,
-  watch,
-  nextTick,
-  onMounted,
-} from 'vue'
+import { ref, shallowRef, computed, watch, nextTick, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { onBeforeRouteLeave } from 'vue-router'
 
 import { store } from '@/components/composables/store.js'
 import { animateChildren, scaleUp } from '@/components/composables/transitions'
-import SpiderIcon from '@/components/icons/bosses/SpiderIcon.vue'
+import {
+  SpiderIcon,
+  SlaveOwnerIcon,
+  GuardianIcon,
+  ExcavatorIcon,
+  LustIcon,
+  ArtilleryIcon,
+  GreedIcon,
+  HazulIcon,
+  FearIcon,
+  HandlerIcon,
+  EnvyIcon,
+  ShizzlIcon,
+  DeathIcon,
+  EvilIcon,
+  DejavuIcon,
+} from '@/components/icons/bosses'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
 const bossList = ref(null)
@@ -105,37 +113,50 @@ const currentBoss = computed(
 )
 
 const bossIcons = {
-  1: 'Spider',
-  2: 'SlaveOwner',
-  3: 'Guardian',
-  4: 'Excavator',
-  5: 'Lust',
-  6: 'Artillery',
-  7: 'Greed',
-  8: 'Hazul',
-  9: 'Fear',
-  10: 'Handler',
-  11: 'Envy',
-  12: 'Shizzl',
-  13: 'Death',
-  14: 'Evil',
-  15: 'Dejavu',
+  1: SpiderIcon,
+  2: SlaveOwnerIcon,
+  3: GuardianIcon,
+  4: ExcavatorIcon,
+  5: LustIcon,
+  6: ArtilleryIcon,
+  7: GreedIcon,
+  8: HazulIcon,
+  9: FearIcon,
+  10: HandlerIcon,
+  11: EnvyIcon,
+  12: ShizzlIcon,
+  13: DeathIcon,
+  14: EvilIcon,
+  15: DejavuIcon,
 }
+
 const currentIcon = shallowRef(SpiderIcon)
-watchEffect(() => {
-  router.push({ query: { name: currentBoss.value.name } })
-  let boss = bossIcons[activeTab.value] || 'Spider'
-
-  import(`../components/icons/bosses/${boss}Icon.vue`).then((val) => {
-    currentIcon.value = val.default
-  })
+watch(activeTab, () => {
+  currentIcon.value = bossIcons[activeTab.value] || SpiderIcon
 })
+watch(currentBoss, async () => {
+  if (currentBoss.value) {
+    router.push({ query: { name: currentBoss.value.name } })
 
+    nextTick(() => iconShift())
+  }
+})
 const bossWrapper = ref(null)
-watch(currentIcon, () => {
-  nextTick(() => {
+
+watch(bosses, async () => {
+  if (!activeTab.value && bosses?.value) {
+    activeTab.value = bosses?.value[0]?.id
+    await nextTick()
+    animateChildren([bossList, itemsList, dataList])
     iconShift()
-  })
+    gsap.from(hr.value, {
+      duration: 1,
+      width: 0,
+      scale: 0.1,
+      autoAlpha: 0,
+      ease: 'power1.out',
+    })
+  }
 })
 
 const iconShift = () => {

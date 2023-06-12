@@ -3,7 +3,7 @@
   <div class="mx-4 mb-96 flex flex-1 flex-col justify-between" v-else>
     <div ref="content">
       <div class="headline mt-6">{{ currentItem.name }}</div>
-      <div class="mt-10 mb-4 flex flex-wrap items-center">
+      <div class="mb-4 mt-10 flex flex-wrap items-center">
         <div class="flex w-full xs:w-auto">
           <img
             :src="`.${currentItem.src}`"
@@ -125,7 +125,7 @@
 
     <Teleport to="body">
       <AppItemsPopup
-        class="absolute top-12 right-2 block bg-second md:hidden"
+        class="absolute right-2 top-12 block bg-second md:hidden"
       />
     </Teleport>
   </div>

@@ -5,7 +5,7 @@
       class="mt-48 h-fit -translate-x-full animate-leftToRight rounded-r-2xl bg-second py-5 pr-5"
     >
       <router-link
-        class="link relative my-2 block w-max -translate-x-full animate-leftToRight rounded-r-2xl py-4 px-2 shadow-xl"
+        class="link relative my-2 block w-max -translate-x-full animate-leftToRight rounded-r-2xl px-2 py-4 shadow-xl"
         v-for="(point, index) in menu"
         :class="
           point.link === $route.path
@@ -51,6 +51,7 @@ const menu = [
   { title: 'снарядить персонажа', link: '/goblins', icon: 'ItemsIcon' },
   { title: 'смотреть боссов', link: '/boss', icon: 'BossIcon' },
   { title: 'дерево крафта', link: '/craft', icon: 'CraftIcon' },
+  { title: 'о проекте', link: '/about', icon: 'InfoIcon' },
 ]
 
 const icon = (name) =>

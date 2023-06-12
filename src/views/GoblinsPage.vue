@@ -82,7 +82,7 @@
     </div>
     <Teleport to="body">
       <AppItemsPopup
-        class="absolute top-12 right-2 block bg-second md:hidden"
+        class="absolute right-2 top-12 block bg-second md:hidden"
       />
     </Teleport>
   </div>

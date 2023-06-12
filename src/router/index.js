@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
-  scrollBehavior(to, from, savedPosition) {
+  scrollBehavior() {
     return { top: 0 }
   },
   routes: [
@@ -47,6 +47,14 @@ const router = createRouter({
       name: 'boss',
       components: {
         default: () => import('@/views/BossPage.vue'),
+        left: () => import('@/components/layouts/AppSidenav.vue'),
+      },
+    },
+    {
+      path: '/about',
+      name: 'about',
+      components: {
+        default: () => import('@/views/AboutPage.vue'),
         left: () => import('@/components/layouts/AppSidenav.vue'),
       },
     },

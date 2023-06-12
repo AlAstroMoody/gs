@@ -1,5 +1,5 @@
 <template>
-  <main class="flex w-full justify-between px-2 pt-4 pb-20">
+  <main class="flex w-full justify-between px-2 pb-20 pt-4">
     <ul ref="list">
       <transition-group
         tag="ol"
