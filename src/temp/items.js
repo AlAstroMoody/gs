@@ -872,6 +872,10 @@ export const items = [
         id: 552,
         name: 'Золотая лихорадка',
       },
+      {
+        id: 553,
+        name: 'Шок-XXL',
+      },
     ],
     src: '/uploads/BTN_Orb_Of_Fire_7c83e2dda3.png',
     goblins: [],
@@ -907,6 +911,10 @@ export const items = [
       {
         id: 512,
         name: 'Осквернитель Х-20',
+      },
+      {
+        id: 553,
+        name: 'Шок-XXL',
       },
     ],
     src: '/uploads/File00000190_1f34840fe5.png',
@@ -13954,13 +13962,13 @@ export const items = [
     name: 'Шок-винтовка-XL',
     level: 90,
     description:
-      '2% шанс при атаке на `Шар молний` (урон ЛОВК+СИЛА х9 ), <br/>50% В яблочко!: 5000 урона и заморозка',
+      '2% шанс при атаке на `Шар молний` (урон ЛОВК+СИЛА х9 ), <br/>50% В яблочко!: 5000 урона и заморозка<br/>Только для от 90 до 160ур',
     craft: 'Великая кузница',
     params: {
       id: 321,
-      agility: 2000,
-      attack: 10000,
-      visibility: 1000,
+      agility: 1500,
+      strength: 1500,
+      attack: 7000,
     },
     parents: [
       {
@@ -13979,9 +13987,13 @@ export const items = [
         id: 378,
         name: 'Стиратель Личности',
       },
+      {
+        id: 553,
+        name: 'Шок-XXL',
+      },
     ],
     src: '/uploads/BTN_Brilliance_a2fc2c6883.png',
-    goblins: ['Снайпер'],
+    goblins: ['Снайпер', 'Cталкер'],
   },
   {
     id: 384,
@@ -19451,5 +19463,43 @@ export const items = [
     ],
     children: [],
     goblins: [],
+  },
+  {
+    id: 553,
+    name: 'Шок-XXL',
+    level: 110,
+    description:
+      '1% шанс при атаке на "Круг молний" (урон = до х3 СИЛЫ ) и получает `отдачу` равную 10% от силы!! (работает пока герой имеет >30%хп) <br/> ТОЛЬКО ДО ВЕРСИИ 4.6',
+    craft: 'Великая кузница',
+    count: {
+      20: '2',
+    },
+    params: {
+      id: 453,
+      strength: 2000,
+      attack: 8000,
+    },
+    parents: [
+      {
+        id: 383,
+        name: 'Шок-винтовка-XL',
+        count: null,
+      },
+      {
+        id: 21,
+        name: 'Перст Смерти',
+        count: null,
+      },
+      {
+        id: 20,
+        name: 'Эссенция Огня',
+        count: {
+          193: '5',
+        },
+      },
+    ],
+    children: [],
+    src: '/uploads/BTN_Brilliance_a2fc2c6883.png',
+    goblins: ['Cталкер'],
   },
 ]
