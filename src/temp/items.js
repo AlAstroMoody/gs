@@ -10421,6 +10421,10 @@ export const items = [
         id: 543,
         name: 'Драконий Медальон',
       },
+      {
+        id: 376,
+        name: 'Драконье Око',
+      },
     ],
     goblins: [],
   },
@@ -12209,6 +12213,10 @@ export const items = [
         id: 534,
         name: 'Кровобот-666',
       },
+      {
+        id: 376,
+        name: 'Драконье Око',
+      },
     ],
     goblins: [],
   },
@@ -13146,6 +13154,10 @@ export const items = [
         id: 533,
         name: 'Драконья Слеза',
       },
+      {
+        id: 376,
+        name: 'Драконье Око',
+      },
     ],
     goblins: [],
   },
@@ -13672,7 +13684,12 @@ export const items = [
         count: null,
       },
     ],
-    children: [],
+    children: [
+      {
+        id: 376,
+        name: 'Драконье Око',
+      },
+    ],
     goblins: ['Снайпер'],
   },
   {
@@ -13710,6 +13727,10 @@ export const items = [
         id: 533,
         name: 'Драконья Слеза',
       },
+      {
+        id: 376,
+        name: 'Драконье Око',
+      },
     ],
     goblins: [],
   },
@@ -13717,7 +13738,12 @@ export const items = [
     id: 375,
     name: 'Рецепт: Драконье Око',
     parents: [],
-    children: [],
+    children: [
+      {
+        id: 376,
+        name: 'Драконье Око',
+      },
+    ],
     goblins: [],
   },
   {
@@ -13732,7 +13758,41 @@ export const items = [
       attack: 40000,
       visibility: 500,
     },
-    parents: [],
+    parents: [
+      {
+        id: 373,
+        name: 'Ледяная кара',
+        count: null,
+      },
+      {
+        id: 375,
+        name: 'Рецепт: Драконье Око',
+        count: null,
+      },
+      {
+        id: 374,
+        name: 'Экзорцист',
+        count: null,
+      },
+      {
+        id: 335,
+        name: 'Боевой дракон',
+        count: null,
+      },
+      {
+        id: 356,
+        name: 'Амулет Изгнания',
+        count: {
+          61: '20',
+          161: '10',
+        },
+      },
+      {
+        id: 285,
+        name: 'Драконья чешуя',
+        count: null,
+      },
+    ],
     children: [
       {
         id: 377,
