@@ -3,20 +3,22 @@ import { onBeforeRouteLeave } from 'vue-router'
 
 export function animateChildren(array) {
   array.forEach((el) => {
-    gsap.from(gsap.utils.shuffle([...el.value.children]), {
-      duration: 0.2,
-      x: gsap.utils.random(-100, 100),
-      y: gsap.utils.random(-100, 100),
-      autoAlpha: 0,
-      stagger: 0.05,
-      ease: 'back.out(0.5)',
-    })
+    if (el.value?.children) {
+      gsap.from(gsap.utils.shuffle([...el.value.children]), {
+        duration: 0.2,
+        x: gsap.utils.random(-100, 100),
+        y: gsap.utils.random(-100, 100),
+        autoAlpha: 0,
+        stagger: 0.05,
+        ease: 'back.out(0.5)',
+      })
+    }
   })
 
   onBeforeRouteLeave((to, from, next) => {
     let maxLength = 0
     array.forEach((el) => {
-      if (el.value.children.length > maxLength) {
+      if (el.value?.children.length > maxLength) {
         maxLength = el.value.children.length
       }
     })
@@ -34,6 +36,7 @@ export function animateChildren(array) {
         },
       })
     })
+    if (!array.length) next()
   })
 }
 

@@ -18,12 +18,12 @@
   </div>
 
   <div
-    v-else
+    v-else-if="user.goblin"
     class="inset-x-0 h-fit w-full rounded-t-2xl border border-b-0 border-silver bg-gray px-2 md:w-fit xl:px-6"
   >
     <div class="mb-2 flex justify-center">
       <div class="overflow-hidden">
-        <img :src="`.${user.goblin.src}`" alt="logo" class="h-16 w-16" />
+        <img :src="`.${user.goblin?.src}`" alt="logo" class="h-16 w-16" />
       </div>
       <div class="ml-4 w-3/4">
         <div class="subtitle mx-auto">Крягз "Ядро"</div>
@@ -164,7 +164,7 @@ const mp = computed(
 )
 
 // попап
-const activeItem = ref('')
+const activeItem = ref({})
 const isShowPopup = ref(false)
 const showDescription = (item, index) => {
   isShowPopup.value = !!item

@@ -53,6 +53,8 @@ import AppCommonSelect from '@/components/common/AppCommonSelect.vue'
 import RangeSlider from '@/components/common/RangeSlider.vue'
 import { store } from '@/components/composables/store.js'
 
+const emit = defineEmits(['filteredItems'])
+
 // поля фильтрации
 const filterFields = reactive({
   name: '',
@@ -63,14 +65,7 @@ const filterFields = reactive({
 })
 
 const items = computed(() => store.entities.items)
-if (!items.value.length) await store.setItems('items')
-
 const goblins = computed(() => store.entities.goblins)
-if (!goblins.value.length) await store.setItems('goblins')
-
-// эмит отфильтрованных артов
-const emit = defineEmits(['filteredItems'])
-emit('filteredItems', items.value)
 
 // сдвигаем положение на слайдере
 const sliderThumbShift = (distance) => {
@@ -106,7 +101,7 @@ const getItemsSample = () => {
 
   if (filterFields.goblins?.length) {
     sampleItems = sampleItems.filter((item) =>
-      item.goblins.some((goblin) => filterFields.goblins[0] === goblin)
+      item.goblins?.some((goblin) => filterFields.goblins[0] === goblin)
     )
   }
   if (filterFields.luck) {
@@ -120,4 +115,5 @@ const getItemsSample = () => {
 }
 
 watch(filterFields, () => getItemsSample())
+watch(items, () => emit('filteredItems', items.value))
 </script>

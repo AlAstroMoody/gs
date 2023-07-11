@@ -41,6 +41,11 @@
 import { defineAsyncComponent } from 'vue'
 
 import AppGears from '@/components/AppGears.vue'
+import { store } from '@/components/composables/store.js'
+
+await store.setItems('bosses')
+await store.setItems('goblins')
+await store.setItems('items')
 
 const linkStyle = (index) => {
   return `animation-delay: ${index / 4 + 0.3}s`

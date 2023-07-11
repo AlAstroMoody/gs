@@ -86,7 +86,7 @@
 
       <div
         class="border-bg-silver rounded-lg border p-2"
-        v-if="currentItem.children.length"
+        v-if="currentItem.children?.length"
       >
         Из предмета "{{ currentItem.name }}" можно скрафтить:
         <span
@@ -104,7 +104,7 @@
 
       <div
         class="my-2 rounded-lg border border-silver p-2"
-        v-if="currentItem.parents.length"
+        v-if="currentItem.parents?.length"
       >
         Предмет "{{ currentItem.name }}" крафтится из:
         <span
@@ -145,26 +145,22 @@ import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 const { user, addItem } = useGoblinState()
 
 const route = useRoute()
-
-const items = computed(() => store.entities.items)
-if (!items.value.length) await store.setItems('items')
-const currentItem = store.currentItem('items', route.params.id)
+const currentItem = computed(() => store.currentItem('items', route.params.id))
 
 const buttonText = computed(() =>
   user.inventory.length < 6 ? 'добавить в инвентарь' : 'инвентарь переполнен'
 )
-/** добавить в инвентарь */
+
 const add = () => {
-  if (user.inventory.length < 6) addItem(currentItem)
+  if (user.inventory.length < 6) addItem(currentItem.value)
 }
 
 const parentsCount = (id) =>
-  currentItem?.count && currentItem.count[id]
-    ? `${currentItem.count[id]}шт`
+  currentItem.value?.count && currentItem.value.count[id]
+    ? `${currentItem.value.count[id]}шт`
     : ''
 
 const content = ref(null)
-onMounted(() => {
-  animateChildren([content])
-})
+
+onMounted(() => animateChildren([content]))
 </script>

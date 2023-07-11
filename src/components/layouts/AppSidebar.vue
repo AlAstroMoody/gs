@@ -46,7 +46,6 @@ import { store } from '@/components/composables/store.js'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
 const items = computed(() => store.entities.items)
-if (!items.value.length) await store.setItems('items')
 const craftItems = ref(items.value)
 
 /** изменяем набор артов */

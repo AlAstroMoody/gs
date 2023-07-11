@@ -94,10 +94,7 @@ const route = useRoute()
 const router = useRouter()
 
 const bosses = computed(() => store.entities.bosses)
-if (!bosses.value.length) await store.setItems('bosses')
-
 const items = computed(() => store.entities.items)
-if (!items.value.length) await store.setItems('items')
 
 const activeTab = ref(bosses.value[0]?.id)
 if (route.query.name) {
@@ -109,7 +106,9 @@ if (route.query.name) {
 const src = (id) => items.value.find((item) => item.id === id)?.src
 const currentBoss = computed(
   () =>
-    bosses.value.find((boss) => boss.id === activeTab.value) || bosses.value[0]
+    bosses.value.find((boss) => boss.id === activeTab.value) ||
+    bosses.value[0] ||
+    {}
 )
 
 const bossIcons = {

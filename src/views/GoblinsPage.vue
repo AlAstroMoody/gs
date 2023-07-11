@@ -102,7 +102,6 @@ import {
 import { useGoblinState } from '@/components/composables/useGoblinState'
 
 const goblins = computed(() => store.entities.goblins)
-if (!goblins.value.length) await store.setItems('goblins')
 
 const { user, setGoblin, setLevel, changeAttack, changeDefense } =
   useGoblinState()

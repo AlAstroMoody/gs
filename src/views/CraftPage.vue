@@ -55,7 +55,7 @@
 
 <script setup>
 import gsap from 'gsap'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 
 import AppCraftItem from '@/components/AppCraftItem.vue'
 import AppFilter from '@/components/AppFilter.vue'
@@ -71,8 +71,6 @@ import { useSizeState } from '@/components/composables/useSizeState'
 import FilterIcon from '@/components/icons/FilterIcon.vue'
 
 const items = computed(() => store.entities.items)
-if (!items.value.length) await store.setItems('items')
-
 const craftItems = ref(items.value)
 
 /**меняем набор на отфильтрованный */
@@ -93,12 +91,14 @@ onMounted(() => {
     elTurn({ el: mobileFilter.value, transformOrigin: 'right bottom' })
   }
 
-  gsap.from(list.value, {
-    duration: 1,
-    x: -200,
-    autoAlpha: 0,
-    ease: 'back.out(1)',
-  })
+  nextTick(() =>
+    gsap.from(list.value, {
+      duration: 1,
+      x: -200,
+      autoAlpha: 0,
+      ease: 'back.out(1)',
+    })
+  )
 })
 
 const { width } = useSizeState()

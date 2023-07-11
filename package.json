@@ -1,6 +1,6 @@
 {
   "name": "gs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^9.11.1",
-    "axios": "^0.26.0",
+    "firebase": "^9.23.0",
     "gsap": "^3.11.5",
     "nouislider": "^15.7.0",
     "vue": "^3.2.41",
