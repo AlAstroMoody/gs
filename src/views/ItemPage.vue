@@ -4,7 +4,7 @@
     <div ref="content">
       <div class="headline mt-6">{{ currentItem.name }}</div>
       <div class="mb-4 mt-10 flex flex-wrap items-center">
-        <div class="flex w-full xs:w-auto">
+        <div class="flex w-full flex-wrap items-center xs:w-auto">
           <img
             :src="`.${currentItem.src}`"
             alt="logo"
@@ -12,6 +12,16 @@
             class="h-24 w-24"
           />
           <QuestionIcon v-else color="red" />
+          <div
+            class="text-md ml-2 flex h-fit flex-1 justify-end whitespace-nowrap text-second"
+          >
+            <button
+              class="mr-auto rounded-2xl border border-solid border-second px-2 py-4 ease-out hover:border-red hover:text-red"
+              @click="add"
+            >
+              {{ buttonText }}
+            </button>
+          </div>
           <div class="ml-4 flex flex-col content-center justify-center">
             <div v-if="currentItem.level">
               требуемый уровень: {{ currentItem.level }}
@@ -38,18 +48,8 @@
             </div>
           </div>
         </div>
-        <div
-          class="text-md ml-2 flex h-fit flex-1 justify-end whitespace-nowrap text-second"
-        >
-          <button
-            class="rounded-2xl border border-solid border-second px-2 py-4 ease-out hover:border-red hover:text-red"
-            @click="add"
-          >
-            {{ buttonText }}
-          </button>
-        </div>
       </div>
-      <div class="body my-2" v-html="currentItem.description" />
+      <div class="body my-2 text-white" v-html="currentItem.description" />
 
       <ul class="my-2" v-if="currentItem.params">
         Бонусы предмета:
@@ -125,7 +125,7 @@
 
     <Teleport to="body">
       <AppItemsPopup
-        class="absolute right-2 top-12 block bg-second md:hidden"
+        class="fixed right-2 top-20 block h-15 bg-second md:hidden"
       />
     </Teleport>
   </div>

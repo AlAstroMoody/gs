@@ -58,7 +58,12 @@ module.exports = {
       },
       spacing: {
         one: '1px',
+        15: '60px',
       },
+    },
+    zIndex: {
+      1: 1,
+      10: 10,
     },
   },
   plugins: [require('tailwindcss-animation-delay')],

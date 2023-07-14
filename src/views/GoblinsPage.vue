@@ -1,138 +1,27 @@
 <template>
   <div class="mb-96 flex flex-1 flex-col justify-between px-2">
-    <div class="mb-10 flex flex-col">
+    <div class="mb-10 flex h-full flex-col">
       <div class="headline my-8" ref="title">Доступные персонажи</div>
-      <div class="xl:flex">
-        <div class="mb-2 flex flex-wrap md:mr-2 xl:flex-col" ref="goblinsList">
-          <div
-            v-for="goblin in goblins"
-            :key="goblin.id"
-            @click="choiceGoblin(goblin)"
-            class="w-fit rounded border font-medium lg:text-xl"
-            :class="
-              goblin === user.goblin ? 'border-second ' : 'border-primary'
-            "
-          >
-            <button class="px-4 py-2">
-              {{ goblin.name }}
-            </button>
-          </div>
-        </div>
-
-        <div
-          class="flex flex-col rounded-lg bg-second p-2 text-primary md:mr-5"
-          v-if="user.goblin?.name"
-          ref="goblinCard"
-        >
-          <div class="flex">
-            <img
-              :src="`.${user.goblin.src}`"
-              alt="img"
-              class="mr-4 h-24 w-24"
-            />
-
-            <div>
-              <div class="subtitle">{{ user.goblin.name }}</div>
-              <div>Основной параметр: {{ user.goblin.mainParam }}</div>
-            </div>
-          </div>
-          <div class="lg:p-4">{{ user.goblin.description }}</div>
-          <div class="flex flex-wrap items-center p-4 lg:my-4">
-            <div class="mr-4 text-xl">апнуть уровень:</div>
-            <div class="w-80 xs:mx-4">
-              <div class="flex justify-between">
-                <span>1</span> <span>200</span>
-              </div>
-              <AppCommonSlider
-                @thumbShift="sliderThumbShift"
-                custom="bg-primary"
-              />
-            </div>
-
-            <div class="mt-6 flex w-full flex-wrap">
-              <span class="mr-4 text-xl">точки:</span>
-              <div
-                class="flex flex-1 flex-wrap sm:flex-nowrap md:flex-wrap lg:flex-nowrap"
-              >
-                <div class="w-full sm:mr-8 md:mr-0 lg:mr-8 lg:w-1/2">
-                  уровень атаки: {{ params.attack }}
-                  <div class="flex justify-between">
-                    <span>0</span> <span>85</span>
-                  </div>
-                  <AppCommonSlider
-                    @thumbShift="attackSliderThumbShift"
-                    custom="bg-primary"
-                  />
-                </div>
-                <div class="w-full lg:w-1/2">
-                  уровень защиты: {{ params.defense }}
-                  <div class="flex justify-between">
-                    <span>0</span> <span>85</span>
-                  </div>
-                  <AppCommonSlider
-                    @thumbShift="defenseSliderThumbShift"
-                    custom="bg-primary"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <GoblinCards class="md:mb-10 lg:mb-0" />
     </div>
     <Teleport to="body">
       <AppItemsPopup
-        class="absolute right-2 top-12 block bg-second md:hidden"
+        class="absolute right-2 top-20 block bg-second md:hidden"
       />
     </Teleport>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 
 import AppItemsPopup from '@/components/AppItemsPopup.vue'
-import AppCommonSlider from '@/components/common/AppCommonSlider.vue'
-import { store } from '@/components/composables/store.js'
-import {
-  animateChildren,
-  elTurn,
-  scaleUp,
-} from '@/components/composables/transitions'
-import { useGoblinState } from '@/components/composables/useGoblinState'
+import { elTurn } from '@/components/composables/transitions'
+import GoblinCards from '@/components/GoblinCards.vue'
 
-const goblins = computed(() => store.entities.goblins)
-
-const { user, setGoblin, setLevel, changeAttack, changeDefense } =
-  useGoblinState()
-
-/** меняем гоблина */
-const choiceGoblin = (goblin) => setGoblin(goblin)
-
-/** меняем лвл*/
-const sliderThumbShift = (distance) =>
-  setLevel(Math.round(200 * distance) || user.level)
-
-const params = ref({ attack: 0, defense: 0 })
-/** точки атаки */
-const attackSliderThumbShift = (distance) => {
-  params.value.attack = Math.round(85 * distance) || 0
-  changeAttack(params.value.attack)
-}
-
-/** точки защиты */
-const defenseSliderThumbShift = (distance) => {
-  params.value.defense = Math.round(85 * distance) || 0
-  changeDefense(params.value.defense)
-}
-
-const goblinsList = ref(null)
 const title = ref(null)
-const goblinCard = ref(null)
 
 onMounted(() => {
-  animateChildren([goblinsList])
   elTurn({ el: title.value, transformOrigin: 'top right' })
-  scaleUp({ el: goblinCard.value, from: 0.5 })
 })
 </script>

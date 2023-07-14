@@ -38,7 +38,7 @@
         <div ref="bossWrapper" class="pointer-events-none absolute inset-0">
           <component
             :is="currentIcon"
-            class="absolute inset-0 m-auto w-96 opacity-20"
+            class="absolute inset-0 m-auto w-72 opacity-20 md:w-96"
           />
         </div>
       </Teleport>
@@ -162,7 +162,7 @@ const iconShift = () => {
   gsap.from(bossWrapper.value.children[0], {
     duration: 1,
     rotate: 45,
-    scale: 0.1,
+    scale: 0.2,
     autoAlpha: 0,
     ease: 'back.out(1)',
   })

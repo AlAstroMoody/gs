@@ -1,7 +1,8 @@
 <template>
   <div
     v-if="!isShowBoard"
-    class="bottom-2 right-2 h-16 w-16 md:left-2 md:right-auto"
+    class="right-2 h-16 w-16 md:left-2 md:right-auto lg:bottom-2 lg:top-auto"
+    :class="$route.name !== 'item' ? 'top-2 md:top-20' : 'bottom-2 top-auto'"
   >
     <button>
       <img
@@ -11,7 +12,7 @@
         @click="isShowBoard = !isShowBoard"
       />
       <span
-        class="absolute left-0 top-0 inline-flex h-full w-full rounded-full bg-silver bg-gradient-to-r from-purple opacity-75"
+        class="z-0 absolute left-0 top-0 inline-flex w-full rounded-full bg-silver bg-gradient-to-r from-purple opacity-75 lg:h-full"
         ref="collapse"
       />
     </button>
@@ -19,7 +20,7 @@
 
   <div
     v-else-if="user.goblin"
-    class="inset-x-0 h-fit w-full rounded-t-2xl border border-b-0 border-silver bg-gray px-2 md:w-fit xl:px-6"
+    class="inset-x-0 z-10 h-[calc(100%-64px)] w-full border-b-0 border-silver bg-gray px-2 md:h-fit md:w-fit md:rounded-t-2xl md:border xl:px-6"
   >
     <div class="mb-2 flex justify-center">
       <div class="overflow-hidden">
@@ -38,9 +39,11 @@
       </div>
     </div>
 
-    <div class="mb-2 flex justify-center">
-      <div class="flex h-fit w-fit max-w-[132px] flex-col flex-wrap">
-        <div class="hidden w-full flex-wrap xs:flex">
+    <div class="mb-2 flex flex-wrap items-center justify-center">
+      <div
+        class="flex h-fit w-full flex-col flex-wrap md:w-fit md:max-w-[132px]"
+      >
+        <div class="m-auto flex w-52 flex-wrap gap-1 md:w-full md:gap-0">
           <div
             v-for="i in 6"
             :key="i"
@@ -87,8 +90,10 @@
         </div>
       </div>
 
-      <div class="flex-1 pl-1 pr-4 xl:px-6">
-        <span>основные <br />параметры:</span>
+      <div class="mt-1 flex-1 border-r-2 pl-1 pr-4 xl:px-6">
+        <span class="border-b-2">
+          <span>основные <br />параметры:</span>
+        </span>
         <div
           class="flex justify-between"
           v-for="param in mainParams"
@@ -98,9 +103,11 @@
           <span class="ml-1">{{ param.value }}</span>
         </div>
       </div>
-      <div class="px-1 xl:px-6">
-        <span> дополнительные <br /></span>
-        <span>параметры:</span>
+      <div class="pl-2 pr-1 xl:px-6">
+        <span class="border-b-2">
+          <span> дополнительные <br /></span>
+          <span>параметры:</span>
+        </span>
         <div
           class="flex justify-between"
           v-for="param in secondParams"
@@ -252,7 +259,7 @@ const collapse = ref(null)
 watch(
   () => user,
   async () => {
-    if (!isShowBoard.value) {
+    if (!isShowBoard.value && collapse.value) {
       collapse.value.classList.add('animate-ping')
       await promiseTimeout(600)
       collapse.value.classList.remove('animate-ping')
@@ -261,4 +268,27 @@ watch(
   { deep: true }
 )
 isShowBoard.value = false
+
+// import { store } from '@/components/composables/store.js'
+
+// import { useGoblinState } from '@/components/composables/useGoblinState'
+// const { user, setLevel, changeAttack, changeDefense } =
+//   useGoblinState()
+
+/** меняем лвл*/
+// const sliderThumbShift = (distance) =>
+//   setLevel(Math.round(200 * distance) || user.level)
+
+// const params = ref({ attack: 0, defense: 0 })
+/** точки атаки */
+// const attackSliderThumbShift = (distance) => {
+//   params.value.attack = Math.round(85 * distance) || 0
+//   changeAttack(params.value.attack)
+// }
+
+/** точки защиты */
+// const defenseSliderThumbShift = (distance) => {
+//   params.value.defense = Math.round(85 * distance) || 0
+//   changeDefense(params.value.defense)
+// }
 </script>

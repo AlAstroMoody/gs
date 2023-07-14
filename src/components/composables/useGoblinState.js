@@ -2,7 +2,7 @@ import { computed, reactive } from 'vue'
 
 const user = reactive({
   inventory: [],
-  level: 1,
+  level: 200,
   goblin: {
     stats: {
       strength: 1,

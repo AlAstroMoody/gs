@@ -12,7 +12,7 @@
         <router-view name="bottom" v-slot="{ Component }">
           <component
             :is="Component"
-            class="fixed bottom-0 mb-16 mr-4 animate-opacity lg:my-0"
+            class="fixed bottom-0 mb-16 animate-opacity lg:my-0"
           />
         </router-view>
       </div>
@@ -37,7 +37,6 @@ const { setSize } = useSizeState({})
 setSize({ width })
 let ticking = ref(false)
 
-/** следим за шириной экрана, тест requestAnimationFrame */
 watch(width, () => {
   if (!ticking.value) {
     window.requestAnimationFrame(() => {

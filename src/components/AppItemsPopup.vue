@@ -1,9 +1,11 @@
 <template>
   <div>
-    <FilterIcon color="black" @click="openPopup" :width="40" :height="40" />
-    <AppPopup ref="popup" @wheel.stop>
+    <button @click="openPopup">
+      <FilterIcon color="black" :width="60" :height="60" />
+    </button>
+    <AppPopup ref="popup">
       <template #default>
-        <AppSidebar class="h-full w-full py-2 px-1" />
+        <AppSidebar class="h-full w-full px-1 py-2" />
       </template>
     </AppPopup>
   </div>
