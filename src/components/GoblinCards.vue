@@ -106,7 +106,7 @@ onMounted(() => init())
           {{ goblin.name }}
         </div>
         <img
-          :src="goblin.src"
+          :src="`.${goblin.src}`"
           class="pointer-events-none h-full w-full object-cover"
         />
       </div>
