@@ -1,4 +1,4 @@
-import{u as ar}from"./useGoblinState.0ba39767.js";import{s as lr}from"./index.4b806c45.js";/**
+import{u as ar}from"./useGoblinState.2867a4c4.js";import{s as lr}from"./index.8c313583.js";/**
  * @license
  * Copyright 2017 Google LLC
  *

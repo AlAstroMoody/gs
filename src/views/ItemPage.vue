@@ -35,7 +35,10 @@
             </div>
             <div v-else>Подходит для всех классов</div>
             <div v-if="currentItem.craft">
-              крафт в: <span class="text-red">{{ currentItem.craft }}</span>
+              крафт в:
+              <span :class="craftColor(currentItem.craft)">
+                {{ currentItem.craft }}
+              </span>
             </div>
             <div v-if="currentItem.boss">
               Босс:
@@ -50,6 +53,9 @@
         </div>
       </div>
       <div class="body my-2 text-white" v-html="currentItem.description" />
+      <div class="body my-2 text-white" v-if="currentItem.max_count">
+        Не более {{ currentItem.max_count }} шт.
+      </div>
 
       <ul class="my-2" v-if="currentItem.params">
         Бонусы предмета:
@@ -148,10 +154,24 @@ const route = useRoute()
 const currentItem = computed(() => store.currentItem('items', route.params.id))
 
 const buttonText = computed(() =>
-  user.inventory.length < 6 ? 'добавить в инвентарь' : 'инвентарь переполнен'
+  tooMuchSameItems.value
+    ? `не более ${currentItem.value.max_count || 1} шт.`
+    : user.inventory.length < 6
+    ? 'добавить в инвентарь'
+    : 'инвентарь переполнен'
 )
 
+const tooMuchSameItems = computed(() => {
+  const repeatedItems = user.inventory.filter(
+    (item) => item.id === currentItem.value.id
+  )
+  if (!currentItem.value.max_count && repeatedItems.length === 1) return true
+
+  return currentItem.value.max_count <= repeatedItems.length
+})
+
 const add = () => {
+  if (tooMuchSameItems.value) return
   if (user.inventory.length < 6) addItem(currentItem.value)
 }
 
@@ -163,4 +183,13 @@ const parentsCount = (id) =>
 const content = ref(null)
 
 onMounted(() => animateChildren([content]))
+
+const craftColor = (forge) => {
+  if (forge === 'Ангельская кузница') return 'text-yellow'
+  if (forge === 'Вневременная кузня') return 'text-purple'
+  if (forge === 'Великая кузница') return 'text-green'
+  if (forge === 'Демоническая кузница') return 'text-red'
+
+  return ''
+}
 </script>

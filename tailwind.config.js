@@ -18,6 +18,8 @@ module.exports = {
         red: 'rgba(255, 3, 3, 0.82)',
         gray: '#222222',
         purple: '#800080',
+        yellow: '#FFFF00',
+        green: '#00FF00',
       },
       animation: {
         filter: 'opacity 1s 0.3s ease-out forwards',

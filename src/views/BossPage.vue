@@ -22,16 +22,56 @@
           :key="item.id"
           class="ml-4 w-fit"
         >
-          <router-link :to="`/item/${item.id}`" class="flex items-center">
+          <router-link
+            :to="`/item/${item.id}`"
+            class="flex items-center"
+            :class="{ 'text-green': isRareItem(item.id) }"
+          >
             <img
               :src="`.${src(item.id)}`"
               class="mb-2 mr-2"
               v-if="src(item?.id)"
             />
+
             <QuestionIcon v-else color="purple" class="mb-2 mr-2 h-16 w-16" />
             {{ item.name }}
-            x%
+            <span
+              v-if="currentBoss?.items?.length > 1 && currentBoss.wave !== 15"
+              class="ml-1"
+            >
+              {{ isRareItem(item.id) ? rareСhance : notRareChance }}%
+            </span>
+            <span v-if="item.id === 234" class="ml-1">100%</span>
           </router-link>
+        </div>
+        <div
+          v-if="currentBoss?.items?.length !== 1 && currentBoss?.wave !== 15"
+        >
+          Шанс получить
+          <span class="text-green">рарку</span> в ф7 зависит от:
+          <div class="flex items-center">
+            удачи команды:
+            <AppInputNumber
+              :value="teamLuck"
+              @change="teamLuck = $event"
+              class="ml-2"
+            />
+          </div>
+          <div class="flex items-center">
+            и удачи убийцы:
+            <AppInputNumber
+              :value="userLuck"
+              @change="userLuck = $event"
+              class="ml-2"
+            />
+          </div>
+        </div>
+        <div v-if="currentBoss?.wave === 15">
+          Тут всё сложно) Если вам нужна руна и у вас большая удача - убивайте с
+          руки сами, или попросите другого гоблина того же класса с высокой
+          удачей. <br />
+          Если удачи нет, то НЕ добивайте сами, так вы только уменьшите шанс
+          дропа.
         </div>
       </div>
       <Teleport to="body">
@@ -52,6 +92,7 @@ import { ref, shallowRef, computed, watch, nextTick, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { onBeforeRouteLeave } from 'vue-router'
 
+import AppInputNumber from '@/components/common/AppInputNumber.vue'
 import { store } from '@/components/composables/store.js'
 import { animateChildren, scaleUp } from '@/components/composables/transitions'
 import {
@@ -84,7 +125,6 @@ onMounted(() => {
   gsap.from(hr.value, {
     duration: 1,
     width: 0,
-    scale: 0.1,
     autoAlpha: 0,
     ease: 'power1.out',
   })
@@ -176,5 +216,25 @@ onBeforeRouteLeave(() => {
     scale: 0.1,
     autoAlpha: 0,
   })
+})
+
+const isRareItem = (id) => !!items.value.find((item) => item.id === id)?.rare
+
+const teamLuck = ref(0)
+const userLuck = ref(0)
+const rareСhance = computed(() => {
+  let baseChance = teamLuck.value + userLuck.value + 1
+
+  return baseChance < 1
+    ? 1
+    : Number.isInteger(baseChance)
+    ? baseChance
+    : baseChance.toFixed(1)
+})
+
+const notRareChance = computed(() => {
+  const chance = (100 - rareСhance.value) / (currentBoss.value.items.length - 1)
+
+  return Number.isInteger(chance) ? chance : chance.toFixed(1)
 })
 </script>
