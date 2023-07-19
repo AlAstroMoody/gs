@@ -153,13 +153,21 @@ const { user, addItem } = useGoblinState()
 const route = useRoute()
 const currentItem = computed(() => store.currentItem('items', route.params.id))
 
-const buttonText = computed(() =>
-  tooMuchSameItems.value
+const itemNotFit = computed(
+  () =>
+    currentItem.value?.goblins &&
+    !currentItem.value?.goblins.includes(user.goblin.name)
+)
+
+const buttonText = computed(() => {
+  if (itemNotFit.value) return 'не подходит гоблину'
+
+  return tooMuchSameItems.value
     ? `не более ${currentItem.value.max_count || 1} шт.`
     : user.inventory.length < 6
     ? 'добавить в инвентарь'
     : 'инвентарь переполнен'
-)
+})
 
 const tooMuchSameItems = computed(() => {
   const repeatedItems = user.inventory.filter(
@@ -171,7 +179,7 @@ const tooMuchSameItems = computed(() => {
 })
 
 const add = () => {
-  if (tooMuchSameItems.value) return
+  if (tooMuchSameItems.value || itemNotFit.value) return
   if (user.inventory.length < 6) addItem(currentItem.value)
 }
 

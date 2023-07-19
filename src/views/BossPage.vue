@@ -1,5 +1,5 @@
 <template>
-  <div class="relative p-2">
+  <div class="relative mb-20 p-2">
     <div class="flex flex-wrap" ref="bossList">
       <span
         v-for="boss in bosses"
@@ -13,67 +13,94 @@
     </div>
     <hr class="border-b border-silver" ref="hr" />
     <div class="px-2" ref="dataList">
-      <div class="my-2">волна №{{ currentBoss.wave }}</div>
-      <div class="my-2">Особенности босса:</div>
+      <div class="my-2 text-xl">
+        волна № <span class="text-green">{{ currentBoss.wave }}</span>
+      </div>
       <div ref="itemsList">
-        Дроп:
-        <div
-          v-for="item in currentBoss.items"
-          :key="item.id"
-          class="ml-4 w-fit"
-        >
-          <router-link
-            :to="`/item/${item.id}`"
-            class="flex items-center"
-            :class="{ 'text-green': isRareItem(item.id) }"
+        <div class="mb-2 flex max-w-md flex-wrap justify-between">
+          <button
+            class="my-1 w-40 rounded-2xl border border-second p-4 text-primary transition-all hover:bg-silver"
+            @click="isShowDrop = !isShowDrop"
+            :class="isShowDrop ? 'bg-silver' : 'bg-second'"
           >
-            <img
-              :src="`.${src(item.id)}`"
-              class="mb-2 mr-2"
-              v-if="src(item?.id)"
-            />
-
-            <QuestionIcon v-else color="purple" class="mb-2 mr-2 h-16 w-16" />
-            {{ item.name }}
-            <span
-              v-if="currentBoss?.items?.length > 1 && currentBoss.wave !== 15"
-              class="ml-1"
+            Дроп
+          </button>
+          <button
+            class="my-1 w-40 rounded-2xl border border-second bg-second p-4 text-primary transition-all hover:bg-silver"
+            :class="isShowDrop ? 'bg-second' : 'bg-silver'"
+            @click="isShowDrop = !isShowDrop"
+          >
+            Скиллы
+          </button>
+        </div>
+        <div v-if="isShowDrop">
+          <div
+            v-for="item in currentBoss.items"
+            :key="item.id"
+            class="ml-4 w-fit"
+          >
+            <router-link
+              :to="`/item/${item.id}`"
+              class="flex items-center"
+              :class="{ 'text-green': isRareItem(item.id) }"
             >
-              {{ isRareItem(item.id) ? rareСhance : notRareChance }}%
-            </span>
-            <span v-if="item.id === 234" class="ml-1">100%</span>
-          </router-link>
-        </div>
-        <div
-          v-if="currentBoss?.items?.length !== 1 && currentBoss?.wave !== 15"
-        >
-          Шанс получить
-          <span class="text-green">рарку</span> в ф7 зависит от:
-          <div class="flex items-center">
-            удачи команды:
-            <AppInputNumber
-              :value="teamLuck"
-              @change="teamLuck = $event"
-              class="ml-2"
-            />
+              <img
+                :src="`.${src(item.id)}`"
+                class="mb-2 mr-2"
+                v-if="src(item?.id)"
+              />
+
+              <QuestionIcon v-else color="purple" class="mb-2 mr-2 h-16 w-16" />
+              {{ item.name }}
+              <span
+                v-if="currentBoss?.items?.length > 1 && currentBoss.wave !== 15"
+                class="ml-1"
+              >
+                {{ isRareItem(item.id) ? rareСhance : notRareChance }}%
+              </span>
+              <span v-if="item.id === 234" class="ml-1">100%</span>
+            </router-link>
           </div>
-          <div class="flex items-center">
-            и удачи убийцы:
-            <AppInputNumber
-              :value="userLuck"
-              @change="userLuck = $event"
-              class="ml-2"
-            />
+          <div
+            v-if="currentBoss?.items?.length !== 1 && currentBoss?.wave !== 15"
+          >
+            Шанс получить
+            <span class="text-green">рарку</span> в ф7 зависит от:
+            <div class="flex items-center">
+              удачи команды:
+              <AppInputNumber
+                :value="teamLuck"
+                @change="teamLuck = $event"
+                class="ml-2"
+              />
+            </div>
+            <div class="flex items-center">
+              и удачи убийцы:
+              <AppInputNumber
+                :value="userLuck"
+                @change="userLuck = $event"
+                class="ml-2"
+              />
+            </div>
+          </div>
+          <div v-if="currentBoss?.wave === 15">
+            Тут всё сложно) Если вам нужна руна и у вас большая удача - убивайте
+            с руки сами, или попросите другого гоблина того же класса с высокой
+            удачей. <br />
+            Если удачи нет, то НЕ добивайте сами, так вы только уменьшите шанс
+            дропа.
           </div>
         </div>
-        <div v-if="currentBoss?.wave === 15">
-          Тут всё сложно) Если вам нужна руна и у вас большая удача - убивайте с
-          руки сами, или попросите другого гоблина того же класса с высокой
-          удачей. <br />
-          Если удачи нет, то НЕ добивайте сами, так вы только уменьшите шанс
-          дропа.
+        <div v-else class="flex flex-wrap gap-4">
+          <div
+            v-for="ability in currentBoss.ability"
+            :key="ability.id"
+            class="rounded bg-silver p-4 text-primary opacity-75"
+            v-html="ability.description.replaceAll('.', '.<br/>')"
+          />
         </div>
       </div>
+
       <Teleport to="body">
         <div ref="bossWrapper" class="pointer-events-none absolute inset-0">
           <component
@@ -237,4 +264,6 @@ const notRareChance = computed(() => {
 
   return Number.isInteger(chance) ? chance : chance.toFixed(1)
 })
+
+const isShowDrop = ref(true)
 </script>

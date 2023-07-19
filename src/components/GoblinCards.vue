@@ -1,4 +1,5 @@
 <script setup>
+import { useStorage } from '@vueuse/core'
 import { computed, nextTick, ref, watch, onMounted } from 'vue'
 
 import { store } from '@/components/composables/store.js'
@@ -75,11 +76,26 @@ const chooseCard = (goblin, index) => {
   animate()
   activeGoblin.value = goblin
   setGoblin(goblin)
+  localStorage.setItem('goblin', goblin.name)
 }
 const { setGoblin } = useGoblinState()
 
-watch(goblins, () => init())
-onMounted(() => init())
+watch(goblins, async () => {
+  await getStorageGoblin()
+})
+onMounted(async () => {
+  await getStorageGoblin()
+})
+
+const getStorageGoblin = async () => {
+  const goblinName = useStorage('goblin')
+  const storageGoblin = goblins.value.find((g) => g.name === goblinName.value)
+  if (storageGoblin) {
+    setGoblin(storageGoblin)
+    await nextTick()
+    chooseCard(storageGoblin, storageGoblin.id - 1)
+  } else init()
+}
 </script>
 <template>
   <div
