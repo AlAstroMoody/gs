@@ -120,7 +120,7 @@
             <span class="ml-1">{{ param.value }}</span>
           </div>
         </div>
-        <div class="pl-2 pr-1 xl:px-6">
+        <div class="min-w-[200px] pl-2 pr-1 xl:px-6">
           <span class="border-b-2">
             <span> дополнительные <br /></span>
             <span>параметры:</span>
