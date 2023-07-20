@@ -81,8 +81,11 @@ const chooseCard = (goblin, index) => {
 const { setGoblin } = useGoblinState()
 
 watch(goblins, async () => {
+  if (!useStorage('goblin').value || useStorage('goblin').value === 'undefined')
+    localStorage.setItem('goblin', 'Инженер')
   await getStorageGoblin()
 })
+
 onMounted(async () => {
   await getStorageGoblin()
 })

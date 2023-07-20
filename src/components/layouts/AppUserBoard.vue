@@ -17,29 +17,42 @@
       />
     </button>
   </div>
-
   <div
     v-else-if="user.goblin"
-    class="inset-x-0 z-10 h-[calc(100%-64px)] w-full border-b-0 border-silver bg-gray px-2 md:h-fit md:w-fit md:rounded-t-2xl md:border xl:px-6"
+    class="inset-x-0 z-10 h-[calc(100%-64px)] w-full border-b-0 border-silver bg-gray px-2 md:h-fit md:w-fit md:max-w-[calc(100%-320px)] md:rounded-t-2xl md:border xl:px-6"
   >
-    <div class="mb-2 flex justify-center">
-      <div class="overflow-hidden">
+    <CollapseIcon
+      @click="isShowBoard = !isShowBoard"
+      class="absolute right-2 top-2 z-10"
+    />
+    <div class="flex flex-wrap items-center justify-center">
+      <div
+        class="my-2 flex flex-wrap items-center justify-center overflow-hidden"
+      >
         <img :src="`.${user.goblin?.src}`" alt="logo" class="h-16 w-16" />
+        <div class="subtitle mx-auto whitespace-nowrap">Крягз "Ядро"</div>
       </div>
-      <div class="ml-4 w-3/4">
-        <div class="subtitle mx-auto">Крягз "Ядро"</div>
-        <div class="flex justify-between">
-          <div
-            class="mr-auto w-56 rounded-lg border border-second p-1 text-center"
-          >
-            Уровень {{ user.level }}, {{ user.goblin.name }}
+      <div class="ml-4 flex w-fit">
+        <div class="mt-auto w-52 md:my-4 md:h-full">
+          <div class="my-auto">
+            <div
+              class="mb-one mr-auto w-full rounded-lg border border-second p-1 text-center"
+              :style="`background-color: rgb(34, 34, ${34 + user.level / 2})`"
+            >
+              Уровень {{ user.level }}, {{ user.goblin.name }}
+            </div>
+            <RangeSlider
+              :value="[user.level]"
+              :range="{ min: 1, max: 200 }"
+              @change="sliderThumbShift"
+              class="w-full"
+            />
           </div>
-          <CollapseIcon @click="isShowBoard = !isShowBoard" />
         </div>
       </div>
     </div>
 
-    <div class="mb-2 flex flex-wrap items-center justify-center">
+    <div class="my-2 flex flex-wrap items-center justify-center">
       <div
         class="flex h-fit w-full flex-col flex-wrap md:w-fit md:max-w-[132px]"
       >
@@ -89,32 +102,72 @@
           </div>
         </div>
       </div>
-
-      <div class="mt-1 flex-1 border-r-2 pl-1 pr-4 xl:px-6">
-        <span class="border-b-2">
-          <span>основные <br />параметры:</span>
-        </span>
-        <div
-          class="flex justify-between"
-          v-for="param in mainParams"
-          :key="param.title"
-        >
-          {{ param.title }}
-          <span class="ml-1">{{ param.value }}</span>
+      <div class="flex">
+        <div class="w-44 flex-1 flex-wrap border-r-2 pl-1 pr-4 xl:px-6">
+          <span class="border-b-2">
+            <span>основные <br />параметры:</span>
+          </span>
+          <div
+            class="flex justify-between"
+            v-for="param in mainParams"
+            :key="param.title"
+            :class="[
+              { 'text-green': param.title === 'урон:' },
+              { 'text-red': param.title === 'защита:' },
+            ]"
+          >
+            {{ param.title }}
+            <span class="ml-1">{{ param.value }}</span>
+          </div>
+        </div>
+        <div class="pl-2 pr-1 xl:px-6">
+          <span class="border-b-2">
+            <span> дополнительные <br /></span>
+            <span>параметры:</span>
+          </span>
+          <div
+            class="flex justify-between"
+            v-for="param in secondParams"
+            :key="param.title"
+          >
+            {{ param.title }}
+            <span class="ml-1">{{ param.value }}</span>
+          </div>
         </div>
       </div>
-      <div class="pl-2 pr-1 xl:px-6">
-        <span class="border-b-2">
-          <span> дополнительные <br /></span>
-          <span>параметры:</span>
-        </span>
-        <div
-          class="flex justify-between"
-          v-for="param in secondParams"
-          :key="param.title"
-        >
-          {{ param.title }}
-          <span class="ml-1">{{ param.value }}</span>
+      <div class="w-full lg:w-fit">
+        <span class="border-b-2">точки</span>
+        <div class="flex w-full flex-col gap-2 lg:flex-row">
+          <div
+            class="flex items-center rounded border px-2 lg:h-52 lg:flex-col"
+          >
+            <span class="mx-auto w-4 text-green lg:mb-2">
+              {{ params.attack }}
+            </span>
+            <RangeSlider
+              :key="width"
+              :value="[params.attack]"
+              :range="{ min: 0, max: 85 }"
+              @change="attackShift"
+              :vertical="['lg', 'xl', 'xxl'].includes(width)"
+              class="mx-4 h-40 w-full"
+            />
+          </div>
+          <div
+            class="flex items-center rounded border px-2 lg:h-52 lg:flex-col"
+          >
+            <span class="mx-auto w-4 text-red lg:mb-2">
+              {{ params.defense }}
+            </span>
+            <RangeSlider
+              :key="width"
+              :value="[params.defense]"
+              :range="{ min: 0, max: 85 }"
+              @change="defenseShift"
+              :vertical="['lg', 'xl', 'xxl'].includes(width)"
+              class="mx-4 h-40 w-full"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -122,16 +175,18 @@
 </template>
 
 <script setup>
-import { promiseTimeout } from '@vueuse/core'
-import { computed, ref, watch } from 'vue'
+import { promiseTimeout, useStorage } from '@vueuse/core'
+import { computed, onMounted, ref, watch } from 'vue'
 
+import RangeSlider from '@/components/common/RangeSlider.vue'
 import { useGoblinState } from '@/components/composables/useGoblinState'
 import { useSizeState } from '@/components/composables/useSizeState'
 import CollapseIcon from '@/components/icons/CollapseIcon.vue'
 import ExitIcon from '@/components/icons/ExitIcon.vue'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
-const { user, itemsStats, removeItem } = useGoblinState()
+const { user, itemsStats, removeItem, setLevel, changeAttack, changeDefense } =
+  useGoblinState()
 
 // общая атака
 const attack = computed(() => {
@@ -155,11 +210,7 @@ const attack = computed(() => {
 // общая защита
 const defense = computed(() =>
   itemsStats
-    ? Math.floor(
-        1 +
-          itemsStats.value.defence +
-          (user.goblin.stats.agility + itemsStats.value.agility) / 3
-      )
+    ? Math.floor(1 + itemsStats.value.defence + itemsStats.value.agility / 3)
     : 0
 )
 
@@ -262,33 +313,40 @@ watch(
     if (!isShowBoard.value && collapse.value) {
       collapse.value.classList.add('animate-ping')
       await promiseTimeout(600)
-      collapse.value.classList.remove('animate-ping')
+      if (collapse.value) collapse.value.classList.remove('animate-ping')
     }
   },
   { deep: true }
 )
 isShowBoard.value = false
 
-// import { store } from '@/components/composables/store.js'
-
-// import { useGoblinState } from '@/components/composables/useGoblinState'
-// const { user, setLevel, changeAttack, changeDefense } =
-//   useGoblinState()
-
 /** меняем лвл*/
-// const sliderThumbShift = (distance) =>
-//   setLevel(Math.round(200 * distance) || user.level)
+const sliderThumbShift = (distance) => {
+  setLevel(Math.ceil(distance) || user.level)
+  localStorage.setItem('level', user.level)
+}
 
-// const params = ref({ attack: 0, defense: 0 })
+const params = ref({ attack: 0, defense: 0 })
 /** точки атаки */
-// const attackSliderThumbShift = (distance) => {
-//   params.value.attack = Math.round(85 * distance) || 0
-//   changeAttack(params.value.attack)
-// }
+const attackShift = (distance) => {
+  params.value.attack = Math.round(distance) || 0
+  changeAttack(params.value.attack)
+  localStorage.setItem('attack', params.value.attack)
+}
 
 /** точки защиты */
-// const defenseSliderThumbShift = (distance) => {
-//   params.value.defense = Math.round(85 * distance) || 0
-//   changeDefense(params.value.defense)
-// }
+const defenseShift = (distance) => {
+  params.value.defense = Math.round(distance) || 0
+  changeDefense(params.value.defense)
+  localStorage.setItem('defense', params.value.defense)
+}
+
+const ifUndefined = (value, number) =>
+  value === 'undefined' ? number || 0 : value
+
+onMounted(() => {
+  params.value.attack = ifUndefined(useStorage('attack').value)
+  params.value.defense = ifUndefined(useStorage('defense').value)
+  setLevel(ifUndefined(useStorage('level').value, 1))
+})
 </script>

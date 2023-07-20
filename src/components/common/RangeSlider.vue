@@ -17,6 +17,10 @@ const props = defineProps({
     default: () => {},
     type: Object,
   },
+  vertical: {
+    type: Boolean,
+    default: false,
+  },
 })
 const emit = defineEmits(['change'])
 const slider = ref(null)
@@ -35,6 +39,7 @@ onMounted(() => {
       min: props.range.min,
       max: props.range.max,
     },
+    orientation: props.vertical ? 'vertical' : 'horizontal',
   })
 
   slider.value.noUiSlider.on('update', function () {
@@ -56,5 +61,17 @@ onMounted(() => {
 .noUi-handle:after,
 .noUi-handle:before {
   content: none;
+}
+.noUi-vertical .noUi-handle {
+  width: 24px;
+  height: 24px;
+  right: -4px;
+  bottom: -12px;
+}
+.noUi-horizontal .noUi-handle {
+  width: 24px;
+  height: 24px;
+  right: -12px;
+  top: -4px;
 }
 </style>
