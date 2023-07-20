@@ -92,12 +92,13 @@
           </div>
         </div>
         <div v-else class="flex flex-wrap gap-4">
-          <div
-            v-for="ability in currentBoss.ability"
-            :key="ability.id"
-            class="rounded bg-silver p-4 text-primary opacity-75"
-            v-html="ability.description.replaceAll('.', '.<br/>')"
-          />
+          <template v-for="ability in currentBoss.ability" :key="ability.id">
+            <div
+              class="rounded bg-silver p-4 text-primary opacity-75"
+              v-html="ability.description.replaceAll('.', '.<br/>')"
+              v-if="ability.description"
+            />
+          </template>
         </div>
       </div>
 
@@ -138,6 +139,9 @@ import {
   DeathIcon,
   EvilIcon,
   DejavuIcon,
+  JaegerIcon,
+  WizardIcon,
+  TankIcon,
 } from '@/components/icons/bosses'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
@@ -194,6 +198,9 @@ const bossIcons = {
   13: DeathIcon,
   14: EvilIcon,
   15: DejavuIcon,
+  16: WizardIcon,
+  17: JaegerIcon,
+  18: TankIcon,
 }
 
 const currentIcon = shallowRef(SpiderIcon)
@@ -228,7 +235,7 @@ watch(bosses, async () => {
 const iconShift = () => {
   gsap.from(bossWrapper.value.children[0], {
     duration: 1,
-    rotate: 45,
+    rotate: 25,
     scale: 0.2,
     autoAlpha: 0,
     ease: 'back.out(1)',
