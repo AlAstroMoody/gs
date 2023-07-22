@@ -111,16 +111,13 @@
             class="flex justify-between"
             v-for="param in mainParams"
             :key="param.title"
-            :class="[
-              { 'text-green': param.title === 'урон:' },
-              { 'text-red': param.title === 'защита:' },
-            ]"
+            :class="paramClass(param.title)"
           >
             {{ param.title }}
             <span class="ml-1">{{ param.value }}</span>
           </div>
         </div>
-        <div class="min-w-[200px] pl-2 pr-1 xl:px-6">
+        <div class="min-w-[220px] pl-2 pr-1 xl:px-6">
           <span class="border-b-2">
             <span> дополнительные <br /></span>
             <span>параметры:</span>
@@ -141,7 +138,7 @@
           <div
             class="flex items-center rounded border px-2 lg:h-52 lg:flex-col"
           >
-            <span class="mx-auto w-4 text-green lg:mb-2">
+            <span class="mx-auto w-4 text-yellow lg:mb-2">
               {{ params.attack }}
             </span>
             <RangeSlider
@@ -250,7 +247,7 @@ const mainParams = computed(() => [
     value: itemsStats.value.agility,
   },
   {
-    title: 'разум:',
+    title: 'интеллект:',
     value: itemsStats.value.intelligence,
   },
   {
@@ -281,14 +278,14 @@ const secondParams = computed(() => [
     value: itemsStats.value.as >= 500 ? 'max' : `${itemsStats.value.as || 0}%`,
   },
   {
-    title: 'регенерация hp:',
+    title: 'реген. hp:',
     value: `${
       itemsStats.value.hp_regeneration +
         Math.floor(itemsStats.value.strength / 100) || 0
     }/сек`,
   },
   {
-    title: 'регенерация mp:',
+    title: 'реген. mp:',
     value: `${
       itemsStats.value.mp_regeneration +
         Math.floor(itemsStats.value.intelligence / 100) || 0
@@ -349,4 +346,14 @@ onMounted(() => {
   params.value.defense = ifUndefined(useStorage('defense').value)
   setLevel(ifUndefined(useStorage('level').value, 1))
 })
+
+const paramClass = (param) => {
+  let classes = ''
+  if (param === 'урон:') classes += 'text-yellow '
+  if (param === 'защита:') classes += 'text-red '
+  if (user.goblin.mainParam.slice(1) === param.slice(1, -1))
+    classes += 'text-green'
+
+  return classes
+}
 </script>
