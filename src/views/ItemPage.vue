@@ -56,7 +56,9 @@
       <div class="body my-2 text-white" v-if="currentItem.max_count">
         Не более {{ currentItem.max_count }} шт.
       </div>
-
+      <div class="my-2 text-lg text-white" v-if="currentItem.source">
+        Где достать: <span class="text-green">{{ currentItem.source }}</span>
+      </div>
       <ul class="my-2" v-if="currentItem.params">
         Бонусы предмета:
 
