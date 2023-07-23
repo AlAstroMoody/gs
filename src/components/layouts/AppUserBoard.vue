@@ -271,7 +271,10 @@ const secondParams = computed(() => [
   },
   {
     title: 'cкорость бега:',
-    value: (itemsStats.value.ms || 0) + user.goblin.stats_increase.ms,
+    value:
+      (itemsStats.value.ms || 0) +
+      user.goblin.stats_increase.ms +
+      user.defencePoints,
   },
   {
     title: 'cкорость атаки:',

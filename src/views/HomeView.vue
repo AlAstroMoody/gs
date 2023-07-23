@@ -60,7 +60,7 @@
     </div>
     <div class="mb-20 mr-20 px-4 text-right lg:px-2">
       <a
-        href="https://discord.gg/uzJDPcuv"
+        href="https://discord.gg/aMHPcaqYSn"
         target="_blank"
         class="pb-20 font-medium text-red"
       >

@@ -197,7 +197,8 @@ onMounted(() => animateChildren([content]))
 const craftColor = (forge) => {
   if (forge === 'Ангельская кузница') return 'text-yellow'
   if (forge === 'Вневременная кузня') return 'text-purple'
-  if (forge === 'Великая кузница') return 'text-green'
+  if (forge === 'Великая кузница') return 'text-orange'
+  if (forge === 'Котелок Попса') return 'text-green'
   if (forge === 'Демоническая кузница') return 'text-red'
 
   return ''

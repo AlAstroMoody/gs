@@ -1,5 +1,6 @@
 import ArtilleryIcon from './ArtilleryIcon.vue'
 import DeathIcon from './DeathIcon.vue'
+import DejavuGirlIcon from './DejavuGirlIcon.vue'
 import DejavuIcon from './DejavuIcon.vue'
 import EnvyIcon from './EnvyIcon.vue'
 import EvilIcon from './EvilIcon.vue'
@@ -36,4 +37,5 @@ export {
   JaegerIcon,
   WizardIcon,
   TankIcon,
+  DejavuGirlIcon,
 }

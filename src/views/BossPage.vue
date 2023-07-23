@@ -152,6 +152,7 @@ import {
   DeathIcon,
   EvilIcon,
   DejavuIcon,
+  DejavuGirlIcon,
   JaegerIcon,
   WizardIcon,
   TankIcon,
@@ -210,10 +211,11 @@ const bossIcons = {
   12: ShizzlIcon,
   13: DeathIcon,
   14: EvilIcon,
-  15: DejavuIcon,
-  16: WizardIcon,
-  17: JaegerIcon,
-  18: TankIcon,
+  15: DejavuGirlIcon,
+  16: DejavuIcon,
+  17: WizardIcon,
+  18: JaegerIcon,
+  19: TankIcon,
 }
 
 const currentIcon = shallowRef(SpiderIcon)
