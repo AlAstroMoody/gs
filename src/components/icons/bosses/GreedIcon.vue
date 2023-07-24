@@ -2,7 +2,7 @@
   <svg
     version="1.0"
     xmlns="http://www.w3.org/2000/svg"
-    width="920.000000pt"
+    width="500.000000pt"
     viewBox="0 0 920.000000 1280.000000"
     preserveAspectRatio="xMidYMid meet"
     :fill="color"

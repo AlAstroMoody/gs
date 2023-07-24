@@ -84,12 +84,12 @@ const mobileFilter = ref(null)
 const list = ref(null)
 
 onMounted(() => {
-  if (filter.value) {
-    elTurn({ el: filter.value, transformOrigin: 'right bottom' })
-  }
-  if (mobileFilter.value) {
-    elTurn({ el: mobileFilter.value, transformOrigin: 'right bottom' })
-  }
+  // if (filter.value) {
+  //   elTurn({ el: filter.value, transformOrigin: 'right bottom' })
+  // }
+  // if (mobileFilter.value) {
+  //   elTurn({ el: mobileFilter.value, transformOrigin: 'right bottom' })
+  // }
 
   nextTick(() =>
     gsap.from(list.value, {

@@ -5,9 +5,9 @@ export function animateChildren(array) {
   array.forEach((el) => {
     if (el.value?.children) {
       gsap.from(gsap.utils.shuffle([...el.value.children]), {
-        duration: 0.2,
-        x: gsap.utils.random(-100, 100),
-        y: gsap.utils.random(-100, 100),
+        duration: 0.1,
+        x: gsap.utils.random(-50, 50),
+        y: gsap.utils.random(-50, 50),
         autoAlpha: 0,
         stagger: 0.05,
         ease: 'back.out(0.5)',
@@ -15,32 +15,32 @@ export function animateChildren(array) {
     }
   })
 
-  onBeforeRouteLeave((to, from, next) => {
-    let maxLength = 0
-    array.forEach((el) => {
-      if (el.value?.children.length > maxLength) {
-        maxLength = el.value.children.length
-      }
-    })
-    array.forEach((el) => {
-      gsap.to(gsap.utils.shuffle([...el.value.children]), {
-        duration: 0.1,
-        x: 100,
-        autoAlpha: 0,
-        ease: 'power3.in',
-        stagger: 0.05,
-        onComplete: () => {
-          if (el.value.children.length === maxLength) {
-            next()
-          }
-        },
-      })
-    })
-    if (!array.length) next()
-  })
+  // onBeforeRouteLeave((to, from, next) => {
+  //   let maxLength = 0
+  //   array.forEach((el) => {
+  //     if (el.value?.children.length > maxLength) {
+  //       maxLength = el.value.children.length
+  //     }
+  //   })
+  //   array.forEach((el) => {
+  //     gsap.to(gsap.utils.shuffle([...el.value.children]), {
+  //       duration: 0.01,
+  //       immediateRender: true,
+  //       x: gsap.utils.random(-50, 50),
+  //       y: gsap.utils.random(-50, 50),
+  //       autoAlpha: 0,
+  //       ease: 'power3.in',
+  //       stagger: 0.05,
+  //       onComplete: () => {
+  //         if (el.value.children.length === maxLength) next()
+  //       },
+  //     })
+  //   })
+  //   if (!array.length) next()
+  // })
 }
 
-export function scaleUp({ el, from, to, autoAlpha = 0, duration = 0.3 } = {}) {
+export function scaleUp({ el, from, to, autoAlpha = 0, duration = 0.2 } = {}) {
   if (from) {
     gsap.from(el, {
       duration,

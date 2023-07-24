@@ -1,7 +1,7 @@
 <template>
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="1038.000000pt"
+    width="538.000000pt"
     :fill="color"
     viewBox="0 0 1038.000000 1280.000000"
     preserveAspectRatio="xMidYMid meet"

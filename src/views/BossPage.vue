@@ -14,8 +14,8 @@
         {{ boss.name }}
       </span>
     </div>
-    <hr class="border-b border-silver" ref="hr" />
-    <div class="px-2" ref="dataList">
+    <hr class="border-b border-silver" ref="hr" v-if="bosses.length" />
+    <div class="px-2" ref="dataList" v-if="bosses.length">
       <div class="my-2 text-xl">
         <div>
           40% на дроп с мини-боссов волн:
@@ -75,7 +75,7 @@
             </router-link>
           </div>
           <div
-            v-if="currentBoss?.items?.length !== 1 && currentBoss?.wave !== 15"
+            v-if="currentBoss?.items?.length > 1 && currentBoss?.wave !== 15"
           >
             Шанс получить
             <span class="text-green">рарку</span> в ф7 зависит от:
@@ -105,8 +105,9 @@
           </div>
         </div>
         <div v-else class="flex flex-wrap gap-4">
-          <template v-for="ability in currentBoss.ability" :key="ability.id">
+          <template v-for="ability in currentBoss.ability">
             <div
+              :key="ability.id"
               class="rounded bg-silver p-4 text-primary opacity-75"
               v-html="ability.description.replaceAll('.', '.<br/>')"
               v-if="ability.description"
@@ -164,15 +165,18 @@ const itemsList = ref(null)
 const dataList = ref(null)
 const hr = ref(null)
 
-onMounted(() => {
-  animateChildren([bossList, itemsList, dataList])
-  iconShift()
-  gsap.from(hr.value, {
-    duration: 1,
-    width: 0,
-    autoAlpha: 0,
-    ease: 'power1.out',
-  })
+onMounted(async () => {
+  if (bosses.value.length) {
+    await nextTick()
+    animateChildren([bossList, itemsList, dataList])
+    iconShift()
+    gsap.from(hr.value, {
+      duration: 1,
+      width: 0,
+      autoAlpha: 0,
+      ease: 'power1.out',
+    })
+  }
 })
 
 const route = useRoute()
@@ -248,13 +252,15 @@ watch(bosses, async () => {
 })
 
 const iconShift = () => {
-  gsap.from(bossWrapper.value.children[0], {
-    duration: 1,
-    rotate: 25,
-    scale: 0.2,
-    autoAlpha: 0,
-    ease: 'back.out(1)',
-  })
+  if (bossWrapper.value) {
+    gsap.from(bossWrapper.value.children[0], {
+      duration: 1,
+      rotate: 25,
+      scale: 0.2,
+      autoAlpha: 0,
+      ease: 'back.out(1)',
+    })
+  }
 }
 
 onBeforeRouteLeave(() => {
