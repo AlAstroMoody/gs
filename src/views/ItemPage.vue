@@ -61,9 +61,10 @@
       </div>
       <ul class="my-2" v-if="currentItem.params">
         Бонусы предмета:
-
         <li
-          v-for="(key, index) in Object.keys(currentItem.params)"
+          v-for="(key, index) in Object.keys(currentItem.params).sort((a, b) =>
+            ['strength', 'agility', 'intelligence'].includes(a) ? -1 : 1
+          )"
           :key="index"
           class="ml-7"
         >
