@@ -32,7 +32,7 @@ main {
 
 /* стили скроллбара */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -47,7 +47,7 @@ main {
   background-color: #d4cece;
 }
 
-html {
+body {
   scrollbar-color: #d4cece #181818;
   scrollbar-width: thin;
 }

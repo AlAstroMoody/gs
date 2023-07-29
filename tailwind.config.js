@@ -21,6 +21,7 @@ module.exports = {
         yellow: '#FFFF00',
         green: '#00FF00',
         orange: 'orange',
+        blue: 'blue',
       },
       animation: {
         filter: 'opacity 1s 0.3s ease-out forwards',

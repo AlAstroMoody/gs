@@ -58,6 +58,14 @@ const router = createRouter({
         left: () => import('@/components/layouts/AppSidenav.vue'),
       },
     },
+    {
+      path: '/quest',
+      name: 'quest',
+      components: {
+        default: () => import('@/views/QuestPage.vue'),
+        left: () => import('@/components/layouts/AppSidenav.vue'),
+      },
+    },
   ],
 })
 

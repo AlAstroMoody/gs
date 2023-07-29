@@ -17,7 +17,7 @@
     <hr class="border-b border-silver" ref="hr" v-if="bosses.length" />
     <div class="px-2" ref="dataList" v-if="bosses.length">
       <div class="my-2 text-xl">
-        <div>
+        <div class="mb-2">
           40% на дроп с мини-боссов волн:
           <router-link to="/item/554" class="text-yellow opacity-75">
             Осколок души
@@ -28,6 +28,9 @@
           </router-link>
         </div>
         волна № <span class="text-green">{{ currentBoss.wave }}</span>
+        <div v-if="currentBoss.catchPhrase" class="text-lg text-red">
+          «{{ currentBoss.catchPhrase }}»
+        </div>
       </div>
       <div ref="itemsList">
         <div class="mb-2 flex max-w-md flex-wrap justify-between">

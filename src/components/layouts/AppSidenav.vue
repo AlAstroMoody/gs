@@ -22,7 +22,7 @@
   </section>
   <Teleport to="body">
     <section
-      class="fixed inset-x-0 bottom-0 z-10 flex justify-around bg-primary py-1 shadow-lg shadow-white lg:hidden"
+      class="fixed inset-x-0 bottom-0 z-10 flex justify-around overflow-x-auto bg-primary py-1 shadow-lg shadow-white lg:hidden"
     >
       <router-link :to="point.link" v-for="point in menu" :key="point.link">
         <component
@@ -30,6 +30,7 @@
           class="w-full rounded-full border p-1 hover:border-red"
           :class="{ 'border-red': point.link === $route.path }"
           :width="64"
+          :height="64"
           color="white"
         />
       </router-link>
@@ -56,6 +57,7 @@ const menu = [
   { title: 'снарядить персонажа', link: '/goblins', icon: 'ItemsIcon' },
   { title: 'смотреть боссов', link: '/boss', icon: 'BossIcon' },
   { title: 'дерево крафта', link: '/craft', icon: 'CraftIcon' },
+  { title: 'квесты', link: '/quest', icon: 'LoupeIcon' },
   { title: 'о проекте', link: '/about', icon: 'InfoIcon' },
 ]
 

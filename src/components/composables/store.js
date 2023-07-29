@@ -8,7 +8,7 @@ import { useGoblinState } from '@/components/composables/useGoblinState'
 const db = getDatabase(firebaseApp)
 
 export const store = reactive({
-  entities: { items: [], bosses: [], goblins: [] },
+  entities: { items: [], bosses: [], goblins: [], quests: [] },
 
   currentItem(entity, id) {
     return this.entities[entity].find((item) => item.id === Number(id))
@@ -23,6 +23,14 @@ export const store = reactive({
           const { user, setGoblin } = useGoblinState()
           user.goblin?.id ? null : setGoblin(this.entities.goblins[0])
         }
+      })
+    }
+  },
+  async setQuests() {
+    if (!this.entities.quests.length) {
+      const entitiesRef = ref(db, 'quests')
+      onValue(entitiesRef, async (snapshot) => {
+        this.entities.quests = await snapshot.val()
       })
     }
   },

@@ -1,11 +1,6 @@
 <template>
   <main class="mb-24 p-2">
     <div class="headline my-8">Спасибо за интерес к проекту!</div>
-    <img
-      class="m-auto"
-      alt="image"
-      src="https://cdn.discordapp.com/attachments/1008571132938555432/1104691262524772413/AlAstroMoody_goblin_survival_realistic_banner_game_about_goblin_7bd3903b-3876-40fb-9632-0c4b063129aa.png"
-    />
     <div class="mt-2">
       На самом деле, это один из полигонов для моих экспериментов в области
       фронтенда. Отсюда и возможные проблемы с работой каких-то функций :С
@@ -55,5 +50,10 @@
         кратчайшие сроки.
       </div>
     </div>
+    <img
+      class="m-auto"
+      alt="image"
+      src="https://cdn.discordapp.com/attachments/1008571132938555432/1104691262524772413/AlAstroMoody_goblin_survival_realistic_banner_game_about_goblin_7bd3903b-3876-40fb-9632-0c4b063129aa.png"
+    />
   </main>
 </template>
