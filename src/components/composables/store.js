@@ -1,14 +1,21 @@
+import { useStorage } from '@vueuse/core'
+import { initializeApp } from 'firebase/app'
 import { getDatabase, ref, onValue } from 'firebase/database'
 import { reactive } from 'vue'
 
-import { firebaseApp } from './firebaseConfig'
+import { oldConfig, newConfig } from './firebaseConfig'
 
 import { useGoblinState } from '@/components/composables/useGoblinState'
 
+const version = useStorage('version')
+const firebaseApp = initializeApp(
+  version.value === 'f8' ? newConfig : oldConfig
+)
 const db = getDatabase(firebaseApp)
 
 export const store = reactive({
   entities: { items: [], bosses: [], goblins: [], quests: [] },
+  version: '1.4f.fix7',
 
   currentItem(entity, id) {
     return this.entities[entity].find((item) => item.id === Number(id))
@@ -33,5 +40,10 @@ export const store = reactive({
         this.entities.quests = await snapshot.val()
       })
     }
+  },
+
+  setVersion(version) {
+    this.version = version
+    localStorage.setItem('version', version)
   },
 })

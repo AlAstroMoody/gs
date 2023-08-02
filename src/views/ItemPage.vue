@@ -23,7 +23,7 @@
             </button>
           </div>
           <div class="ml-4 flex flex-col content-center justify-center">
-            <div v-if="currentItem.level">
+            <div v-if="currentItem?.level > 1">
               требуемый уровень: {{ currentItem.level }}
             </div>
             <div v-else>Нет ограничения по уровню</div>
@@ -61,36 +61,14 @@
       </div>
       <ul class="my-2" v-if="currentItem.params">
         Бонусы предмета:
-        <li
-          v-for="(key, index) in Object.keys(currentItem.params).sort((a, b) =>
-            ['strength', 'agility', 'intelligence'].includes(a) ? -1 : 1
-          )"
+        <ItemParams
+          v-for="(key, index) in currentItemParams"
           :key="index"
           class="ml-7"
-        >
-          <div v-if="currentItem.params[key] && itemParams[key]">
-            <span v-if="key === 'manaburn'">
-              {{ itemParams[key] }} {{ currentItem.params[key] }} маны
-              противнику
-            </span>
-            <span v-else>
-              {{ itemParams[key] }}: {{ currentItem.params[key] }}
-            </span>
-            <span
-              v-if="
-                [
-                  'as',
-                  'mp_regeneration',
-                  'resist',
-                  'distant_resist',
-                  'evade',
-                ].includes(key)
-              "
-            >
-              %
-            </span>
-          </div>
-        </li>
+          :item="currentItem"
+          :param="key"
+          :equalityParams="equalityParams"
+        />
       </ul>
 
       <div
@@ -144,12 +122,12 @@
 import { computed, ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
-import { itemParams } from '@/common/itemParams'
 import AppItemsPopup from '@/components/AppItemsPopup.vue'
 import { store } from '@/components/composables/store.js'
 import { animateChildren } from '@/components/composables/transitions'
 import { useGoblinState } from '@/components/composables/useGoblinState'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
+import ItemParams from '@/components/ItemParams.vue'
 
 const { user, addItem } = useGoblinState()
 
@@ -204,4 +182,17 @@ const craftColor = (forge) => {
 
   return ''
 }
+
+const equalityParams = computed(
+  () =>
+    currentItem.value.params.strength === currentItem.value.params.agility &&
+    currentItem.value.params.agility === currentItem.value.params.intelligence
+)
+const currentItemParams = computed(() =>
+  Object.keys(currentItem.value.params)
+    .sort((a) => (['strength', 'agility', 'intelligence'].includes(a) ? -1 : 1))
+    .filter((key) =>
+      equalityParams.value ? !['agility', 'intelligence'].includes(key) : true
+    )
+)
 </script>

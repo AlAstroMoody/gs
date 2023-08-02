@@ -132,7 +132,7 @@
           </div>
         </div>
       </div>
-      <div class="w-full lg:w-fit">
+      <div class="w-full lg:w-fit" v-if="oldVersion">
         <span class="border-b-2">точки</span>
         <div class="flex w-full flex-col gap-2 lg:flex-row">
           <div
@@ -176,6 +176,7 @@ import { promiseTimeout, useStorage } from '@vueuse/core'
 import { computed, onMounted, ref, watch } from 'vue'
 
 import RangeSlider from '@/components/common/RangeSlider.vue'
+import { store } from '@/components/composables/store.js'
 import { useGoblinState } from '@/components/composables/useGoblinState'
 import { useSizeState } from '@/components/composables/useSizeState'
 import CollapseIcon from '@/components/icons/CollapseIcon.vue'
@@ -359,4 +360,6 @@ const paramClass = (param) => {
 
   return classes
 }
+
+const oldVersion = computed(() => store.version === '1.4f.fix7')
 </script>

@@ -19,4 +19,6 @@ export const itemParams = {
   aura: 'аура',
   active: 'актив',
   distant_resist: 'снижение урона от дальнего боя',
+  critical_chance: 'шанс крита:',
+  block_chance: 'шанс блока:',
 }

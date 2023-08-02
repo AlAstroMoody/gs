@@ -39,7 +39,8 @@
 </template>
 
 <script setup>
-import { defineAsyncComponent } from 'vue'
+import { useStorage } from '@vueuse/core'
+import { defineAsyncComponent, onMounted } from 'vue'
 
 import AppGears from '@/components/AppGears.vue'
 import { store } from '@/components/composables/store.js'
@@ -48,9 +49,7 @@ await store.setItems('bosses')
 await store.setItems('goblins')
 await store.setItems('items')
 
-const linkStyle = (index) => {
-  return `animation-delay: ${index / 4 + 0.3}s`
-}
+const linkStyle = (index) => `animation-delay: ${index / 4 + 0.2}s`
 
 const menu = [
   { title: 'что происходит?', link: '/', icon: 'QuestionIcon' },
@@ -63,4 +62,9 @@ const menu = [
 
 const icon = (name) =>
   defineAsyncComponent(() => import(`../icons/${name}.vue`))
+
+onMounted(() => {
+  const version = useStorage('version')
+  if (version) store.setVersion(version)
+})
 </script>

@@ -50,11 +50,12 @@ const craftItems = ref(items.value)
 
 /** изменяем набор артов */
 const changeItemsKit = (filteredItems) => {
-  craftItems.value = filteredItems.sort((a, b) => {
-    if (!a.src) return 1
-    if (!b.src) return -1
+  craftItems.value = filteredItems.sort((a, b) => (a.level < b.level ? 1 : -1))
+  // .sort((a, b) => {
+  //   if (!a.src) return 1
+  //   if (!b.src) return -1
 
-    return a.src.localeCompare(b.src)
-  })
+  //   return a.src.localeCompare(b.src)
+  // })
 }
 </script>

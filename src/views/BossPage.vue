@@ -69,7 +69,11 @@
               <QuestionIcon v-else color="purple" class="mb-2 mr-2 h-16 w-16" />
               {{ item.name }}
               <span
-                v-if="currentBoss?.items?.length > 1 && currentBoss.wave !== 15"
+                v-if="
+                  currentBoss?.items?.length > 1 &&
+                  currentBoss.wave !== 15 &&
+                  oldVersion
+                "
                 class="ml-1"
               >
                 {{ isRareItem(item.id) ? rareСhance : notRareChance }}%
@@ -78,7 +82,11 @@
             </router-link>
           </div>
           <div
-            v-if="currentBoss?.items?.length > 1 && currentBoss?.wave !== 15"
+            v-if="
+              currentBoss?.items?.length > 1 &&
+              currentBoss?.wave !== 15 &&
+              oldVersion
+            "
           >
             Шанс получить
             <span class="text-green">рарку</span> в ф7 зависит от:
@@ -99,7 +107,7 @@
               />
             </div>
           </div>
-          <div v-if="currentBoss?.wave === 15">
+          <div v-if="currentBoss?.wave === 15 && oldVersion">
             Тут всё сложно) Если вам нужна руна и у вас большая удача - убивайте
             с руки сами, или попросите другого гоблина того же класса с высокой
             удачей. <br />
@@ -297,4 +305,5 @@ const notRareChance = computed(() => {
 })
 
 const isShowDrop = ref(true)
+const oldVersion = computed(() => store.version === '1.4f.fix7')
 </script>

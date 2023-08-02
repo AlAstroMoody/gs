@@ -19,8 +19,15 @@
         Интерактивный редактор персонажа, дерево крафта и библиотека оружия для
         твоей любимой карты. <br />Актуально для версии:
       </span>
-      <span class="text-xl text-red"> 1.4f.fix7 </span>
+      <span class="text-xl text-red"> {{ version }} </span>
+      или<button
+        class="ml-2 text-xl text-green underline"
+        @click="changeVersion"
+      >
+        {{ changeVersionText }}
+      </button>
     </div>
+
     <div class="px-4 indent-8 lg:px-2">
       Небольшой гоблинской экспедиции становится известным о старой заброшенной
       пещере, в которой несколько сотен лет назад пропала безвести целая бригада
@@ -74,6 +81,7 @@
 import gsap from 'gsap'
 import { computed, ref, onMounted } from 'vue'
 
+import { store } from '@/components/composables/store.js'
 import { useSizeState } from '@/components/composables/useSizeState'
 import GrenadeIcon from '@/components/icons/GrenadeIcon.vue'
 
@@ -94,4 +102,14 @@ onMounted(() => {
     ease: 'back.out(1.7)',
   })
 })
+
+const version = computed(() => (store.version === 'f8' ? 'f8' : '1.4f.fix7'))
+const changeVersion = () => {
+  store.setVersion(store.version === 'f8' ? '1.4f.fix7' : 'f8')
+  location.reload()
+}
+
+const changeVersionText = computed(() =>
+  version.value === '1.4f.fix7' ? ' смотреть F8(в работе)' : ' перейти на f7'
+)
 </script>

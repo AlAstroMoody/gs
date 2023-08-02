@@ -67,7 +67,8 @@ export function useGoblinState() {
           as: (sum.as += item?.params?.as || 0),
           ms: item?.params?.ms > sum.ms ? item?.params?.ms : sum.ms,
           hp_regeneration: (sum.hp_regeneration +=
-            item?.params?.hp_regeneration || 0),
+            (item?.params?.hp_regeneration || 0) +
+            (item?.params?.hidden_regen || 0)),
           mp_regeneration: (sum.mp_regeneration +=
             item?.params?.mp_regeneration || 0),
           description: (sum.description += sum.description
