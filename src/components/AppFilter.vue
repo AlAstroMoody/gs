@@ -19,7 +19,7 @@
   <div class="mx-5 my-1">
     <RangeSlider
       :value="filterFields.level"
-      :range="{ min: 0, max: 200 }"
+      :range="{ min: 0, max: maxLevel }"
       @change="sliderThumbShift"
     />
   </div>
@@ -55,17 +55,18 @@ import { store } from '@/components/composables/store.js'
 
 const emit = defineEmits(['filteredItems'])
 
+const items = computed(() => store.entities.items)
+const goblins = computed(() => store.entities.goblins)
+const maxLevel = computed(() => store.maxLevel)
+
 // поля фильтрации
 const filterFields = reactive({
   name: '',
-  level: [0, 200],
+  level: [0, maxLevel.value],
   goblins: [],
   luck: false,
   stealth: false,
 })
-
-const items = computed(() => store.entities.items)
-const goblins = computed(() => store.entities.goblins)
 
 // сдвигаем положение на слайдере
 const sliderThumbShift = (distance) => {

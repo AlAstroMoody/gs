@@ -16,6 +16,7 @@ const db = getDatabase(firebaseApp)
 export const store = reactive({
   entities: { items: [], bosses: [], goblins: [], quests: [] },
   version: '1.4f.fix7',
+  maxLevel: version === '1.4f.fix7' ? 200 : 150,
 
   currentItem(entity, id) {
     return this.entities[entity].find((item) => item.id === Number(id))

@@ -43,7 +43,7 @@
             </div>
             <RangeSlider
               :value="[user.level]"
-              :range="{ min: 1, max: 200 }"
+              :range="{ min: 1, max: maxLevel }"
               @change="sliderThumbShift"
               class="w-full"
             />
@@ -183,6 +183,8 @@ import CollapseIcon from '@/components/icons/CollapseIcon.vue'
 import ExitIcon from '@/components/icons/ExitIcon.vue'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
+const maxLevel = computed(() => store.maxLevel)
+
 const { user, itemsStats, removeItem, setLevel, changeAttack, changeDefense } =
   useGoblinState()
 
@@ -216,7 +218,9 @@ const defense = computed(() =>
 const hp = computed(() => itemsStats.value.strength * 20 + itemsStats.value.hp)
 // общие mp
 const mp = computed(
-  () => itemsStats.value.intelligence * 15 + itemsStats.value.mp
+  () =>
+    itemsStats.value.intelligence * (oldVersion.value ? 15 : 10) +
+    itemsStats.value.mp
 )
 
 // попап
