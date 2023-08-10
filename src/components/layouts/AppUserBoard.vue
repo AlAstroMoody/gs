@@ -102,7 +102,7 @@
           </div>
         </div>
       </div>
-      <div class="flex">
+      <div class="flex flex-wrap">
         <div class="w-44 flex-1 flex-wrap border-r-2 pl-1 pr-4 xl:px-6">
           <span class="border-b-2">
             <span>основные <br />параметры:</span>

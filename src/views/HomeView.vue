@@ -103,13 +103,15 @@ onMounted(() => {
   })
 })
 
-const version = computed(() => (store.version === 'f8' ? 'f8' : '1.4f.fix7'))
+const version = computed(() =>
+  store.version === '1.5а' ? '1.5а' : '1.4f.fix7'
+)
 const changeVersion = () => {
-  store.setVersion(store.version === 'f8' ? '1.4f.fix7' : 'f8')
+  store.setVersion(store.version === '1.5а' ? '1.4f.fix7' : '1.5а')
   location.reload()
 }
 
 const changeVersionText = computed(() =>
-  version.value === '1.4f.fix7' ? ' смотреть F8(в работе)' : ' перейти на f7'
+  version.value === '1.4f.fix7' ? '1.5а(актуальная)' : ' перейти на f7(старая)'
 )
 </script>

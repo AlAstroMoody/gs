@@ -9,14 +9,14 @@ import { useGoblinState } from '@/components/composables/useGoblinState'
 
 const version = useStorage('version')
 const firebaseApp = initializeApp(
-  version.value === 'f8' ? newConfig : oldConfig
+  version.value === '1.4f.fix7' ? oldConfig : newConfig
 )
 const db = getDatabase(firebaseApp)
 
 export const store = reactive({
   entities: { items: [], bosses: [], goblins: [], quests: [] },
-  version: '1.4f.fix7',
-  maxLevel: version === '1.4f.fix7' ? 200 : 150,
+  version: '1.5а',
+  maxLevel: version === '1.5а' ? 200 : 150,
 
   currentItem(entity, id) {
     return this.entities[entity].find((item) => item.id === Number(id))
