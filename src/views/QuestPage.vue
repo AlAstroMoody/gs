@@ -67,7 +67,7 @@
           >
             <div class="overflow-hidden text-lg">
               <div class="p-4">
-                <div v-if="quest.id === 0">
+                <div v-if="quest.id === 0 && oldVersion">
                   Необходимо найти Гигантского Мурлока и отобрать у него
                   снаряжение. А если повезёт, то из его мяса можно собрать
                   <router-link
@@ -286,4 +286,6 @@ const showMap = (color) => {
   isShowMap.value = true
   eventColor.value = color
 }
+
+const oldVersion = computed(() => store.version === '1.4f.fix7')
 </script>

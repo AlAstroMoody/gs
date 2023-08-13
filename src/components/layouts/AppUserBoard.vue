@@ -190,19 +190,12 @@ const { user, itemsStats, removeItem, setLevel, changeAttack, changeDefense } =
 
 // общая атака
 const attack = computed(() => {
-  let itemsStatAttack = 0
-  switch (user.goblin.mainParam) {
-    case 'Сила':
-      itemsStatAttack = user.goblin.stats.strength + itemsStats.value.strength
-      break
-    case 'Ловкость':
-      itemsStatAttack = user.goblin.stats.agility + itemsStats.value.agility
-      break
-    default:
-      itemsStatAttack =
-        user.goblin.stats.intelligence + itemsStats.value.intelligence
-      break
-  }
+  let itemsStatAttack = user.goblin.stats.strength + itemsStats.value.strength
+  if (isAgilityGoblin.value)
+    itemsStatAttack = user.goblin.stats.agility + itemsStats.value.agility
+  if (isIntelligenceGoblin.value)
+    itemsStatAttack =
+      user.goblin.stats.intelligence + itemsStats.value.intelligence
 
   return itemsStats.value.attack + itemsStatAttack
 })
@@ -215,7 +208,28 @@ const defense = computed(() =>
 )
 
 // общие hp
-const hp = computed(() => itemsStats.value.strength * 20 + itemsStats.value.hp)
+const hp = computed(() => {
+  let health = itemsStats.value.strength * 20 + itemsStats.value.hp
+
+  if (user.inventory.some((item) => item.id === 590)) {
+    health += mainParamHealth(590)
+  }
+  if (user.inventory.some((item) => item.id === 592)) {
+    health += mainParamHealth(592)
+  }
+
+  return health
+})
+
+// добавочное хп от отдельных артов
+const mainParamHealth = (id) => {
+  let mainParam = itemsStats.value.strength
+  if (isAgilityGoblin.value) mainParam = itemsStats.value.agility
+  if (isIntelligenceGoblin.value) mainParam = itemsStats.value.intelligence
+
+  return id === 590 ? mainParam * 5 : id === 592 ? mainParam * 5 : 0
+}
+
 // общие mp
 const mp = computed(
   () =>
@@ -234,6 +248,17 @@ const showDescription = (item, index) => {
   }
 }
 
+const userHasStaff = computed(() => {
+  console.log(user.inventory.some((item) => item.id === 589))
+
+  return user.inventory.some((item) => item.id === 589)
+})
+const isAgilityGoblin = computed(() => user.goblin.mainParam === 'Ловкость')
+const isStrengthGoblin = computed(() => user.goblin.mainParam === 'Сила')
+const isIntelligenceGoblin = computed(
+  () => user.goblin.mainParam === 'Интеллект'
+)
+
 const mainParams = computed(() => [
   {
     title: 'hp:',
@@ -245,15 +270,21 @@ const mainParams = computed(() => [
   },
   {
     title: 'сила:',
-    value: itemsStats.value.strength,
+    value:
+      itemsStats.value.strength +
+      (userHasStaff.value && isStrengthGoblin.value ? 100 : 0),
   },
   {
     title: 'ловкость:',
-    value: itemsStats.value.agility,
+    value:
+      itemsStats.value.agility +
+      (userHasStaff.value && isAgilityGoblin.value ? 100 : 0),
   },
   {
     title: 'интеллект:',
-    value: itemsStats.value.intelligence,
+    value:
+      itemsStats.value.intelligence +
+      (userHasStaff.value && isIntelligenceGoblin.value ? 100 : 0),
   },
   {
     title: 'урон:',
