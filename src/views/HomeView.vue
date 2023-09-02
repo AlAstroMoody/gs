@@ -104,7 +104,7 @@ onMounted(() => {
 })
 
 const version = computed(() =>
-  store.version === '1.5а' ? '1.5а' : '1.4f.fix7'
+  store.version === '1.5а' ? '1.5а8' : '1.4f.fix7'
 )
 const changeVersion = () => {
   store.setVersion(store.version === '1.5а' ? '1.4f.fix7' : '1.5а')
@@ -112,6 +112,6 @@ const changeVersion = () => {
 }
 
 const changeVersionText = computed(() =>
-  version.value === '1.4f.fix7' ? '1.5а(актуальная)' : ' перейти на f7(старая)'
+  version.value === '1.4f.fix7' ? '1.5а8(актуальная)' : ' перейти на f7(старая)'
 )
 </script>

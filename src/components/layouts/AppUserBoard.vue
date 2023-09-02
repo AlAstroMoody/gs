@@ -248,11 +248,9 @@ const showDescription = (item, index) => {
   }
 }
 
-const userHasStaff = computed(() => {
-  console.log(user.inventory.some((item) => item.id === 589))
-
-  return user.inventory.some((item) => item.id === 589)
-})
+const userHasStaff = computed(() =>
+  user.inventory.some((item) => item.id === 589)
+)
 const isAgilityGoblin = computed(() => user.goblin.mainParam === 'Ловкость')
 const isStrengthGoblin = computed(() => user.goblin.mainParam === 'Сила')
 const isIntelligenceGoblin = computed(

@@ -1,4 +1,7 @@
+import { useStorage } from '@vueuse/core'
 import { computed, reactive } from 'vue'
+
+const version = useStorage('version')
 
 const user = reactive({
   inventory: [],
@@ -65,7 +68,12 @@ export function useGoblinState() {
               ? item?.params?.resist
               : sum.resist,
           as: (sum.as += item?.params?.as || 0),
-          ms: item?.params?.ms > sum.ms ? item?.params?.ms : sum.ms,
+          ms:
+            version.value === '1.4f.fix7'
+              ? item?.params?.ms > sum.ms
+                ? item?.params?.ms
+                : sum.ms
+              : (sum.ms += item?.params?.ms || 0),
           hp_regeneration: (sum.hp_regeneration +=
             (item?.params?.hp_regeneration || 0) +
             (item?.params?.hidden_regen || 0)),

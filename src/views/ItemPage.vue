@@ -71,6 +71,23 @@
         />
       </ul>
 
+      <div class="my-2 p-2" v-if="currentItem.notUsed?.length">
+        Нельзя использовать с:
+        <span
+          v-for="(item, index) in currentItem.notUsed"
+          class="text-md text-end"
+          :key="item.id"
+        >
+          <router-link :to="`/item/${item.id}`">
+            <span class="text-red hover:border-b">
+              {{ parentsCount(item.id) }} {{ item.name }}
+            </span>
+            <span v-if="index !== currentItem.notUsed.length - 1">, </span>
+            <span v-else>; </span>
+          </router-link>
+        </span>
+      </div>
+
       <div
         class="border-bg-silver rounded-lg border p-2"
         v-if="currentItem.children?.length"
@@ -140,7 +157,14 @@ const itemNotFit = computed(
     !currentItem.value?.goblins.includes(user.goblin.name)
 )
 
+const cantBeAdded = computed(() =>
+  currentItem.value.notUsed?.some((item) =>
+    user.inventory.map((i) => i.id).includes(item.id)
+  )
+)
+
 const buttonText = computed(() => {
+  if (cantBeAdded.value) return 'нельзя добавить'
   if (itemNotFit.value) return 'не подходит гоблину'
 
   return tooMuchSameItems.value
@@ -160,7 +184,7 @@ const tooMuchSameItems = computed(() => {
 })
 
 const add = () => {
-  if (tooMuchSameItems.value || itemNotFit.value) return
+  if (tooMuchSameItems.value || itemNotFit.value || cantBeAdded.value) return
   if (user.inventory.length < 6) addItem(currentItem.value)
 }
 
