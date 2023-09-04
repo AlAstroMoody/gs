@@ -217,6 +217,9 @@ const hp = computed(() => {
   if (user.inventory.some((item) => item.id === 592)) {
     health += mainParamHealth(592)
   }
+  if (user.inventory.some((item) => item.id === 598)) {
+    health += mainParamHealth(598)
+  }
 
   return health
 })
@@ -227,7 +230,11 @@ const mainParamHealth = (id) => {
   if (isAgilityGoblin.value) mainParam = itemsStats.value.agility
   if (isIntelligenceGoblin.value) mainParam = itemsStats.value.intelligence
 
-  return id === 590 ? mainParam * 5 : id === 592 ? mainParam * 5 : 0
+  return id === 590
+    ? mainParam * 5
+    : [592, 598].includes(id)
+    ? mainParam * 4
+    : 0
 }
 
 // общие mp
