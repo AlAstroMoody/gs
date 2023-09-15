@@ -230,9 +230,9 @@ const mainParamHealth = (id) => {
   if (isAgilityGoblin.value) mainParam = itemsStats.value.agility
   if (isIntelligenceGoblin.value) mainParam = itemsStats.value.intelligence
 
-  return id === 590
+  return [590, 598].includes(id)
     ? mainParam * 5
-    : [592, 598].includes(id)
+    : 592 === id
     ? mainParam * 4
     : 0
 }
