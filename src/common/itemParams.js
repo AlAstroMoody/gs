@@ -10,7 +10,8 @@ export const itemParams = {
   mp: 'МП',
   resist: 'сопротивление магии',
   hp_regeneration: 'регенерация здоровья',
-  mp_regeneration: 'регенерация маны',
+  mp_regeneration: 'регенерация маны', // %
+  mp_regen: 'регенерация маны',
   stealth_detection: 'обнаружение невидимок',
   as: 'скорость атаки',
   ms: 'скорость бега',
@@ -18,7 +19,7 @@ export const itemParams = {
   evade: 'уклонение',
   aura: 'аура',
   active: 'актив',
-  distant_resist: 'снижение урона от дальнего боя',
+  distant_resist: 'снижение урона',
   critical_chance: 'шанс крита:',
   block_chance: 'шанс блока:',
 }

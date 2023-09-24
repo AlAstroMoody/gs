@@ -26,9 +26,8 @@
             'evade',
           ].includes(param)
         "
+        >%</span
       >
-        %
-      </span>
     </div>
   </li>
 </template>

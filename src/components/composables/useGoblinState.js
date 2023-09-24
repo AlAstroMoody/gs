@@ -79,6 +79,7 @@ export function useGoblinState() {
             (item?.params?.hidden_regen || 0)),
           mp_regeneration: (sum.mp_regeneration +=
             item?.params?.mp_regeneration || 0),
+          mp_regen: (sum.mp_regen += item?.params?.mp_regen || 0),
           description: (sum.description += sum.description
             ? `<br/> ${item?.description || ''} `
             : item?.description || ''),
@@ -98,6 +99,7 @@ export function useGoblinState() {
         description: '',
         hp_regeneration: 0,
         mp_regeneration: 0,
+        mp_regen: 0,
       }
     )
   )
