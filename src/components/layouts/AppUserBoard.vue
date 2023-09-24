@@ -331,9 +331,10 @@ const secondParams = computed(() => [
   {
     title: 'реген. mp:',
     value: `${Math.floor(
-      ((itemsStats.value.intelligence / 100 + itemsStats.value.mp_regen) *
-        itemsStats.value.mp_regeneration) /
-        50
+      (itemsStats.value.intelligence / 100 + itemsStats.value.mp_regen) *
+        (itemsStats.value.mp_regeneration
+          ? itemsStats.value.mp_regeneration / 50
+          : 1)
     )}`,
   },
 ])
