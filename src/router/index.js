@@ -9,62 +9,37 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      components: {
-        default: () => import('@/views/HomeView.vue'),
-        left: () => import('@/components/layouts/AppSidenav.vue'),
-      },
+      component: () => import('@/views/HomeView.vue'),
     },
     {
       path: '/item/:id',
       name: 'item',
-      components: {
-        default: () => import('@/views/ItemPage.vue'),
-        left: () => import('@/components/layouts/AppSidenav.vue'),
-        right: () => import('@/components/layouts/AppSidebar.vue'),
-        bottom: () => import('@/components/layouts/AppUserBoard.vue'),
-      },
+      component: () => import('@/views/ItemPage.vue'),
     },
     {
-      path: '/goblins',
-      name: 'goblins',
-      components: {
-        default: () => import('@/views/GoblinsPage.vue'),
-        left: () => import('@/components/layouts/AppSidenav.vue'),
-        right: () => import('@/components/layouts/AppSidebar.vue'),
-        bottom: () => import('@/components/layouts/AppUserBoard.vue'),
-      },
+      path: '/goblin/:id',
+      name: 'goblin',
+      component: () => import('@/views/GoblinPage.vue'),
     },
     {
       path: '/craft',
       name: 'craft',
-      components: {
-        default: () => import('@/views/CraftPage.vue'),
-        left: () => import('@/components/layouts/AppSidenav.vue'),
-      },
+      component: () => import('@/views/ItemsPage.vue'),
     },
     {
       path: '/boss',
       name: 'boss',
-      components: {
-        default: () => import('@/views/BossPage.vue'),
-        left: () => import('@/components/layouts/AppSidenav.vue'),
-      },
+      component: () => import('@/views/BossPage.vue'),
     },
     {
       path: '/about',
       name: 'about',
-      components: {
-        default: () => import('@/views/AboutPage.vue'),
-        left: () => import('@/components/layouts/AppSidenav.vue'),
-      },
+      component: () => import('@/views/AboutPage.vue'),
     },
     {
       path: '/quest',
       name: 'quest',
-      components: {
-        default: () => import('@/views/QuestPage.vue'),
-        left: () => import('@/components/layouts/AppSidenav.vue'),
-      },
+      component: () => import('@/views/QuestPage.vue'),
     },
   ],
 })

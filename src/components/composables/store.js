@@ -8,10 +8,9 @@ import { oldConfig, newConfig } from './firebaseConfig'
 import { useGoblinState } from '@/components/composables/useGoblinState'
 
 const version = useStorage('version')
-const firebaseApp = initializeApp(
-  version.value === '1.4f.fix7' ? oldConfig : newConfig
-)
+const firebaseApp = initializeApp(version.value === '1.4f.fix7' ? oldConfig : newConfig)
 const db = getDatabase(firebaseApp)
+const baseIconPath = `https://raw.githubusercontent.com/AlAstroMoody/gs-icons/main/`
 
 export const store = reactive({
   entities: { items: [], bosses: [], goblins: [], quests: [] },
@@ -27,6 +26,14 @@ export const store = reactive({
       const entitiesRef = ref(db, entity)
       onValue(entitiesRef, async (snapshot) => {
         this.entities[entity] = await snapshot.val()
+        console.log(this.entities[entity])
+
+        this.entities[entity].forEach((item) => {
+          if (item.src) {
+            item.src = `${baseIconPath}${item.src.replace('/uploads/', '')}`
+          }
+        })
+
         if (entity === 'goblins') {
           const { user, setGoblin } = useGoblinState()
           user.goblin?.id ? null : setGoblin(this.entities.goblins[0])

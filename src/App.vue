@@ -1,35 +1,16 @@
-<template>
-  <AppCanvas />
-  <Suspense>
-    <div class="relative mr-auto flex min-h-screen w-full overflow-x-hidden">
-      <router-view name="left" v-slot="{ Component }">
-        <component :is="Component" />
-      </router-view>
-      <div class="h-full w-full lg:ml-48 lg:pl-3 xxl:ml-64" :class="pageClass">
-        <router-view v-slot="{ Component }">
-          <component :is="Component" :key="$route.path" class="h-full" />
-        </router-view>
-        <router-view name="bottom" v-slot="{ Component }">
-          <component
-            :is="Component"
-            class="fixed bottom-0 mb-16 animate-opacity lg:my-0"
-          />
-        </router-view>
-      </div>
-      <router-view name="right" v-slot="{ Component }">
-        <component :is="Component" class="ml-1 hidden w-80 md:block" />
-      </router-view>
-    </div>
-  </Suspense>
-</template>
-
 <script setup>
 import { useWindowSize } from '@vueuse/core'
-import { ref, computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import AppCanvas from '@/components/AppCanvas.vue'
 import { useSizeState } from '@/components/composables/useSizeState'
+import CustomLayout from '@/components/CustomLayout.vue'
+import AppSidebar from '@/components/layouts/AppSidebar.vue'
+
+const route = useRoute()
+
+const someRoutes = computed(() => ['item', 'craft', 'boss', 'about'].includes(route.name))
 
 const { width } = useWindowSize()
 const { setSize } = useSizeState({})
@@ -39,16 +20,28 @@ let ticking = ref(false)
 
 watch(width, () => {
   if (!ticking.value) {
-    window.requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
       ticking.value = false
       setSize({ width })
     })
     ticking.value = true
   }
 })
-
-const route = useRoute()
-const pageClass = computed(() =>
-  ['item', 'goblins', 'bosses'].includes(route.name) ? 'md:mr-80' : ''
-)
 </script>
+
+<template>
+  <AppCanvas />
+  <Suspense>
+    <div class="relative m-auto flex h-screen w-full overflow-y-scroll scrollbar-custom">
+      <router-view v-slot="{ Component }">
+        <CustomLayout
+          class="m-auto justify-between flex relative"
+          :class="{ 'max-w-[1600px]': someRoutes }"
+        >
+          <component :is="Component" :key="route.path" />
+          <AppSidebar class="px-1 pb-2 ml-4 z-10" v-if="route.name === 'item'" />
+        </CustomLayout>
+      </router-view>
+    </div>
+  </Suspense>
+</template>

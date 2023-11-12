@@ -1,3 +1,20 @@
+<script setup>
+defineProps({
+  width: {
+    default: 32,
+    type: Number,
+  },
+  height: {
+    default: 32,
+    type: Number,
+  },
+  color: {
+    default: '#000000',
+    type: String,
+  },
+})
+</script>
+
 <template>
   <svg
     version="1.0"
@@ -8,10 +25,7 @@
     viewBox="0 0 1280.000000 971.000000"
     preserveAspectRatio="xMidYMid meet"
   >
-    <g
-      transform="translate(0.000000,971.000000) scale(0.100000,-0.100000)"
-      stroke="none"
-    >
+    <g transform="translate(0.000000,971.000000) scale(0.100000,-0.100000)" stroke="none">
       <path
         d="M6430 9704 c-14 -2 -63 -9 -110 -15 -114 -15 -296 -68 -411 -120
 -182 -82 -324 -177 -464 -310 -44 -42 -1137 -934 -2430 -1983 -2584 -2096
@@ -59,19 +73,3 @@ c17 -22 69 -74 115 -116 268 -245 602 -400 957 -444 134 -16 402 -6 529 20
     </g>
   </svg>
 </template>
-<script setup>
-defineProps({
-  width: {
-    default: 36,
-    type: Number,
-  },
-  height: {
-    default: 64,
-    type: Number,
-  },
-  color: {
-    default: '#000000',
-    type: String,
-  },
-})
-</script>

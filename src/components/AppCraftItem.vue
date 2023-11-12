@@ -1,29 +1,3 @@
-<template>
-  <ol>
-    <div
-      :class="{ 'font-bold': isHasParents }"
-      @click="toggle"
-      class="flex items-center"
-    >
-      <router-link :to="`/item/${item.id}`" class="mr-2">
-        <LoupeIcon />
-      </router-link>
-      {{ count ? `${count}шт` : '' }}
-      {{ item.name }}
-      <span v-if="isHasParents" class="text-orange-300">
-        [ {{ isOpen ? '-' : '+' }} ]
-      </span>
-    </div>
-    <ul v-if="isHasParents && isOpen" class="pl-3">
-      <AppCraftItem
-        v-for="(parent, index) in currentItem?.parents"
-        :count="parentsCount(parent.id)"
-        :key="index"
-        :item="parent"
-      />
-    </ul>
-  </ol>
-</template>
 <script setup>
 import { computed, ref, toRefs } from 'vue'
 
@@ -48,12 +22,35 @@ const isOpen = ref(false)
 const isHasParents = computed(() => !!currentItem?.parents?.length)
 
 // открыть составляющие
-const toggle = () => {
-  isHasParents.value ? (isOpen.value = !isOpen.value) : null
-}
+const toggle = () => (isHasParents.value ? (isOpen.value = !isOpen.value) : null)
 
 const currentItem = store.currentItem('items', item.value?.id || 0)
 
-const parentsCount = (id) =>
-  currentItem?.count ? Number(currentItem.count[id]) : 0
+const parentsCount = (id) => (currentItem?.count ? Number(currentItem.count[id]) : 0)
 </script>
+
+<template>
+  <ol>
+    <div :class="{ 'font-bold': isHasParents }" @click="toggle" class="flex items-center group">
+      <router-link :to="`/item/${item.id}`" class="mr-2">
+        <LoupeIcon class="group-hover:stroke-purple" />
+      </router-link>
+      <button class="group-hover:font-bold group-hover:text-purple">
+        {{ count ? `${count}шт` : '' }}
+        {{ item.name }}
+        <span class="mx-1 text-red group-hover:text-purple">
+          {{ item.level > 1 ? `${item.level} lvl` : '' }}
+        </span>
+        <span v-if="isHasParents" class="text-orange"> [ {{ isOpen ? '-' : '+' }} ] </span>
+      </button>
+    </div>
+    <ul v-if="isHasParents && isOpen" class="pl-3">
+      <AppCraftItem
+        v-for="(parent, index) in currentItem?.parents"
+        :count="parentsCount(parent.id)"
+        :key="index"
+        :item="parent"
+      />
+    </ul>
+  </ol>
+</template>
