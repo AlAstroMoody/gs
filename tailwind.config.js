@@ -25,11 +25,15 @@ module.exports = {
       },
       animation: {
         filter: 'opacity 1s 0.3s ease-out forwards',
-        topToBottom: 'topToBottom 0.5s ease-in forwards',
+        topToBottom: 'topToBottom 0.8s ease-in forwards',
+        footer: 'footer 0.4s ease-in forwards',
+        bottomToTop: 'bottomToTop 0.8s ease-in forwards',
         show: 'show 0.5s ease-in forwards',
         opacity: 'opacity 0.5s ease-out forwards',
         leftToRight: 'leftToRight 1s ease-out forwards',
         increase: 'increase 1s ease-out forwards',
+        goblin: 'goblin 10s ease-out infinite',
+        skill: 'skill 1s ease-out forwards',
       },
       backgroundImage: {
         slot: "url('/images/slot.png')",
@@ -42,6 +46,14 @@ module.exports = {
         topToBottom: {
           '0%': { transform: 'translateY(-100%)' },
           '100%': { transform: 'translateY(0)' },
+        },
+        bottomToTop: {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(0)' },
+        },
+        footer: {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(100%)' },
         },
         show: {
           '0%': { transform: 'translateX(100%)' },
@@ -59,16 +71,37 @@ module.exports = {
           '0%': { transform: 'scale(0)' },
           '100%': { transform: 'scale(1)' },
         },
+        goblin: {
+          '0%': { transform: 'skewY(4deg)' },
+          '25%': { transform: '' },
+          '50%': { transform: 'scale(1.1) skewY(2deg)' },
+          '75%': { transform: 'skewY(2deg)' },
+          '100%': { transform: 'skewY(4deg)' },
+        },
+        skill: {
+          '0%': { transform: 'translateY(-80%)' },
+          '90%': { transform: 'translateY(10px)' },
+          '100%': { transform: 'translateY(0)' },
+        },
       },
       spacing: {
         one: '1px',
-        15: '60px',
+        13: '3.25rem',
+        15: '3.75rem',
+        92: '23rem',
+        128: '32rem',
+        256: '64rem',
       },
     },
     zIndex: {
       1: 1,
       10: 10,
+      20: 20,
+      30: 30,
     },
   },
-  plugins: [require('tailwindcss-animation-delay')],
+  plugins: [
+    require('tailwindcss-animation-delay'),
+    require('tailwind-scrollbar')({ nocompatible: true }),
+  ],
 }

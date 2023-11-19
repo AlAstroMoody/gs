@@ -1,5 +1,4 @@
 @import './_reset.css';
-@import './_typography.css';
 
 body {
   font-family: Inter, system-ui, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
@@ -26,28 +25,16 @@ input:not(:placeholder-shown) + label {
   transform: translate(-12px, -8px) scale(0.8);
 }
 
-main {
-  height: 100%;
+.scrollbar-custom {
+  scrollbar-color: #181818 #d4cece;
+  scrollbar-width: 8px;
 }
 
-/* стили скроллбара */
-::-webkit-scrollbar {
-  width: 10px;
+.scrollbar-custom ::webkit-scrollbar-track {
+  background: #181818;
+  moz-background: #181818;
 }
 
-::-webkit-scrollbar-track {
-  background-color: #181818;
-  border-radius: 100px;
-}
-
-::-webkit-scrollbar-thumb {
-  border-radius: 100px;
-  border: 2px solid transparent;
-  background-clip: content-box;
+.scrollbar-custom::webkit-scrollbar-thumb {
   background-color: #d4cece;
-}
-
-body {
-  scrollbar-color: #d4cece #181818;
-  scrollbar-width: thin;
 }

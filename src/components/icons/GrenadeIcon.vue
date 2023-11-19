@@ -1,17 +1,23 @@
+<script setup>
+import { useSizeState } from '@/components/composables/useSizeState'
+
+const { width } = useSizeState()
+</script>
+
 <template>
   <svg
     version="1.0"
     xmlns="http://www.w3.org/2000/svg"
-    :width="width"
+    width="40"
     viewBox="0 0 1052.000000 1280.000000"
+    :class="width === 'xxl' ? 'w-10' : '-mr-1 w-5'"
   >
     <g
       transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)"
-      :fill="color"
+      class="fill fill-purple"
       stroke="none"
     >
       <path
-        :fill="color"
         d="M4905 12790 c-384 -29 -651 -67 -1320 -186 -353 -63 -430 -81 -535
   -124 -297 -123 -479 -329 -535 -607 -14 -68 -16 -127 -13 -330 4 -235 6 -252
   30 -326 41 -122 98 -210 213 -324 l102 -101 -7 -79 c-4 -62 -11 -87 -34 -123
@@ -51,15 +57,3 @@
     </g>
   </svg>
 </template>
-<script setup>
-defineProps({
-  width: {
-    default: 40,
-    type: Number,
-  },
-  color: {
-    default: 'rgba(235, 235, 235, 0.64)',
-    type: String,
-  },
-})
-</script>

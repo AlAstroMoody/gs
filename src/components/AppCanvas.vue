@@ -5,7 +5,8 @@ import { onMounted, ref, reactive, computed } from 'vue'
 const r180 = Math.PI
 const r90 = Math.PI / 2
 const r15 = Math.PI / 12
-const color = '#220d75'
+// const color = '#220d75'
+const color = 'black'
 
 const el = ref(null)
 
@@ -71,18 +72,10 @@ onMounted(async () => {
     const rad1 = rad + random() * r15
     const rad2 = rad - random() * r15
 
-    if (
-      nx < -100 ||
-      nx > size.width + 100 ||
-      ny < -100 ||
-      ny > size.height + 100
-    )
-      return
+    if (nx < -100 || nx > size.width + 100 || ny < -100 || ny > size.height + 100) return
 
-    if (iterations <= init.value || random() > 0.5)
-      steps.push(() => step(nx, ny, rad1))
-    if (iterations <= init.value || random() > 0.5)
-      steps.push(() => step(nx, ny, rad2))
+    if (iterations <= init.value || random() > 0.5) steps.push(() => step(nx, ny, rad1))
+    if (iterations <= init.value || random() > 0.5) steps.push(() => step(nx, ny, rad2))
   }
 
   let lastTime = performance.now()
