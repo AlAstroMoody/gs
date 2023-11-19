@@ -35,8 +35,8 @@ const goblinPositionStyle = (index) => {
   )
 }
 
-const itemPositionStyle = (index) => {
-  const sizes = `height:${itemIconSize}px; width:${itemIconSize}px;`
+const itemPositionStyle = (index, icon) => {
+  const sizes = icon ? `height:${itemIconSize}px; width:${itemIconSize}px;` : ''
   if (index < 2) return sizes + `transform: translate(${(itemIconSize + 13) * index + 1}px, 0)`
   if (index < 4)
     return (
@@ -55,7 +55,8 @@ const showBottom = computed(() => ['item', 'home', 'goblin'].includes(route.name
 const activeItem = ref(null)
 
 const removeItem = (index) => {
-  useGoblinState.removeItem(index)
+  useGoblinState().removeItem(index)
+  activeItem.value = null
 }
 
 const modal = ref(null)
@@ -133,15 +134,21 @@ const openPopup = () => modal.value.open()
           @mouseleave="activeItem = null"
         >
           <button
-            class="group-hover:block hidden absolute top-0 right-0 z-10 hover:rotate-90 transition-all"
+            class="group-hover:block hidden absolute top-0 right-0 z-10"
             @click="removeItem(index)"
+            :style="itemPositionStyle(index)"
           >
-            <ExitIcon color="white" :width="40" :height="40" />
+            <ExitIcon
+              color="white"
+              :width="40"
+              :height="40"
+              class="hover:rotate-90 transition-all"
+            />
           </button>
           <img
             v-if="item.src"
             :src="item.src"
-            :style="itemPositionStyle(index)"
+            :style="itemPositionStyle(index, true)"
             class="z-1"
             :class="{
               'border-2 border-white': +route.params.id === item.id,
@@ -153,7 +160,7 @@ const openPopup = () => modal.value.open()
               'border-2 border-white': +route.params.id === item.id,
             }"
             class="z-1 h-16 w-16 bg-silver"
-            :style="itemPositionStyle(index)"
+            :style="itemPositionStyle(index, true)"
           >
             <QuestionIcon class="m-auto" />
           </div>

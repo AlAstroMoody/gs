@@ -34,7 +34,7 @@ export function useGoblinState() {
   const addItem = (item) => user.inventory.push(item)
 
   // порядковый номер удаленного предмета (1-6)
-  const removeItem = (number) => user.inventory.splice(number - 1, 1)
+  const removeItem = (number) => user.inventory.splice(number, 1)
 
   const strength = computed(() =>
     Math.floor(user.goblin.stats_increase.strength * user.level + user.goblin.stats.strength)
