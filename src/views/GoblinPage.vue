@@ -1,9 +1,11 @@
 <script setup>
-import { onMounted, computed, watch } from 'vue'
+import { onMounted, computed, watch, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
+import BaseButton from '@/components/BaseButton.vue'
 import { store } from '@/components/composables/store.js'
 import { useGoblinState } from '@/components/composables/useGoblinState'
+import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
 const { setGoblin } = useGoblinState()
 
@@ -11,19 +13,42 @@ const route = useRoute()
 
 const goblin = computed(() => store.entities.goblins.find((g) => g.id === +route.params.id))
 
-onMounted(() => (goblin.value ? setGoblin(goblin.value) : null))
-watch(goblin, () => (goblin.value ? setGoblin(goblin.value) : null))
+const activeSkill = ref({})
+onMounted(() => chooseGoblin())
+watch(goblin, () => chooseGoblin())
+
+const chooseGoblin = () => {
+  if (goblin.value) {
+    setGoblin(goblin.value)
+    activeSkill.value = goblin.value.skills[0]
+  }
+}
+
+const skillStyle = (index) => `animation-delay: ${index / 8 + 0.1}s`
 </script>
 
 <template>
-  <main v-if="goblin" class="flex h-full">
+  <main v-if="goblin" class="flex h-full gap-4">
     <div
       class="w-1/3 animate-leftToRight rounded-r-xl border border-l-0 border-second p-4 text-2xl h-fit"
     >
       {{ goblin.description }}
     </div>
-    <div class="mx-auto">
-      <div v-for="skill in 5" :key="skill">{{ skill }} skill</div>
+    <div class="mx-auto w-2/3 mt-20">
+      <div class="flex gap-2">
+        <div v-for="(skill, index) in goblin.skills" :key="skill" class="mb-2">
+          <BaseButton
+            @click="activeSkill = skill"
+            :style="skillStyle(index)"
+            class="flex items-center gap-2 animate-skill"
+            :text="skill.name"
+            :border="activeSkill?.id === skill.id ? 'purple' : ''"
+          />
+        </div>
+      </div>
+      <div v-if="activeSkill" class="rounded-r-xl border border-second p-4 mb-2 bg-primary">
+        {{ activeSkill.description }}
+      </div>
     </div>
   </main>
 </template>

@@ -3,12 +3,12 @@ import { initializeApp } from 'firebase/app'
 import { getDatabase, ref, onValue } from 'firebase/database'
 import { reactive } from 'vue'
 
-import { oldConfig, newConfig } from './firebaseConfig'
+import { config } from './firebaseConfig'
 
 import { useGoblinState } from '@/components/composables/useGoblinState'
 
 const version = useStorage('version')
-const firebaseApp = initializeApp(version.value === '1.4f.fix7' ? oldConfig : newConfig)
+const firebaseApp = initializeApp(config)
 const db = getDatabase(firebaseApp)
 const baseIconPath = `https://raw.githubusercontent.com/AlAstroMoody/gs-icons/main/`
 

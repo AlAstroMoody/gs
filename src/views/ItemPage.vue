@@ -7,10 +7,13 @@ import { store } from '@/components/composables/store.js'
 import { useGoblinState } from '@/components/composables/useGoblinState'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 import ItemParams from '@/components/ItemParams.vue'
+import ThePreloader from '@/components/ThePreloader.vue'
 
 const { user, addItem } = useGoblinState()
 
 const route = useRoute()
+
+const items = computed(() => store.entities.items)
 const currentItem = computed(() => store.currentItem('items', route.params.id))
 
 const itemNotFit = computed(
@@ -70,7 +73,8 @@ const currentItemParams = computed(() =>
 </script>
 
 <template>
-  <div v-if="!currentItem">Такого предмета нет</div>
+  <ThePreloader v-if="!items.length" />
+  <div v-else-if="!currentItem">Такого предмета нет</div>
   <div class="flex w-full justify-between py-4" v-else>
     <div class="h-[calc(100vh-350px)] pb-20">
       <div class="text-3xl xxl:text-6xl">{{ currentItem.name }}</div>
@@ -114,6 +118,8 @@ const currentItemParams = computed(() =>
         <div class="w-full text-lg text-white" v-if="currentItem.source">
           Где достать: <span class="text-green">{{ currentItem.source }}</span>
         </div>
+        <div v-if="currentItem.isMedicDD" class="text-orange">Медик-ДД</div>
+        <div v-if="currentItem.isMedicSupport" class="text-orange">Медик-сап</div>
         <ul class="my-2 w-full" v-if="currentItem.params">
           Бонусы предмета:
           <ItemParams

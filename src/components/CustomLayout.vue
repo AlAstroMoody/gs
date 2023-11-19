@@ -8,6 +8,7 @@ import { store } from '@/components/composables/store.js'
 import { useGoblinState } from '@/components/composables/useGoblinState'
 import GoblinParams from '@/components/GoblinParams.vue'
 import BinocularsIcon from '@/components/icons/BinocularsIcon.vue'
+import ExitIcon from '@/components/icons/ExitIcon.vue'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 import TheMap from '@/components/TheMap.vue'
 import TheModal from '@/components/TheModal.vue'
@@ -53,7 +54,9 @@ const showBottom = computed(() => ['item', 'home', 'goblin'].includes(route.name
 
 const activeItem = ref(null)
 
-const isShowMap = ref(false)
+const removeItem = (index) => {
+  useGoblinState.removeItem(index)
+}
 
 const modal = ref(null)
 const openPopup = () => modal.value.open()
@@ -101,12 +104,7 @@ const openPopup = () => modal.value.open()
       <!-- панель иконок -->
       <div class="absolute z-1 ml-[19rem] top-16">
         <button class="px-3 group" @click="openPopup">
-          <BinocularsIcon
-            :width="32"
-            color="silver"
-            class="group-hover:fill-purple"
-            @click="isShowMap = true"
-          />
+          <BinocularsIcon :width="32" color="silver" class="group-hover:fill-purple" />
         </button>
       </div>
       <img src="/images/2.png" />
@@ -130,10 +128,16 @@ const openPopup = () => modal.value.open()
           v-for="(item, index) in items"
           :to="`/item/${item.id}`"
           :key="item.id"
-          class="absolute bottom-40 left-2"
+          class="absolute bottom-40 left-2 group"
           @mouseenter="activeItem = item.name"
           @mouseleave="activeItem = null"
         >
+          <button
+            class="group-hover:block hidden absolute top-0 right-0 z-10 hover:rotate-90 transition-all"
+            @click="removeItem(index)"
+          >
+            <ExitIcon color="white" :width="40" :height="40" />
+          </button>
           <img
             v-if="item.src"
             :src="item.src"

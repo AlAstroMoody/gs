@@ -33,6 +33,7 @@ module.exports = {
         leftToRight: 'leftToRight 1s ease-out forwards',
         increase: 'increase 1s ease-out forwards',
         goblin: 'goblin 10s ease-out infinite',
+        skill: 'skill 1s ease-out forwards',
       },
       backgroundImage: {
         slot: "url('/images/slot.png')",
@@ -76,6 +77,11 @@ module.exports = {
           '50%': { transform: 'scale(1.1) skewY(2deg)' },
           '75%': { transform: 'skewY(2deg)' },
           '100%': { transform: 'skewY(4deg)' },
+        },
+        skill: {
+          '0%': { transform: 'translateY(-80%)' },
+          '90%': { transform: 'translateY(10px)' },
+          '100%': { transform: 'translateY(0)' },
         },
       },
       spacing: {

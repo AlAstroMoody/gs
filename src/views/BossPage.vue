@@ -97,7 +97,7 @@ const bossIcons = {
         <div class="my-4 text-xl font-semibold px-4">Дроп:</div>
         <div v-for="item in currentBoss.items" :key="item.id" class="ml-4 w-fit">
           <router-link :to="`/item/${item.id}`" class="flex items-center">
-            <img :src="`.${src(item.id)}`" class="mb-2 mr-2" v-if="src(item?.id)" />
+            <img :src="src(item.id)" class="mb-2 mr-2" v-if="src(item?.id)" />
 
             <QuestionIcon v-else color="purple" class="mb-2 mr-2 h-16 w-16" />
             {{ item.name }}
@@ -105,7 +105,7 @@ const bossIcons = {
         </div>
       </div>
     </div>
-    <div class="fixed bottom-10 right-10">
+    <div class="fixed bottom-10 right-10" v-if="currentBoss?.catchPhrase">
       {{ currentBoss.catchPhrase }}
     </div>
     <Teleport to="body">
