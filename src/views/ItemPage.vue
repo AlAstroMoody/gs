@@ -31,8 +31,8 @@ const buttonText = computed(() => {
   return user.inventory.length === 6
     ? 'инвентарь переполнен'
     : tooMuchSameItems.value
-    ? `не более ${currentItem.value.max_count || 1} шт.`
-    : 'добавить в инвентарь'
+      ? `не более ${currentItem.value.max_count || 1} шт.`
+      : 'добавить в инвентарь'
 })
 
 const tooMuchSameItems = computed(() => {

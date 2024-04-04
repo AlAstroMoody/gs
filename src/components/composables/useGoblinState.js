@@ -111,26 +111,32 @@ export function useGoblinState() {
     return itemsStats.value.attack + itemsStatAttack
   })
 
-  const defense = computed(() =>
-    itemsStats.value ? Math.floor(1 + itemsStats.value.defence + itemsStats.value.agility / 3) : 0
-  )
+  const defense = computed(() => {
+    let itemsDef = user.goblin.id === 1 ? itemsStats.value.agility / 3 : 0
 
-  const userHasStaff = computed(() => user.inventory.some((item) => item.id === 589))
+    return itemsStats.value.agility ? Math.floor(1 + itemsStats.value.defence + itemsDef) : 0
+  })
+
+  const mainItemParam = computed(() =>
+    user.inventory.reduce((sum, item) => {
+      sum += item.params.mainParam || 0
+
+      return sum
+    }, 0)
+  )
 
   const mainParams = computed(() => [
     {
       title: 'сила:',
-      value: itemsStats.value.strength + (userHasStaff.value && isStrengthGoblin.value ? 100 : 0),
+      value: itemsStats.value.strength + (isStrengthGoblin.value ? mainItemParam.value : 0),
     },
     {
       title: 'ловкость:',
-      value: itemsStats.value.agility + (userHasStaff.value && isAgilityGoblin.value ? 100 : 0),
+      value: itemsStats.value.agility + (isAgilityGoblin.value ? mainItemParam.value : 0),
     },
     {
       title: 'интеллект:',
-      value:
-        itemsStats.value.intelligence +
-        (userHasStaff.value && isIntelligenceGoblin.value ? 100 : 0),
+      value: itemsStats.value.intelligence + (isIntelligenceGoblin.value ? mainItemParam.value : 0),
     },
     {
       title: 'урон:',
@@ -177,16 +183,13 @@ export function useGoblinState() {
   // общие hp
   const hp = computed(() => {
     let health = itemsStats.value.strength * 20 + itemsStats.value.hp
-
-    if (user.inventory.some((item) => item.id === 590)) {
-      health += mainParamHealth(590)
-    }
-    if (user.inventory.some((item) => item.id === 592)) {
-      health += mainParamHealth(592)
-    }
-    if (user.inventory.some((item) => item.id === 598)) {
-      health += mainParamHealth(598)
-    }
+    const extraHpItems = [625, 621, 619, 610]
+    // нужно отдельный флаг на бэке сделать для таких предметов
+    extraHpItems.forEach((id) => {
+      if (user.inventory.some((item) => item.id === id)) {
+        health += mainParamHealth(id)
+      }
+    })
 
     return health
   })
@@ -197,11 +200,11 @@ export function useGoblinState() {
     if (isAgilityGoblin.value) mainParam = itemsStats.value.agility
     if (isIntelligenceGoblin.value) mainParam = itemsStats.value.intelligence
 
-    return [590, 598].includes(id) ? mainParam * 5 : 592 === id ? mainParam * 4 : 0
+    return [625, 621, 619].includes(id) ? mainParam * 3 : 610 === id ? mainParam * 2 : 0
   }
 
   // общие mp
-  const mp = computed(() => itemsStats.value.intelligence * 10 + itemsStats.value.mp)
+  const mp = computed(() => 100 + itemsStats.value.mp)
 
   const changeAttack = (points) => (user.attackPoints = points)
   const changeDefense = (points) => (user.defencePoints = points)

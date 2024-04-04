@@ -12,7 +12,7 @@ import GrenadeIcon from '@/components/icons/GrenadeIcon.vue'
       <div class="text-2xl lg:text-3xl">
         <span>
           Интерактивный редактор персонажа, дерево крафта и библиотека оружия для твоей любимой
-          карты. <br />Актуально для версии 1.5А
+          карты. <br />Актуально для версии 1.5b
         </span>
       </div>
 

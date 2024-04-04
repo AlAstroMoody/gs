@@ -20,7 +20,7 @@ watch(goblin, () => chooseGoblin())
 const chooseGoblin = () => {
   if (goblin.value) {
     setGoblin(goblin.value)
-    activeSkill.value = goblin.value.skills[0]
+    // activeSkill.value = goblin.value.skills[0]
   }
 }
 
