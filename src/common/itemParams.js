@@ -22,4 +22,5 @@ export const itemParams = {
   distant_resist: 'снижение урона',
   critical_chance: 'шанс крита:',
   block_chance: 'шанс блока:',
+  mainParam: 'основной параметр',
 }
