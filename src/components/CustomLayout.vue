@@ -123,7 +123,7 @@ const openPopup = () => modal.value.open()
         <GoblinParams class="ml-auto mr-6 h-56 w-92" />
       </div>
       <div class="absolute z-1 ml-256 w-128 h-full">
-        <div class="absolute top-[88px] px-2">{{ activeItem }}</div>
+        <div class="absolute top-[88px] px-2">{{ activeItem || 'Инвентарь' }}</div>
         <!-- инвентарь -->
         <RouterLink
           v-for="(item, index) in items"

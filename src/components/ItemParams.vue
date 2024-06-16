@@ -1,31 +1,21 @@
 <template>
   <li>
-    <div v-if="equalityParams && param === 'strength'">
-      все статы: {{ item.params.strength }}
-    </div>
+    <div v-if="equalityParams && param === 'strength'">все статы: {{ item.params.strength }}</div>
     <div v-else-if="item.params[param] && itemParams[param]">
       <span v-if="param === 'manaburn'">
         {{ itemParams[param] }} {{ item.params[param] }} маны противнику
       </span>
       <span v-else-if="param === 'critical_chance'">
-        {{ itemParams[param] }} {{ item.params[param] }}% на x{{
-          item.params.critical_value
-        }}
+        {{ itemParams[param] }} {{ item.params[param] }}% на x{{ item.params.critical_value }}.
+        <span v-if="item.params.sniper_coef" class="text-green">
+          Шанс у снайпера: {{ (item.params[param] * item.params.sniper_coef).toFixed(1) }}%</span
+        >
       </span>
       <span v-else-if="param === 'block_chance'">
         {{ item.params[param] }}% на блок {{ item.params.block_value }} урона
       </span>
       <span v-else> {{ itemParams[param] }}: {{ item.params[param] }} </span>
-      <span
-        v-if="
-          [
-            'as',
-            'mp_regeneration',
-            'resist',
-            'distant_resist',
-            'evade',
-          ].includes(param)
-        "
+      <span v-if="['as', 'mp_regeneration', 'resist', 'distant_resist', 'evade'].includes(param)"
         >%</span
       >
     </div>

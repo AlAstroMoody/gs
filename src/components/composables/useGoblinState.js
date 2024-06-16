@@ -63,12 +63,7 @@ export function useGoblinState() {
           luck: (sum.luck += item?.params?.luck || 0),
           resist: item?.params?.resist > sum.resist ? item?.params?.resist : sum.resist,
           as: (sum.as += item?.params?.as || 0),
-          ms:
-            version.value === '1.4f.fix7'
-              ? item?.params?.ms > sum.ms
-                ? item?.params?.ms
-                : sum.ms
-              : (sum.ms += item?.params?.ms || 0),
+          ms: (sum.ms += item?.params?.ms || 0),
           hp_regeneration: (sum.hp_regeneration +=
             (item?.params?.hp_regeneration || 0) + (item?.params?.hidden_regen || 0)),
           mp_regeneration: (sum.mp_regeneration += item?.params?.mp_regeneration || 0),
@@ -125,6 +120,14 @@ export function useGoblinState() {
     }, 0)
   )
 
+  const statsDef = computed(() => {
+    let coef = 4
+    if (user.goblin.name === 'Сталкер') coef = 3
+    if (user.goblin.name === 'Снайпер') coef = 6
+
+    return Math.floor(user.goblin.stats.agility / coef)
+  })
+
   const mainParams = computed(() => [
     {
       title: 'сила:',
@@ -144,7 +147,7 @@ export function useGoblinState() {
     },
     {
       title: 'защита:',
-      value: defense.value + user.defencePoints * 3,
+      value: defense.value + user.defencePoints * 3 + statsDef.value,
     },
   ])
 
@@ -182,7 +185,13 @@ export function useGoblinState() {
 
   // общие hp
   const hp = computed(() => {
-    let health = itemsStats.value.strength * 20 + itemsStats.value.hp
+    let health = itemsStats.value.strength * 15 + itemsStats.value.hp
+
+    if (user.goblin.name === 'Снайпер') health += user.goblin.stats.agility * 7.5
+    else if (isStrengthGoblin.value) health += user.goblin.stats.strength * 5
+    else if (isIntelligenceGoblin.value) health += user.goblin.stats.intelligence * 5
+    else if (isAgilityGoblin.value) health += user.goblin.stats.agility * 5
+
     const extraHpItems = [625, 621, 619, 610]
     // нужно отдельный флаг на бэке сделать для таких предметов
     extraHpItems.forEach((id) => {
