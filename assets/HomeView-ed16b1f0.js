@@ -1,4 +1,4 @@
-import{u as a,o as t,c,n as i,a as r,b as n,d as e,e as _}from"./index-116cc853.js";const d="/gs/images/header.webp",x=n("g",{transform:"translate(0.000000,1280.000000) scale(0.100000,-0.100000)",class:"fill fill-purple",stroke:"none"},[n("path",{d:`M4905 12790 c-384 -29 -651 -67 -1320 -186 -353 -63 -430 -81 -535
+import{u as a,o as t,c,n as i,a as r,b as n,d as e,e as _}from"./index-dcfeb166.js";const d="/gs/images/header.webp",x=n("g",{transform:"translate(0.000000,1280.000000) scale(0.100000,-0.100000)",class:"fill fill-purple",stroke:"none"},[n("path",{d:`M4905 12790 c-384 -29 -651 -67 -1320 -186 -353 -63 -430 -81 -535
   -124 -297 -123 -479 -329 -535 -607 -14 -68 -16 -127 -13 -330 4 -235 6 -252
   30 -326 41 -122 98 -210 213 -324 l102 -101 -7 -79 c-4 -62 -11 -87 -34 -123
   -16 -25 -135 -153 -265 -285 -130 -132 -253 -265 -273 -296 -68 -103 -76 -139
