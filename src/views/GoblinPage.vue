@@ -20,7 +20,7 @@ watch(goblin, () => chooseGoblin())
 const chooseGoblin = () => {
   if (goblin.value) {
     setGoblin(goblin.value)
-    // activeSkill.value = goblin.value.skills[0]
+    if (goblin.value?.abilities) activeSkill.value = goblin.value?.abilities[0]
   }
 }
 
@@ -36,7 +36,7 @@ const skillStyle = (index) => `animation-delay: ${index / 8 + 0.1}s`
     </div>
     <div class="mx-auto w-2/3 mt-20">
       <div class="flex gap-2">
-        <div v-for="(skill, index) in goblin.skills" :key="skill" class="mb-2">
+        <div v-for="(skill, index) in goblin.abilities" :key="skill" class="mb-2">
           <BaseButton
             @click="activeSkill = skill"
             :style="skillStyle(index)"
@@ -46,8 +46,16 @@ const skillStyle = (index) => `animation-delay: ${index / 8 + 0.1}s`
           />
         </div>
       </div>
-      <div v-if="activeSkill" class="rounded-r-xl border border-second p-4 mb-2 bg-primary">
-        {{ activeSkill.description }}
+      <div
+        v-if="activeSkill?.description"
+        class="rounded-r-xl border border-second p-4 mb-2 bg-primary"
+      >
+        <div v-html="activeSkill.description" />
+        <div v-if="activeSkill.cd" class="text-green">кд: {{ activeSkill.cd }} сек</div>
+        <div v-if="activeSkill.dur" class="text-purple">
+          длительность: {{ activeSkill.dur }} сек
+        </div>
+        <div v-if="activeSkill.mc" class="text-red">манакост: {{ activeSkill.mc }} маны</div>
       </div>
     </div>
   </main>

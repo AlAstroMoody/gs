@@ -1,0 +1,1 @@
+import{o as r,c as o,f as t,n as a}from"./index-dcfeb166.js";const c={__name:"BaseButton",props:{text:String,border:String},setup(e){return(n,s)=>(r(),o("button",{class:a(["mr-auto rounded-2xl border border-solid px-2 py-4 ease-out hover:border-red hover:text-red",`border-${e.border?e.border:"second"}`])},t(e.text),3))}};export{c as _};

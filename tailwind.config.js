@@ -79,8 +79,8 @@ module.exports = {
           '100%': { transform: 'skewY(4deg)' },
         },
         skill: {
-          '0%': { transform: 'translateY(-80%)' },
-          '90%': { transform: 'translateY(10px)' },
+          '0%': { transform: 'translateY(-20px)' },
+          '70%': { transform: 'translateY(10px)' },
           '100%': { transform: 'translateY(0)' },
         },
       },
