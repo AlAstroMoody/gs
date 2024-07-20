@@ -1,7 +1,4 @@
-import { useStorage } from '@vueuse/core'
 import { computed, reactive } from 'vue'
-
-const version = useStorage('version')
 
 const user = reactive({
   inventory: [],
@@ -125,7 +122,12 @@ export function useGoblinState() {
     if (user.goblin.name === 'Сталкер') coef = 3
     if (user.goblin.name === 'Снайпер') coef = 6
 
-    return Math.floor(user.goblin.stats.agility / coef)
+    if (isAgilityGoblin.value)
+      return Math.floor((user.goblin.stats.agility + itemsStats.value.agility) / coef)
+    if (isIntelligenceGoblin.value)
+      return Math.floor((user.goblin.stats.intelligence + itemsStats.value.intelligence) / coef)
+
+    return Math.floor((user.goblin.stats.strength + itemsStats.value.strength) / coef)
   })
 
   const mainParams = computed(() => [
@@ -151,6 +153,10 @@ export function useGoblinState() {
     },
   ])
 
+  const speed = computed(() => {
+    const speed = (itemsStats.value.ms || 0) + user.goblin.stats_increase.ms + user.defencePoints
+    return speed > 522 ? 522 : speed
+  })
   const secondParams = computed(() => [
     {
       title: 'удача:',
@@ -162,7 +168,7 @@ export function useGoblinState() {
     },
     {
       title: 'cкорость бега:',
-      value: (itemsStats.value.ms || 0) + user.goblin.stats_increase.ms + user.defencePoints,
+      value: speed,
     },
     {
       title: 'cкорость атаки:',
@@ -188,9 +194,12 @@ export function useGoblinState() {
     let health = itemsStats.value.strength * 15 + itemsStats.value.hp
 
     if (user.goblin.name === 'Снайпер') health += user.goblin.stats.agility * 7.5
-    else if (isStrengthGoblin.value) health += user.goblin.stats.strength * 5
-    else if (isIntelligenceGoblin.value) health += user.goblin.stats.intelligence * 5
-    else if (isAgilityGoblin.value) health += user.goblin.stats.agility * 5
+    else if (isStrengthGoblin.value)
+      health += (user.goblin.stats.strength + itemsStats.value.strength) * 5
+    else if (isIntelligenceGoblin.value)
+      health += (user.goblin.stats.intelligence + itemsStats.value.intelligence) * 5
+    else if (isAgilityGoblin.value)
+      health += (user.goblin.stats.agility + itemsStats.value.agility) * 5
 
     const extraHpItems = [625, 621, 619, 610]
     // нужно отдельный флаг на бэке сделать для таких предметов

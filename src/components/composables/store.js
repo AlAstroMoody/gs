@@ -34,7 +34,9 @@ export const store = reactive({
 
         if (entity === 'goblins') {
           const { user, setGoblin } = useGoblinState()
-          user.goblin?.id ? null : setGoblin(this.entities.goblins[0])
+          const lsGoblin = localStorage.getItem('goblin')
+          if (lsGoblin) setGoblin(this.entities.goblins.find((g) => g.name === lsGoblin))
+          else user.goblin?.id ? null : setGoblin(this.entities.goblins[0])
         }
       })
     }
