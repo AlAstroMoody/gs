@@ -155,6 +155,7 @@ export function useGoblinState() {
 
   const speed = computed(() => {
     const speed = (itemsStats.value.ms || 0) + user.goblin.stats_increase.ms + user.defencePoints
+
     return speed > 522 ? 522 : speed
   })
   const secondParams = computed(() => [
@@ -168,7 +169,7 @@ export function useGoblinState() {
     },
     {
       title: 'cкорость бега:',
-      value: speed,
+      value: speed.value,
     },
     {
       title: 'cкорость атаки:',

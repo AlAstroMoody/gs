@@ -35,7 +35,12 @@
           Discord-канале по проекту
         </a>
         либо тегнув меня во
-        <a href="https://discord.gg/aMHPcaqYSn" target="_blank" class="text-lg text-red">
+
+        <a
+          href="https://discord.com/channels/1224088620579688528/1224092747212914768"
+          target="_blank"
+          class="text-lg text-red"
+        >
           Взрывной кружке
         </a>
         <br /><br />

@@ -50,8 +50,8 @@ const showMap = () => {
 
 <template>
   <main class="h-screen px-2">
-    <div class="pt-2 text-3xl xxl:text-6xl">Квесты</div>
-
+    <div class="pt-2 text-3xl xxl:text-4xl">Квесты</div>
+    <div v-if="!quests?.length" class="mt-8">Куда-то потерялись :с</div>
     <div class="flex w-full flex-col gap-4">
       <div v-for="quest in quests" :key="quest.id" class="p-2 last:mb-20">
         <span class="text-xl">{{ quest.name }}</span>

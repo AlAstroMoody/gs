@@ -2,7 +2,9 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
+import BaseAccordeon from '@/components/BaseAccordeon.vue'
 import BaseLink from '@/components/BaseLink.vue'
+import BaseMarkdownWrapper from '@/components/BaseMarkdownWrapper.vue'
 import { store } from '@/components/composables/store.js'
 import {
   SpiderIcon,
@@ -79,19 +81,34 @@ const bossIcons = {
     </div>
     <div class="flex w-full" v-if="currentBoss">
       <div class="w-2/3 px-4">
-        <div class="my-4 text-xl font-semibold">Скилы:</div>
-        <div v-if="!currentBoss?.ability?.length">
-          Пока отсутствуют. Есть инфа? Пиши по ссылкам из раздела
-          <BaseLink title="«‎О проекте»" link="/about" class="test-red" />
-        </div>
-        <ul v-for="(ability, index) in currentBoss.ability" :key="ability.id" class="py-2">
-          <ol>
-            {{
-              index
-            }}.
-            <span v-html="ability.description.replaceAll('.', '.<br/>')" class="indent-1" />
-          </ol>
-        </ul>
+        <BaseAccordeon>
+          <template v-slot:button>Скилы</template>
+          <template v-slot:content>
+            <div v-if="!currentBoss?.ability?.length">
+              Пока отсутствуют. Есть инфа? Пиши по ссылкам из раздела
+              <BaseLink title="«О проекте»" link="/about" class="test-red" />
+            </div>
+            <ul v-for="(ability, index) in currentBoss.ability" :key="ability.id" class="py-2">
+              <ol>
+                {{
+                  index
+                }}.
+                <span v-html="ability.description.replaceAll('.', '.<br/>')" class="indent-1" />
+              </ol>
+            </ul>
+          </template>
+        </BaseAccordeon>
+
+        <BaseAccordeon>
+          <template v-slot:button>Квест по апгрейду способностей</template>
+          <template v-slot:content>
+            <div class="content" ref="upgrade">
+              <div class="min-h-0">
+                <BaseMarkdownWrapper :source="currentBoss.upgrade" />
+              </div>
+            </div>
+          </template>
+        </BaseAccordeon>
       </div>
       <div class="w-1/3">
         <div class="my-4 text-xl font-semibold px-4">Дроп:</div>

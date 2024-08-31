@@ -82,7 +82,7 @@ const openPopup = () => modal.value.open()
       <div class="absolute ml-256 w-128">
         <!-- <BaseLink title="О проекте" link="/about" class="absolute left-24 top-2 z-1" /> -->
         <a
-          href="https://discord.gg/aMHPcaqYSn"
+          href="https://discord.com/channels/1224088620579688528/1224092747212914768"
           target="_blank"
           class="absolute -right-13 my-3 font-medium text-red transition-all hover:scale-110 hover:text-purple"
         >
