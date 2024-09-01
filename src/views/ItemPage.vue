@@ -1,8 +1,9 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import BaseButton from '@/components/BaseButton.vue'
+import BaseInfoPopup from '@/components/BaseInfoPopup.vue'
 import { store } from '@/components/composables/store.js'
 import { useGoblinState } from '@/components/composables/useGoblinState'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
@@ -43,8 +44,16 @@ const tooMuchSameItems = computed(() => {
 })
 
 const add = () => {
+  if (!user.inventory.length) showWarning()
   if (tooMuchSameItems.value || itemNotFit.value || cantBeAdded.value) return
   if (user.inventory.length < 6) addItem(currentItem.value)
+}
+
+const popup = ref(null)
+const showWarning = () => {
+  popup.value.show(
+    'В связи с изменением игровых механик, подсчёт параметров гоблина временно работает некорректно'
+  )
 }
 
 const parentsCount = (id) =>
@@ -76,6 +85,7 @@ const currentItemParams = computed(() =>
   <ThePreloader v-if="!items.length" />
   <div v-else-if="!currentItem">Такого предмета нет</div>
   <div class="flex w-full justify-between py-4" v-else>
+    <BaseInfoPopup ref="popup" />
     <div class="h-[calc(100vh-350px)] pb-20 overflow-y-auto scrollbar-custom">
       <div class="text-3xl xxl:text-6xl">{{ currentItem.name }}</div>
 
