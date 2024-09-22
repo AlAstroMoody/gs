@@ -5,7 +5,6 @@ import { useRoute } from 'vue-router'
 import BaseButton from '@/components/BaseButton.vue'
 import { store } from '@/components/composables/store.js'
 import { useGoblinState } from '@/components/composables/useGoblinState'
-import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
 const { setGoblin } = useGoblinState()
 

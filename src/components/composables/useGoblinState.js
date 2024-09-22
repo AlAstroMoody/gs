@@ -17,6 +17,7 @@ const user = reactive({
   },
   attackPoints: 0,
   defencePoints: 0,
+  activeSkill: null,
 })
 
 export function useGoblinState() {
@@ -28,6 +29,11 @@ export function useGoblinState() {
     user.level = level
     localStorage.setItem('level', user.level)
   }
+
+  const setSkill = (skill) => {
+    user.activeSkill = skill
+  }
+
   const addItem = (item) => user.inventory.push(item)
 
   // порядковый номер удаленного предмета (1-6)
@@ -243,5 +249,6 @@ export function useGoblinState() {
     secondParams,
     hp,
     mp,
+    setSkill,
   }
 }

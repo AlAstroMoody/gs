@@ -49,7 +49,7 @@ const showMap = () => {
 </script>
 
 <template>
-  <main class="h-screen px-2">
+  <main class="px-2">
     <div class="pt-2 text-3xl xxl:text-4xl">Квесты</div>
     <div v-if="!quests?.length" class="mt-8">Куда-то потерялись :с</div>
     <div class="flex w-full flex-col gap-4">

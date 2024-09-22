@@ -1,14 +1,38 @@
 <script setup>
+import { computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
+
+import { useGoblinState } from '@/components/composables/useGoblinState'
 import GrenadeIcon from '@/components/icons/GrenadeIcon.vue'
+
+const route = useRoute()
+
+const activeGoblin = computed(() => route.query.goblin)
+
+const { user, setSkill } = useGoblinState()
+
+watch(
+  () => activeGoblin.value,
+  () => {
+    setSkill(user.goblin?.abilities[0])
+  }
+)
 </script>
 <template>
   <main class="align-center relative flex flex-col -mt-16">
-    <img src="/images/header.webp" alt="main" class="min-h-[150px] w-full object-cover" />
-
-    <div class="px-6 text-right text-3xl text-purple xxl:text-6xl fixed right-8 top-15">
+    <img
+      src="/images/header.webp"
+      alt="main"
+      class="min-h-[150px] w-full object-cover"
+      v-if="!activeGoblin"
+    />
+    <div
+      class="px-6 text-right text-3xl text-purple xxl:text-6xl fixed right-8 top-15"
+      v-if="!activeGoblin"
+    >
       G<GrenadeIcon class="mb-2 inline" />blin Survival
     </div>
-    <div class="px-8 transition-opaciry" ref="body">
+    <div class="px-8 transition-opaciry" ref="body" v-if="!activeGoblin">
       <div class="text-2xl lg:text-3xl">
         <span>
           Интерактивный редактор персонажа, дерево крафта и библиотека оружия для твоей любимой
@@ -31,6 +55,34 @@ import GrenadeIcon from '@/components/icons/GrenadeIcon.vue'
         мини-телепорты для передачи предметов с поверхности, и спускаются в заброшенную шахту, с
         надеждой выкрасть и найти уникальные секреты гномов и научиться использовать их в своих
         смертоносных сумасшедших изобретениях...
+      </div>
+    </div>
+    <div v-if="activeGoblin && user.goblin" class="flex h-full gap-4 mt-20">
+      <div class="w-1/2">
+        <div class="text-purple text-3xl my-4 px-4 w-fit">{{ user.goblin.name }}</div>
+        <div
+          class="w-full animate-leftToRight rounded-r-xl border border-l-0 border-second p-4 text-2xl h-fit"
+        >
+          {{ user.goblin.description }}
+        </div>
+      </div>
+      <div class="mx-auto w-2/3 mt-16">
+        <div class="text-2xl text-purple py-2" v-if="user.activeSkill">
+          {{ user.activeSkill.name }}
+        </div>
+        <div
+          v-if="user.activeSkill?.description"
+          class="rounded-r-xl border border-second p-4 mb-2 bg-primary"
+        >
+          <div v-html="user.activeSkill.description" />
+          <div v-if="user.activeSkill.cd" class="text-green">кд: {{ user.activeSkill.cd }} сек</div>
+          <div v-if="user.activeSkill.dur" class="text-purple">
+            длительность: {{ user.activeSkill.dur }} сек
+          </div>
+          <div v-if="user.activeSkill.mc" class="text-red">
+            манакост: {{ user.activeSkill.mc }} маны
+          </div>
+        </div>
       </div>
     </div>
   </main>

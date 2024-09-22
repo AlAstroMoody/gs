@@ -5,6 +5,7 @@ import { reactive } from 'vue'
 
 import { config } from './firebaseConfig'
 
+import { baseUrl } from '@/common/constants'
 import { useGoblinState } from '@/components/composables/useGoblinState'
 
 const version = useStorage('version')
@@ -13,7 +14,7 @@ const db = getDatabase(firebaseApp)
 const baseIconPath = `https://raw.githubusercontent.com/AlAstroMoody/gs-icons/main/`
 
 export const store = reactive({
-  entities: { items: [], bosses: [], goblins: [], quests: [] },
+  entities: { items: {}, bosses: [], goblins: [], quests: [], craft: [] },
   version: '1.5а',
   maxLevel: version === '1.5а' ? 200 : 150,
 
@@ -41,6 +42,7 @@ export const store = reactive({
       })
     }
   },
+
   async setQuests() {
     if (!this.entities.quests.length) {
       const entitiesRef = ref(db, 'quests')
@@ -50,8 +52,8 @@ export const store = reactive({
     }
   },
 
-  setVersion(version) {
-    this.version = version
-    localStorage.setItem('version', version)
+  async getItems() {
+    const response = await fetch(baseUrl + 'craft.json')
+    store.entities.items = await response.json()
   },
 })

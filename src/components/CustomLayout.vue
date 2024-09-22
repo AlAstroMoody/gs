@@ -1,12 +1,13 @@
 <script setup>
-import { computed, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
+import { baseUrl } from '@/common/constants'
 import BaseLink from '@/components/BaseLink.vue'
 import BigMap from '@/components/BigMap.vue'
 import { store } from '@/components/composables/store.js'
 import { useGoblinState } from '@/components/composables/useGoblinState'
-import GoblinParams from '@/components/GoblinParams.vue'
+// import GoblinParams from '@/components/GoblinParams.vue'
 import BinocularsIcon from '@/components/icons/BinocularsIcon.vue'
 import ExitIcon from '@/components/icons/ExitIcon.vue'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
@@ -14,14 +15,15 @@ import TheMap from '@/components/TheMap.vue'
 import TheModal from '@/components/TheModal.vue'
 
 const route = useRoute()
-const { user, mp, hp } = useGoblinState()
+const router = useRouter()
+const { user, setGoblin, setSkill } = useGoblinState()
 
 const goblinIconSize = 84
 const itemIconSize = 64
 
 await store.setItems('bosses')
 await store.setItems('goblins')
-await store.setItems('items')
+// await store.setItems('items')
 
 const goblins = computed(() => store.entities.goblins)
 const items = computed(() => user.inventory)
@@ -61,18 +63,36 @@ const removeItem = (index) => {
 
 const modal = ref(null)
 const openPopup = () => modal.value.open()
+
+const inventory = ref()
+onMounted(() => {
+  if (('onMounted', route.path === '/')) {
+    inventory.value.classList.add('hidden')
+  }
+})
+
+function chooseGoblin(goblin) {
+  setGoblin(goblin)
+  router.push({ name: 'home', query: { goblin: goblin.name } })
+}
+
+function setActiveSkill(skill) {
+  setSkill(skill)
+}
 </script>
 <template>
   <main class="flex h-screen flex-col items-center justify-between w-full">
-    <div class="fixed top-0 z-10 flex animate-topToBottom items-start">
+    <div class="fixed top-0 z-20 flex animate-topToBottom items-start">
+      <img src="/images/t1.png" style="margin-left: -512px" />
       <img src="/images/t1.png" />
       <img src="/images/t2.png" />
       <img src="/images/t3.png" />
       <img src="/images/t4.png" />
+      <img src="/images/t1.png" style="margin-right: -512px; height: 61px" />
       <div class="absolute w-128">
         <!-- сделать отдельные блоки под меню и центрировать в них ссылки? -->
         <BaseLink title="Главная" link="/" class="absolute left-10 top-2 z-1" />
-        <BaseLink title="Снаряжение" link="/craft" class="absolute left-48 top-2 z-1" />
+        <BaseLink title="Крафт" link="/craft" class="absolute top-2 z-1 left-56" />
         <BaseLink title="Боссы" link="/boss" class="absolute right-12 top-2 z-1" />
       </div>
       <div class="absolute ml-128 w-128">
@@ -80,7 +100,8 @@ const openPopup = () => modal.value.open()
         <BaseLink title="О проекте" link="/about" class="absolute -right-4 top-2 z-1" />
       </div>
       <div class="absolute ml-256 w-128">
-        <!-- <BaseLink title="О проекте" link="/about" class="absolute left-24 top-2 z-1" /> -->
+        <!-- <BaseLink title="Test craft" link="/test" class="absolute left-24 top-2 z-1" /> -->
+        <div class="absolute right-32 top-2 text-green font-extrabold text-xl">Version 1.5+</div>
         <a
           href="https://discord.com/channels/1224088620579688528/1224092747212914768"
           target="_blank"
@@ -96,7 +117,9 @@ const openPopup = () => modal.value.open()
     </div>
 
     <div
-      class="fixed bottom-0 flex items-end z-10"
+      ref="inventory"
+      class="fixed bottom-0 items-end z-10 flex"
+      v-if="route.path === '/'"
       :class="showBottom ? 'animate-bottomToTop' : 'animate-footer'"
     >
       <TheMap class="absolute left-5 bottom-3 aspect-auto w-[280px] h-[280px]" />
@@ -115,15 +138,37 @@ const openPopup = () => modal.value.open()
         :src="user.goblin.src"
         class="absolute bottom-16 left-10 -z-1 ml-96 h-40 w-40 animate-goblin"
       />
-      <div class="absolute bottom-0 ml-96 w-60 h-15 pr-4">
+      <!-- <div class="absolute bottom-0 ml-96 w-60 h-15 pr-4">
         <div class="text-green mt-1 flex justify-center">{{ hp }}/{{ hp }}</div>
         <div class="text-purple mt-1 flex justify-center">{{ mp }}/{{ mp }}</div>
+      </div> -->
+      <div class="absolute z-1 ml-96 w-128 left-9 -bottom-16">
+        <!-- <div class="ml-auto h-56 w-92 text-red">Раздел в переработке</div> -->
+        <!-- <GoblinParams class="ml-auto mr-6 h-56 w-92" /> -->
+        <!-- гоблины -->
+        <button
+          @click="chooseGoblin(goblin)"
+          v-for="(goblin, index) in goblins"
+          :key="goblin.id"
+          class="absolute bottom-24 left-52"
+        >
+          <img
+            :src="
+              baseUrl +
+              goblin.url
+                .replace('ReplaceableTextures\\CommandButtons\\', '')
+                .replace('CommandButtons/', '')
+                .replace('.blp', '.png')
+            "
+            :style="goblinPositionStyle(index)"
+            class="z-1"
+            :class="{
+              'border-2 border-white': user.goblin.id === goblin.id,
+            }"
+          />
+        </button>
       </div>
-      <div class="absolute z-1 ml-128 w-128">
-        <GoblinParams class="ml-auto mr-6 h-56 w-92" />
-      </div>
-      <div class="absolute z-1 ml-256 w-128 h-full">
-        <div class="absolute top-[88px] px-2">{{ activeItem || 'Инвентарь' }}</div>
+      <div class="absolute z-1 ml-256 w-128 h-full top-[82px]">
         <!-- инвентарь -->
         <RouterLink
           v-for="(item, index) in items"
@@ -166,22 +211,30 @@ const openPopup = () => modal.value.open()
           </div>
         </RouterLink>
 
-        <!-- гоблины -->
-        <RouterLink
-          :to="`/goblin/${goblin.id}`"
-          v-for="(goblin, index) in goblins"
-          :key="goblin.id"
-          class="absolute bottom-24 left-52"
-        >
-          <img
-            :src="goblin.src"
-            :style="goblinPositionStyle(index)"
-            class="z-1"
-            :class="{
-              'border-2 border-white': +route.params.id === goblin.id,
-            }"
-          />
-        </RouterLink>
+        <!-- скилы -->
+        <template v-if="route.query.goblin">
+          <button
+            @click="setActiveSkill(skill)"
+            v-for="(skill, index) in user.goblin.abilities"
+            :key="skill.id"
+            class="absolute bottom-24 left-52"
+          >
+            <img
+              :src="
+                baseUrl +
+                skill.url
+                  .replace('ReplaceableTextures\\CommandButtons\\', '')
+                  .replace('CommandButtons/', '')
+                  .replace('.blp', '.png')
+              "
+              :style="goblinPositionStyle(index)"
+              class="z-1"
+              :class="{
+                'border-2 border-white': user.activeSkill?.id === skill.id,
+              }"
+            />
+          </button>
+        </template>
       </div>
       <div class="absolute right-0 z-1">4</div>
     </div>

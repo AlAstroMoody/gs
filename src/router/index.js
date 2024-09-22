@@ -21,11 +21,11 @@ const router = createRouter({
       name: 'goblin',
       component: () => import('@/views/GoblinPage.vue'),
     },
-    {
-      path: '/craft',
-      name: 'craft',
-      component: () => import('@/views/ItemsPage.vue'),
-    },
+    // {
+    //   path: '/craft',
+    //   name: 'craft',
+    //   component: () => import('@/views/ItemsPage.vue'),
+    // },
     {
       path: '/boss',
       name: 'boss',
@@ -40,6 +40,11 @@ const router = createRouter({
       path: '/quest',
       name: 'quest',
       component: () => import('@/views/QuestPage.vue'),
+    },
+    {
+      path: '/craft',
+      name: 'craft',
+      component: () => import('@/views/ItemsTestPage.vue'),
     },
   ],
 })

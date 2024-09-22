@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 import BaseAccordeon from '@/components/BaseAccordeon.vue'
+import BaseItemImage from '@/components/BaseItemImage.vue'
 import BaseLink from '@/components/BaseLink.vue'
 import BaseMarkdownWrapper from '@/components/BaseMarkdownWrapper.vue'
 import { store } from '@/components/composables/store.js'
@@ -27,14 +28,11 @@ import {
   WizardIcon,
   TankIcon,
 } from '@/components/icons/bosses'
-import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 
 const route = useRoute()
 
 const bosses = computed(() => store.entities.bosses)
 const items = computed(() => store.entities.items)
-
-const src = (id) => items.value.find((item) => item.id === id)?.src
 
 const currentBoss = computed(
   () => bosses.value.find((boss) => boss.name === route.query.name) || bosses.value[0]
@@ -62,6 +60,10 @@ const bossIcons = {
   18: JaegerIcon,
   19: TankIcon,
 }
+
+const currentBossItems = computed(() => {
+  return items.value.filter((item) => currentBoss.value.items.some((i) => i.name === item.name))
+})
 </script>
 <template>
   <main class="flex w-full z-10">
@@ -80,7 +82,7 @@ const bossIcons = {
       </div>
     </div>
     <div class="flex w-full" v-if="currentBoss">
-      <div class="w-2/3 px-4">
+      <div class="w-2/3 px-4 pt-10">
         <BaseAccordeon>
           <template v-slot:button>Скилы</template>
           <template v-slot:content>
@@ -112,14 +114,16 @@ const bossIcons = {
       </div>
       <div class="w-1/3">
         <div class="my-4 text-xl font-semibold px-4">Дроп:</div>
-        <div v-for="item in currentBoss.items" :key="item.id" class="ml-4 w-fit">
-          <router-link :to="`/item/${item.id}`" class="flex items-center">
-            <img :src="src(item.id)" class="mb-2 mr-2" v-if="src(item?.id)" />
 
-            <QuestionIcon v-else color="purple" class="mb-2 mr-2 h-16 w-16" />
-            {{ item.name }}
-          </router-link>
-        </div>
+        <router-link
+          :to="`/craft/?name=${item.name}`"
+          class="flex items-center mb-1"
+          v-for="item in currentBossItems"
+          :key="item.id"
+        >
+          <BaseItemImage :url="item.src" class="mr-2" />
+          {{ item.name }}
+        </router-link>
       </div>
     </div>
     <div class="fixed bottom-10 right-10" v-if="currentBoss?.catchPhrase">
