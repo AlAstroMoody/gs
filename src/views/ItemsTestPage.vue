@@ -103,8 +103,8 @@ watch(route, () => openItemDesc())
       </label>
     </div>
 
-    <div class="w-1/3 pt-8">
-      <div class="p-4 bg-silver text-black rounded-2xl" v-if="activeItem">
+    <div class="w-1/2 pt-8">
+      <div class="p-4 bg-silver text-black rounded-2xl pl-8" v-if="activeItem">
         <div class="text-xl pb-4 flex justify-between">
           {{ activeItem.name }}
           <span class="text-purple" v-if="activeItem.level !== '0'">
@@ -118,15 +118,15 @@ watch(route, () => openItemDesc())
       <div v-if="futureCraft.length" class="scrollbar-custom h-[calc(100%-100px)]">
         <div class="py-2 text-xl">Используется в:</div>
 
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-2 pl-8">
           <div v-for="item in futureCraft" :key="item.code" class="group relative">
             <button class="mr-2 mb-1 flex gap-2 items-center" @click="setActiveItem(item)">
               <BaseItemImage :url="item.src" />
-              <!-- <div
-                class="group-hover:block hidden absolute -left-12 -top-12 w-fit bg-silver text-purple rounded-md py-2 px-4 border z-10 min-w-max max-w-36"
+              <div
+                class="group-hover:block hidden absolute -left-8 -top-11 w-fit bg-silver text-purple rounded-md py-2 px-4 border border-purple z-10 min-w-max max-w-36"
               >
                 {{ item.name }}
-              </div> -->
+              </div>
             </button>
           </div>
         </div>

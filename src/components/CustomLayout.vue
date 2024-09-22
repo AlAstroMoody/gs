@@ -103,7 +103,7 @@ function setActiveSkill(skill) {
         <!-- <BaseLink title="Test craft" link="/test" class="absolute left-24 top-2 z-1" /> -->
         <div class="absolute right-32 top-2 text-green font-extrabold text-xl">Version 1.5+</div>
         <a
-          href="https://discord.com/channels/1224088620579688528/1224092747212914768"
+          href="https://discord.gg/3rhvtTWU"
           target="_blank"
           class="absolute -right-13 my-3 font-medium text-red transition-all hover:scale-110 hover:text-purple"
         >
