@@ -16,6 +16,6 @@ defineProps({ url: String })
     class="bg-purple rounded-lg block w-fit border"
     :width="64"
     :height="64"
-    onerror="this.src='/images/slot.png';"
+    onerror="this.src='/gs/images/slot.png';"
   />
 </template>
