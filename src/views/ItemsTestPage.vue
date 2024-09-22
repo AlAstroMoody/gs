@@ -22,6 +22,7 @@ const luck = ref(false)
 const upSort = ref(false)
 
 const filteredItems = computed(() => {
+  if (!items.value) return []
   let arr = items.value.filter((item) =>
     item.name.toLowerCase().includes(search.value.toLowerCase())
   )
