@@ -23,7 +23,7 @@ const luck = ref(false)
 const upSort = ref(false)
 
 const filteredItems = computed(() => {
-  if (!items.value) return []
+  if (!items.value?.length) return []
   let arr = items.value.filter((item) =>
     item.name.toLowerCase().includes(search.value.toLowerCase())
   )
@@ -37,7 +37,7 @@ const filteredItems = computed(() => {
 })
 
 const futureCraft = computed(() => {
-  if (!items.value) return []
+  if (!items.value?.length) return []
 
   return items.value.filter((item) => item.craft.some((c) => c.code === activeItem.value?.code))
 })
