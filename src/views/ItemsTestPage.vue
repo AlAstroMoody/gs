@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import AppCraftTestItem from '@/components/AppCraftTestItem.vue'
+import BaseAccordeon from '@/components/BaseAccordeon.vue'
 import BaseItemImage from '@/components/BaseItemImage.vue'
 import { store } from '@/components/composables/store.js'
 import ThePreloader from '@/components/ThePreloader.vue'
@@ -14,7 +15,7 @@ const items = computed(() => store.entities.items)
 const activeItem = ref(null)
 
 function replacedDesc(desc) {
-  return desc.replaceAll('|n', '<br/>')
+  return desc.replaceAll('|n', '<br/>').replaceAll('<br/><br/>', '')
 }
 
 const search = ref('')
@@ -55,6 +56,7 @@ function changeRoute(name) {
 }
 
 function openItemDesc() {
+  if (!items.value.length) return
   activeItem.value = items.value.find((item) => item.name === route.query.name)
 }
 onMounted(() => {
@@ -112,7 +114,13 @@ watch(route, () => openItemDesc())
           </span>
         </div>
         <div v-html="replacedDesc(activeItem.desc)" />
-        <div></div>
+
+        <BaseAccordeon v-if="activeItem.extended" class="-my-4">
+          <template v-slot:button>Подробнее</template>
+          <template v-slot:content>
+            <div v-html="replacedDesc(activeItem.extended)"></div>
+          </template>
+        </BaseAccordeon>
       </div>
 
       <div v-if="futureCraft.length" class="scrollbar-custom h-[calc(100%-100px)]">
