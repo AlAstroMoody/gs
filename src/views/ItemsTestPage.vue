@@ -65,7 +65,14 @@ onMounted(() => {
   if (route.query.name) openItemDesc()
 })
 
-watch(route, () => openItemDesc())
+watch(
+  () => route,
+  () => openItemDesc()
+)
+watch(
+  () => items,
+  () => openItemDesc()
+)
 </script>
 <template>
   <ThePreloader v-if="!items.length" class="mt-20" />
