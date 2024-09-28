@@ -37,6 +37,8 @@ const filteredItems = computed(() => {
 })
 
 const futureCraft = computed(() => {
+  if (!items.value) return []
+
   return items.value.filter((item) => item.craft.some((c) => c.code === activeItem.value?.code))
 })
 
