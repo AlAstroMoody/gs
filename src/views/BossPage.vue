@@ -67,19 +67,16 @@ const currentBossItems = computed(() => {
 </script>
 <template>
   <main class="flex w-full z-10">
-    <div class="w-1/6 border-r border-red animate-opacity">
-      <div v-for="boss in bosses" :key="boss.id">
-        <router-link
-          :to="`/boss?name=${boss.name}`"
-          class="mx-2 my-1 whitespace-nowrap text-lg opacity-75 lg:text-xl"
-          :class="[
-            { ' underline': boss.id === currentBoss?.id },
-            boss.demonic ? 'text-red' : 'text-yellow',
-          ]"
-        >
-          {{ boss.name }}
-        </router-link>
-      </div>
+    <div class="w-1/6 border-r border-red animate-opacity pt-12">
+      <router-link
+        v-for="boss in bosses"
+        :key="boss.id"
+        :to="`/boss?name=${boss.name}`"
+        class="mx-2 my-1 whitespace-nowrap text-lg opacity-75 lg:text-xl block text-link hover:text-active w-max"
+        :class="[{ ' underline': boss.id === currentBoss?.id }]"
+      >
+        {{ boss.name }}
+      </router-link>
     </div>
     <div class="flex w-full" v-if="currentBoss">
       <div class="w-2/3 px-4 pt-10">

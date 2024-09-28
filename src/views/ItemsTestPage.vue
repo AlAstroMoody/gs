@@ -66,13 +66,13 @@ onMounted(() => {
 })
 
 watch(
-  () => route,
+  () => route.query.name,
   () => openItemDesc()
 )
-watch(
-  () => items,
-  () => openItemDesc()
-)
+
+watch(items, () => {
+  openItemDesc()
+})
 </script>
 <template>
   <ThePreloader v-if="!items.length" class="mt-20" />
@@ -116,7 +116,7 @@ watch(
 
     <div class="w-1/2 pt-8">
       <div class="p-4 bg-silver text-black rounded-2xl pl-8" v-if="activeItem">
-        <div class="text-xl pb-4 flex justify-between">
+        <div class="text-xl pb-4 flex justify-between leading-5">
           {{ activeItem.name }}
           <span class="text-purple" v-if="activeItem.level !== '0'">
             {{ activeItem.level }} lvl
@@ -127,7 +127,7 @@ watch(
         <BaseAccordeon v-if="activeItem.extended" class="-my-4">
           <template v-slot:button>Подробнее</template>
           <template v-slot:content>
-            <div v-html="replacedDesc(activeItem.extended)"></div>
+            <div v-html="replacedDesc(activeItem.extended)" class="leading-5"></div>
           </template>
         </BaseAccordeon>
       </div>

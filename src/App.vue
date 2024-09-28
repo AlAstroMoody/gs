@@ -58,7 +58,9 @@ onMounted(() => {
 
               <div>
                 Вы по-прежнему можете пользоваться старой версией
-                <a href="https://alastromoody.github.io/gs-old/" class="text-red">тут</a>.
+                <a href="https://alastromoody.github.io/gs-old/" class="text-link hover:text-active"
+                  >тут</a
+                >.
               </div>
               <div>Там можно найти рецепты для карт 1.4+ и 1.5+</div>
               <div class="my-2">

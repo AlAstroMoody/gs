@@ -5,7 +5,10 @@ const isOpen = ref()
 </script>
 <template>
   <div>
-    <button @click="isOpen = !isOpen" class="my-4 text-xl font-semibold text-red hover:underline">
+    <button
+      @click="isOpen = !isOpen"
+      class="my-4 text-xl font-semibold text-link hover:text-hover hover:underline"
+    >
       <slot name="button" />
     </button>
 

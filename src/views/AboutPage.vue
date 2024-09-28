@@ -10,7 +10,7 @@
         <span class="line-through">позже</span> никогда)
         <br />
         Старая версия под 1.4+ (и 1.5, но в прежнем дизайне) по прежнему доступна, но на другом
-        <a href="https://alastromoody.github.io/gs-old/#/" class="text-red">адресе</a>
+        <a href="https://alastromoody.github.io/gs-old/#/" class="hover:text-active">адресе</a>
         <br />
         <br />
         В описании артов, подсчёте параметров, да и вообще в чём угодно возможны ошибки, потому что
@@ -38,12 +38,20 @@
         <br />Работа над проектом ведётся вяло, и заключается в основном в правке багов. <br />
         Тем не менее, если у вас есть интересные идеи или замечена ошибка (а они есть) вы всегда
         можете написать мне в
-        <a href="https://discord.gg/eyTGuM3CUg" target="_blank" class="text-lg text-red">
+        <a
+          href="https://discord.gg/eyTGuM3CUg"
+          target="_blank"
+          class="text-lg hover:text-active text-link"
+        >
           Discord-канале по проекту
         </a>
         либо тегнув меня во
 
-        <a href="https://discord.gg/3rhvtTWU" target="_blank" class="text-lg text-red">
+        <a
+          href="https://discord.gg/3rhvtTWU"
+          target="_blank"
+          class="text-lg hover:text-active text-link"
+        >
           Взрывной кружке
         </a>
         <br /><br />

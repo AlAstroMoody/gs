@@ -27,13 +27,13 @@ watch(
       v-if="!activeGoblin"
     />
     <div
-      class="px-6 text-right text-3xl text-purple xxl:text-6xl fixed right-8 top-15"
+      class="px-6 text-right text-3xl text-purple xxl:text-6xl fixed right-8 top-15 name-shadow"
       v-if="!activeGoblin"
     >
       G<GrenadeIcon class="mb-2 inline" />blin Survival
     </div>
     <div class="px-8 transition-opaciry" ref="body" v-if="!activeGoblin">
-      <div class="text-2xl lg:text-3xl">
+      <div class="text-xl lg:text-2xl mb-2">
         <span>
           Интерактивный редактор персонажа, дерево крафта и библиотека оружия для твоей любимой
           карты. <br />Актуально для версии 1.5b
@@ -59,7 +59,7 @@ watch(
     </div>
     <div v-if="activeGoblin && user.goblin" class="flex h-full gap-4 mt-20">
       <div class="w-1/2">
-        <div class="text-purple text-3xl my-4 px-4 w-fit">{{ user.goblin.name }}</div>
+        <div class="text-active text-3xl my-4 px-4 w-fit">{{ user.goblin.name }}</div>
         <div
           class="w-full animate-leftToRight rounded-r-xl border border-l-0 border-second p-4 text-2xl h-fit"
         >
@@ -67,12 +67,12 @@ watch(
         </div>
       </div>
       <div class="mx-auto w-2/3 mt-16">
-        <div class="text-2xl text-purple py-2" v-if="user.activeSkill">
+        <div class="text-2xl text-active py-2" v-if="user.activeSkill">
           {{ user.activeSkill.name }}
         </div>
         <div
           v-if="user.activeSkill?.description"
-          class="rounded-r-xl border border-second p-4 mb-2 bg-primary"
+          class="rounded-r-xl border border-second p-4 mb-2 bg-primary leading-5"
         >
           <div v-html="user.activeSkill.description" />
           <div v-if="user.activeSkill.cd" class="text-green">кд: {{ user.activeSkill.cd }} сек</div>
@@ -87,3 +87,8 @@ watch(
     </div>
   </main>
 </template>
+<style>
+.name-shadow {
+  text-shadow: 1px 1px 2px black;
+}
+</style>

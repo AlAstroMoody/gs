@@ -16,6 +16,8 @@ module.exports = {
         second: 'rgba(235, 235, 235, 0.64)',
         silver: '#d4cece',
         red: 'rgba(255, 3, 3, 0.82)',
+        link: ' #a56b00',
+        active: '#dc8f03',
         gray: '#222222',
         purple: '#800080',
         yellow: '#FFFF00',

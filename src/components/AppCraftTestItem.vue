@@ -1,9 +1,12 @@
 <script setup>
 import { computed, ref, toRefs } from 'vue'
+import { useRoute } from 'vue-router'
 
 import AppCraftTestItem from '@/components/AppCraftTestItem.vue'
 import BaseItemImage from '@/components/BaseItemImage.vue'
 import { store } from '@/components/composables/store.js'
+
+const route = useRoute()
 
 const props = defineProps({
   item: {
@@ -13,6 +16,10 @@ const props = defineProps({
   count: {
     type: Number,
     default: 0,
+  },
+  activeChild: {
+    type: Boolean,
+    default: false,
   },
 })
 const emit = defineEmits(['choice'])
@@ -37,6 +44,8 @@ function getItem(code) {
 function setActive(item) {
   emit('choice', item)
 }
+
+const isActive = computed(() => item.value.name === route.query.name)
 </script>
 
 <template>
@@ -51,8 +60,11 @@ function setActive(item) {
         <BaseItemImage :url="item.src" class="mr-2 mb-1" />
       </button>
       <!-- </router-link> -->
-      <div class="border rounded-r-lg p-3 h-16 group-hover:border-orange">
-        <button class="group-hover:text-orange">
+      <div
+        class="border rounded-r-lg p-3 h-16 group-hover:border-orange"
+        :class="[{ 'border-orange': isActive }, { 'border-purple': activeChild }]"
+      >
+        <button class="group-hover:text-orange" :class="{ 'text-orange': isActive }">
           {{ item.name }}
           {{ count ? `${count} шт.` : '' }}
           <span class="mx-1 text-red group-hover:text-purple"> </span>
@@ -81,6 +93,7 @@ function setActive(item) {
         :key="parent.code"
         :item="getItem(parent.code)"
         @choice="emit('choice', $event)"
+        :activeChild="isActive"
       />
       <div v-if="item.alterCraft.length">
         <span class="text-green text-sm"> ({{ item.alterForge }}) </span>
@@ -90,6 +103,7 @@ function setActive(item) {
           :key="parent.code"
           :item="getItem(parent.code)"
           @choice="emit('choice', $event)"
+          :activeChild="isActive"
         />
       </div>
     </ul>
