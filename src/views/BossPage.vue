@@ -67,7 +67,8 @@ const currentBossItems = computed(() => {
 </script>
 <template>
   <main class="flex w-full z-10">
-    <div class="w-1/6 border-r border-red animate-opacity pt-12">
+    <div class="pt-12 animate-opacity w-60" />
+    <div class="fixed border-r border-red h-full w-60">
       <router-link
         v-for="boss in bosses"
         :key="boss.id"
@@ -78,7 +79,7 @@ const currentBossItems = computed(() => {
         {{ boss.name }}
       </router-link>
     </div>
-    <div class="flex w-full" v-if="currentBoss">
+    <div class="flex w-full flex-1 mb-8" v-if="currentBoss">
       <div class="w-2/3 px-4 pt-10">
         <BaseAccordeon>
           <template v-slot:button>Скилы</template>
@@ -90,18 +91,25 @@ const currentBossItems = computed(() => {
             <ul v-for="(ability, index) in currentBoss.ability" :key="ability.id" class="py-2">
               <ol>
                 {{
-                  index
+                  index + 1
                 }}.
+                <span v-if="ability.name">
+                  <span v-html="ability.name" class="font-extrabold" />:
+                </span>
                 <span v-html="ability.description.replaceAll('.', '.<br/>')" class="indent-1" />
               </ol>
             </ul>
           </template>
         </BaseAccordeon>
 
-        <BaseAccordeon>
+        <BaseAccordeon class="pb-8">
           <template v-slot:button>Квест по апгрейду способностей</template>
           <template v-slot:content>
-            <div class="content" ref="upgrade">
+            <div v-if="!currentBoss?.upgrade">
+              Пока отсутствует. Есть инфа? Пиши по ссылкам из раздела
+              <BaseLink title="«О проекте»" link="/about" class="test-red" />
+            </div>
+            <div class="content" ref="upgrade" v-else>
               <div class="min-h-0">
                 <BaseMarkdownWrapper :source="currentBoss.upgrade" />
               </div>
