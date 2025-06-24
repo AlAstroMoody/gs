@@ -156,6 +156,11 @@ watch(items, () => {
         </div>
       </div>
     </div>
-    <ItemsTree :item="activeItem" v-if="isShowItemTree" @close="isShowItemTree = false" />
+    <ItemsTree
+      :item="activeItem"
+      v-if="isShowItemTree"
+      @close="isShowItemTree = false"
+      class="z-20"
+    />
   </main>
 </template>

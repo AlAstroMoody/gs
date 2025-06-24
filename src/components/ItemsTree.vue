@@ -18,25 +18,24 @@
     </div>
 
     <!-- Кнопки навигации -->
-    <div class="absolute bottom-4 left-4 z-10 flex gap-2" style="pointer-events: auto">
-      <button
-        @click="resetView"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors"
+    <div class="absolute bottom-4 left-4 z-10 flex items-center gap-4" style="pointer-events: auto">
+      <div class="flex gap-2">
+        <button
+          @click="resetView"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors"
+        >
+          🔄 Сброс
+        </button>
+        <button
+          @click="centerOnItem"
+          class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition-colors"
+        >
+          🎯 Центр
+        </button>
+      </div>
+      <span class="ml-3 text-xs text-gray-200 opacity-80 select-none"
+        >даблклик для перехода на предмет</span
       >
-        🔄 Сброс
-      </button>
-      <button
-        @click="centerOnItem"
-        class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition-colors"
-      >
-        🎯 Центр
-      </button>
-    </div>
-
-    <div
-      class="ml-4 bg-gray-800 text-white px-4 py-2 rounded-lg opacity-90 pointer-events-none text-sm"
-    >
-      💡 Двойной клик по элементу — перейти на страницу крафта
     </div>
 
     <canvas
@@ -110,9 +109,6 @@ const lineColors = [
 // Хранилище цветов для каждого родителя
 const parentColors = ref(new Map())
 
-// Счетчик для создания уникальных идентификаторов
-let nodeCounter = 0
-
 // Добавить состояние для выбранного узла
 const selectedNodeId = ref(null)
 
@@ -128,137 +124,75 @@ function getParentColor(parentCode) {
   return parentColors.value.get(parentCode)
 }
 
-// Функция для создания уникального идентификатора узла
-function createNodeId(nodeCode) {
-  return `${nodeCode}_${++nodeCounter}`
-}
+// Новый алгоритм: многоуровневая круговая схема
+function layoutRadialTree(root) {
+  // 1. BFS: собрать уровни
+  const levels = []
+  const queue = [{ node: root, parentId: null, level: 0, parentInstanceId: null }]
+  let nodeCounter = 0
+  nodePositions.value.clear()
+  nodeConnections.value.clear()
+  parentColors.value.clear()
 
-// Предварительный расчет позиций всех узлов
-function calculateAllPositions(
-  node,
-  x,
-  y,
-  level = 0,
-  parentId = null,
-  isAboveRoot = null,
-  isLeftOfRoot = null,
-  parentIndex = 0,
-  totalParents = 1
-) {
-  if (!node) return
-
-  const padding = level === 0 ? 20 : 10
-  const textWidth = ctx.value.measureText(node.name).width
-  const nodeWidth = textWidth + padding * 2
-
-  // Создаем уникальный идентификатор для каждого экземпляра элемента
-  const uniqueId = createNodeId(node.code)
-
-  // Сохраняем позицию узла с уникальным идентификатором
-  nodePositions.value.set(uniqueId, {
-    x,
-    y,
-    width: nodeWidth,
-    height: nodeHeight.value,
-    code: node.code,
-    name: node.name,
-    instanceId: uniqueId,
-    level: level,
-    isAboveRoot: isAboveRoot,
-    isLeftOfRoot: isLeftOfRoot,
-  })
-
-  // Если есть родитель, сохраняем связь
-  if (parentId) {
-    if (!nodeConnections.value.has(parentId)) {
-      nodeConnections.value.set(parentId, [])
+  while (queue.length) {
+    const { node, parentId, level, parentInstanceId } = queue.shift()
+    if (!node) continue
+    if (!levels[level]) levels[level] = []
+    // Создаём уникальный instanceId для каждого экземпляра
+    const instanceId = `${node.code}_${nodeCounter++}`
+    levels[level].push({ node, parentId, instanceId, parentInstanceId })
+    // Связи
+    if (parentInstanceId) {
+      if (!nodeConnections.value.has(parentInstanceId))
+        nodeConnections.value.set(parentInstanceId, [])
+      nodeConnections.value.get(parentInstanceId).push(instanceId)
     }
-    nodeConnections.value.get(parentId).push(uniqueId)
+    // В очередь детей
+    if (node.craft && node.craft.length) {
+      for (const child of node.craft) {
+        const childItem = allItems.value.find((i) => i.code === child.code)
+        queue.push({
+          node: childItem,
+          parentId: node.code,
+          level: level + 1,
+          parentInstanceId: instanceId,
+        })
+      }
+    }
   }
 
-  if (node.craft && node.craft.length > 0) {
-    if (level === 0) {
-      // Первый уровень — равномерно по кругу
-      const childCount = node.craft.length
-      const radius = 200
-      const angleStep = (2 * Math.PI) / childCount
-      const centerX = x + nodeWidth / 2
-      const centerY = y + nodeHeight.value / 2
-      for (let i = 0; i < childCount; i++) {
-        const child = node.craft[i]
-        const childItem = allItems.value.find((i) => i.code === child.code)
-        if (childItem) {
-          const angle = i * angleStep
-          const childX = centerX + radius * Math.cos(angle)
-          const childY = centerY + radius * Math.sin(angle)
-          const childTextWidth = ctx.value.measureText(childItem.name).width
-          const childNodeWidth = childTextWidth + 20
-          const finalChildX = childX - childNodeWidth / 2
-          const finalChildY = childY - nodeHeight.value / 2
-          const childIsAboveRoot = finalChildY < 0
-          const childIsLeftOfRoot = finalChildX < 0
-          calculateAllPositions(
-            childItem,
-            finalChildX,
-            finalChildY,
-            level + 1,
-            uniqueId,
-            childIsAboveRoot,
-            childIsLeftOfRoot,
-            i,
-            childCount
-          )
-        }
-      }
-    } else {
-      // Вложенные уровни — веерное распределение только наружу от центра
-      const childCount = node.craft.length
-      let sector, radius
-      if (level === 1) {
-        sector = Math.PI * 0.67 // 120°
-        radius = 320
-      } else if (level === 2) {
-        sector = Math.PI / 2 // 90°
-        radius = 420
-      } else {
-        sector = Math.PI / 3 // 60°
-        radius = 300
-      }
-      const parentCenterX = x + nodeWidth / 2
-      const parentCenterY = y + nodeHeight.value / 2
-      const directionAngle = Math.atan2(parentCenterY, parentCenterX)
-      const startAngle = directionAngle - sector / 2
-      const endAngle = directionAngle + sector / 2
-      // Смещение по радиусу для детей разных родителей
-      const offsetStep = 60 // шаг смещения
-      const parentOffset = (parentIndex - (totalParents - 1) / 2) * offsetStep
-      const effectiveRadius = radius + parentOffset
-      for (let i = 0; i < childCount; i++) {
-        const child = node.craft[i]
-        const childItem = allItems.value.find((i) => i.code === child.code)
-        if (childItem) {
-          const angle = startAngle + (i * (endAngle - startAngle)) / Math.max(1, childCount - 1)
-          const childX = parentCenterX + effectiveRadius * Math.cos(angle)
-          const childY = parentCenterY + effectiveRadius * Math.sin(angle)
-          const childTextWidth = ctx.value.measureText(childItem.name).width
-          const childNodeWidth = childTextWidth + 20
-          const finalChildX = childX - childNodeWidth / 2
-          const finalChildY = childY - nodeHeight.value / 2
-          const childIsAboveRoot = finalChildY < 0
-          const childIsLeftOfRoot = finalChildX < 0
-          calculateAllPositions(
-            childItem,
-            finalChildX,
-            finalChildY,
-            level + 1,
-            uniqueId,
-            childIsAboveRoot,
-            childIsLeftOfRoot,
-            i,
-            childCount
-          )
-        }
-      }
+  // 2. Координаты по кругу
+  const centerX = 0
+  const centerY = 0
+  const baseRadius = 0
+  const step = 120
+  for (let level = 0; level < levels.length; level++) {
+    const nodes = levels[level]
+    // Для уровней > 6 делаем круги ближе друг к другу
+    const radius =
+      baseRadius + (level < 6 ? level * step + (level === 0 ? 0 : 80) : 6 * step + (level - 6) * 60)
+    // Смещение по углу для каждого уровня (например, 10 градусов * номер уровня)
+    const offsetAngle = (Math.PI / 18) * level // 10° * level
+    // Для уровней > 6 уменьшаем сектор (разброс по кругу)
+    const fullCircle = level < 6 ? 2 * Math.PI : Math.PI + Math.PI * 0.5 // 270°
+    for (let i = 0; i < nodes.length; i++) {
+      const { node, instanceId } = nodes[i]
+      const angle = offsetAngle + (fullCircle * i) / nodes.length
+      // Размер узла
+      const textWidth = ctx.value ? ctx.value.measureText(node.name).width : 80
+      const nodeWidth = textWidth + (level === 0 ? 20 : 10) * 2
+      const x = centerX + radius * Math.cos(angle) - nodeWidth / 2
+      const y = centerY + radius * Math.sin(angle) - nodeHeight.value / 2
+      nodePositions.value.set(instanceId, {
+        x,
+        y,
+        width: nodeWidth,
+        height: nodeHeight.value,
+        code: node.code,
+        name: node.name,
+        instanceId,
+        level,
+      })
     }
   }
 }
@@ -391,7 +325,7 @@ function distributeNodesByLevel() {
 }
 
 // Функции отрисовки
-function drawTreeLines(highlightedOnly = false) {
+function drawTreeLines() {
   for (const [parentId, childIds] of nodeConnections.value) {
     const parentPos = nodePositions.value.get(parentId)
     if (!parentPos) continue
@@ -406,63 +340,44 @@ function drawTreeLines(highlightedOnly = false) {
       const childCenterY = childPos.y + childPos.height / 2
       const connectionKey = `${parentId}-${childId}`
       const isHighlighted = highlightedConnections.value.has(connectionKey)
-      if (highlightedOnly && !isHighlighted) continue
-      if (!highlightedOnly && isHighlighted) continue
-      // Проверяем горизонтальное направление - не рисуем связи в противоположную сторону
-      // Но делаем исключения для первого уровня и для небольших различий
-      if (parentPos.isLeftOfRoot !== childPos.isLeftOfRoot) {
-        // Исключение 1: Связи от корня к первому уровню всегда рисуем
-        if (parentPos.level === 0) {
-          // Рисуем связь от корня к первому уровню - ничего не делаем, продолжаем
-        } else {
-          // Исключение 2: Если разница в X-координатах небольшая, тоже рисуем
-          const xDiff = Math.abs(parentPos.x - childPos.x)
-          if (xDiff > 150) {
-            // Увеличиваем порог с 100 до 150 пикселей
-            // Если разница больше 150 пикселей, пропускаем
-            continue
-          }
-        }
+      // Новая логика: если есть выделение — все невыделенные связи тусклые
+      if (highlightedNodes.value.size > 0 && !isHighlighted) {
+        ctx.value.globalAlpha = 0.15
+      } else {
+        ctx.value.globalAlpha = 1
       }
-
-      // Рисуем линию связи с цветом родителя
       if (isHighlighted) {
-        // Выделенная связь - более яркая и толстая
         ctx.value.strokeStyle = getParentColor(parentNode.code)
         ctx.value.lineWidth = parentPos.level === 0 ? 6 : 4
         ctx.value.shadowColor = 'rgba(255, 255, 255, 0.5)'
         ctx.value.shadowBlur = 4
-        ctx.value.shadowOffsetX = 0
-        ctx.value.shadowOffsetY = 0
       } else {
-        // Обычная связь - тусклее
-        const color = getParentColor(parentNode.code)
-        ctx.value.strokeStyle = hoveredNodeId.value
-          ? color.replace(')', ', 0.3)').replace('rgb', 'rgba')
-          : color
+        ctx.value.strokeStyle = getParentColor(parentNode.code)
         ctx.value.lineWidth = parentPos.level === 0 ? 4 : 2
         ctx.value.shadowColor = 'rgba(0, 0, 0, 0.3)'
         ctx.value.shadowBlur = 2
-        ctx.value.shadowOffsetX = 1
-        ctx.value.shadowOffsetY = 1
       }
-
       ctx.value.beginPath()
       ctx.value.moveTo(centerX, centerY)
       ctx.value.lineTo(childCenterX, childCenterY)
       ctx.value.stroke()
       ctx.value.shadowColor = 'transparent'
+      ctx.value.globalAlpha = 1
     }
   }
 }
 
-function drawTreeNodes(highlightedOnly = false) {
+function drawTreeNodes() {
   for (const [nodeId, nodePos] of nodePositions.value) {
     const isHighlighted = highlightedNodes.value.has(nodeId)
     const isHovered = hoveredNodeId.value === nodeId
     const isSelected = selectedNodeId.value === nodeId
-    if (highlightedOnly && !(isHighlighted || isHovered || isSelected)) continue
-    if (!highlightedOnly && (isHighlighted || isHovered || isSelected)) continue
+    // Новая логика: если есть выделение — все невыделенные узлы тусклые
+    if (highlightedNodes.value.size > 0 && !(isHighlighted || isHovered || isSelected)) {
+      ctx.value.globalAlpha = 0.18
+    } else {
+      ctx.value.globalAlpha = 1
+    }
     const padding = nodePos.level === 0 ? 20 : 10
 
     // Формируем текст с количеством, если оно есть
@@ -560,6 +475,7 @@ function drawTreeNodes(highlightedOnly = false) {
     ctx.value.textBaseline = 'middle'
     ctx.value.font = nodePos.level === 0 ? '14px Arial' : '12px Arial'
     ctx.value.fillText(displayText, nodePos.x + nodeWidth / 2, nodePos.y + nodeHeight.value / 2)
+    ctx.value.globalAlpha = 1
   }
 }
 
@@ -571,8 +487,8 @@ function resizeCanvas() {
 
 function handleClick(event) {
   const rect = canvas.value.getBoundingClientRect()
-  const x = (event.clientX - rect.left - translateX.value) / scale.value
-  const y = (event.clientY - rect.top - translateY.value) / scale.value
+  const x = (event.clientX - rect.left - canvas.value.width / 2 - translateX.value) / scale.value
+  const y = (event.clientY - rect.top - canvas.value.height / 2 - translateY.value) / scale.value
 
   let foundNode = null
   for (const [nodeId, nodePos] of nodePositions.value) {
@@ -588,6 +504,13 @@ function handleClick(event) {
   }
 
   if (foundNode) {
+    // Если уже выделен — переход на страницу
+    if (selectedNodeId.value === foundNode.id) {
+      const urlName = encodeURIComponent(foundNode.name)
+      router.push(`/craft?name=${urlName}`)
+
+      return
+    }
     selectedNodeId.value = foundNode.id
     hoveredNodeId.value = foundNode.id
     highlightNodeConnections(foundNode.id)
@@ -604,19 +527,22 @@ function handleClick(event) {
 
 function handleWheel(event) {
   event.preventDefault()
-
   const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1
   const newScale = Math.max(0.1, Math.min(3, scale.value * zoomFactor))
-
   // Зумируем к позиции мыши
   const rect = canvas.value.getBoundingClientRect()
   const mouseX = event.clientX - rect.left
   const mouseY = event.clientY - rect.top
-
   const scaleDiff = newScale / scale.value
-  translateX.value = mouseX - (mouseX - translateX.value) * scaleDiff
-  translateY.value = mouseY - (mouseY - translateY.value) * scaleDiff
-
+  // Центр canvas всегда в центре
+  translateX.value =
+    mouseX -
+    canvas.value.width / 2 -
+    (mouseX - canvas.value.width / 2 - translateX.value) * scaleDiff
+  translateY.value =
+    mouseY -
+    canvas.value.height / 2 -
+    (mouseY - canvas.value.height / 2 - translateY.value) * scaleDiff
   scale.value = newScale
   redrawCanvas()
 }
@@ -636,33 +562,26 @@ function handleMouseMove(event) {
   if (isDragging.value) {
     const deltaX = event.clientX - lastMouseX.value
     const deltaY = event.clientY - lastMouseY.value
-
     translateX.value += deltaX
     translateY.value += deltaY
-
     lastMouseX.value = event.clientX
     lastMouseY.value = event.clientY
-
-    // Оптимизируем перерисовку при перетаскивании - только перемещаем canvas
-    if (redrawTimeout.value) {
-      clearTimeout(redrawTimeout.value)
-    }
-
-    // При перетаскивании только перемещаем, не пересчитываем позиции
+    if (redrawTimeout.value) clearTimeout(redrawTimeout.value)
     ctx.value.save()
     ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height)
-    ctx.value.translate(translateX.value, translateY.value)
+    ctx.value.translate(
+      canvas.value.width / 2 + translateX.value,
+      canvas.value.height / 2 + translateY.value
+    )
     ctx.value.scale(scale.value, scale.value)
     drawAllNodes()
     ctx.value.restore()
-
     event.preventDefault()
   } else {
-    // Обработка наведения
+    // hover
     const rect = canvas.value.getBoundingClientRect()
-    const x = (event.clientX - rect.left - translateX.value) / scale.value
-    const y = (event.clientY - rect.top - translateY.value) / scale.value
-
+    const x = (event.clientX - rect.left - canvas.value.width / 2 - translateX.value) / scale.value
+    const y = (event.clientY - rect.top - canvas.value.height / 2 - translateY.value) / scale.value
     let foundNode = null
     for (const [nodeId, nodePos] of nodePositions.value) {
       if (
@@ -675,7 +594,6 @@ function handleMouseMove(event) {
         break
       }
     }
-
     if (foundNode && foundNode.id !== hoveredNodeId.value) {
       hoveredNodeId.value = foundNode.id
       highlightNodeConnections(foundNode.id)
@@ -700,23 +618,12 @@ function handleMouseUp(event) {
 function redrawCanvas() {
   ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height)
   ctx.value.save()
-  ctx.value.translate(translateX.value, translateY.value)
+  ctx.value.translate(
+    canvas.value.width / 2 + translateX.value,
+    canvas.value.height / 2 + translateY.value
+  )
   ctx.value.scale(scale.value, scale.value)
-
-  // Очищаем позиции узлов, связи и цвета родителей
-  nodePositions.value.clear()
-  nodeConnections.value.clear()
-  parentColors.value.clear()
-  nodeCounter = 0 // Сбрасываем счетчик
-
-  // Корень всегда в фиксированном центре (0,0)
-  const rootTextWidth = ctx.value.measureText(props.item.name).width
-  const rootNodeWidth = rootTextWidth + 40
-  const centerX = -rootNodeWidth / 2
-  const centerY = -nodeHeight.value / 2
-
-  calculateAllPositions(props.item, centerX, centerY)
-
+  layoutRadialTree(props.item)
   fixOverlaps()
   distributeNodesByLevel()
   drawAllNodes()
@@ -726,11 +633,11 @@ function redrawCanvas() {
 function drawAllNodes() {
   if (!props.item) return
   // Сначала рисуем все обычные связи и узлы
-  drawTreeLines(false)
-  drawTreeNodes(false)
+  drawTreeLines()
+  drawTreeNodes()
   // Затем поверх — выделенные/подсвеченные связи и узлы
-  drawTreeLines(true)
-  drawTreeNodes(true)
+  drawTreeLines()
+  drawTreeNodes()
 }
 
 function closeTree() {
@@ -746,15 +653,12 @@ function resetView() {
 
 function centerOnItem() {
   if (props.item) {
-    // Находим корневой узел
     for (const [, nodePos] of nodePositions.value) {
       if (nodePos.code === props.item.code && nodePos.level === 0) {
         const centerX = nodePos.x + nodePos.width / 2
         const centerY = nodePos.y + nodePos.height / 2
-
-        translateX.value = canvas.value.width / 2 - centerX * scale.value
-        translateY.value = canvas.value.height / 2 - centerY * scale.value
-
+        translateX.value = -centerX * scale.value
+        translateY.value = -centerY * scale.value
         redrawCanvas()
         break
       }
