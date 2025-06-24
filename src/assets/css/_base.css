@@ -25,16 +25,35 @@ input:not(:placeholder-shown) + label {
   transform: translate(-12px, -8px) scale(0.8);
 }
 
+/* Кастомный скроллбар */
 .scrollbar-custom {
-  scrollbar-color: #181818 #d4cece;
-  scrollbar-width: 8px;
+  direction: rtl;
+  padding-right: 16px;
+  overflow-y: auto;
+  height: 100%;
+  scrollbar-width: 14px;
+  scrollbar-color: #800080 #222222;
 }
 
-.scrollbar-custom ::webkit-scrollbar-track {
-  background: #181818;
-  moz-background: #181818;
+.scrollbar-custom > * {
+  direction: ltr;
 }
 
-.scrollbar-custom::webkit-scrollbar-thumb {
-  background-color: #d4cece;
+/* Webkit */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 14px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #222222;
+  border-radius: 8px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: #800080;
+  border-radius: 8px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: #d4cece;
 }

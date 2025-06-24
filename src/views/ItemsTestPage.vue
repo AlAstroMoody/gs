@@ -6,6 +6,7 @@ import AppCraftTestItem from '@/components/AppCraftTestItem.vue'
 import BaseAccordeon from '@/components/BaseAccordeon.vue'
 import BaseItemImage from '@/components/BaseItemImage.vue'
 import { store } from '@/components/composables/store.js'
+import ItemsTree from '@/components/ItemsTree.vue'
 import ThePreloader from '@/components/ThePreloader.vue'
 
 const router = useRouter()
@@ -61,13 +62,18 @@ function openItemDesc() {
   if (!items.value.length) return
   activeItem.value = items.value.find((item) => item.name === route.query.name)
 }
+
+const isShowItemTree = ref(false)
 onMounted(() => {
   if (route.query.name) openItemDesc()
 })
 
 watch(
   () => route.query.name,
-  () => openItemDesc()
+  () => {
+    openItemDesc()
+    isShowItemTree.value = false
+  }
 )
 
 watch(items, () => {
@@ -78,17 +84,16 @@ watch(items, () => {
   <ThePreloader v-if="!items.length" class="mt-20" />
   <main class="flex w-full max-h-screen gap-4 h-full pr-8 z-20 overflow-hidden">
     <div class="w-1/2">
-      <ul class="scrollbar-custom h-full mirror pr-8">
-        <div class="mirror">
-          <AppCraftTestItem
-            v-for="item in filteredItems"
-            :key="item.code"
-            :item="item"
-            @choice="changeItem($event)"
-            :count="item.count"
-          />
-        </div>
-      </ul>
+      <div class="scrollbar-custom h-full">
+        <AppCraftTestItem
+          class="pl-2"
+          v-for="item in filteredItems"
+          :key="item.code"
+          :item="item"
+          @choice="changeItem($event)"
+          :count="item.count"
+        />
+      </div>
     </div>
 
     <div class="w-1/3 pt-14">
@@ -122,6 +127,9 @@ watch(items, () => {
             {{ activeItem.level }} lvl
           </span>
         </div>
+        <button @click="isShowItemTree = true" class="bg-purple text-white px-4 py-2 rounded-md">
+          Эксперимент
+        </button>
         <div v-html="replacedDesc(activeItem.desc)" />
 
         <BaseAccordeon v-if="activeItem.extended" class="-my-4">
@@ -134,7 +142,6 @@ watch(items, () => {
 
       <div v-if="futureCraft.length" class="scrollbar-custom h-[calc(100%-100px)]">
         <div class="py-2 text-xl">Используется в:</div>
-
         <div class="flex flex-wrap gap-2 pl-8">
           <div v-for="item in futureCraft" :key="item.code" class="group relative">
             <button class="mr-2 mb-1 flex gap-2 items-center" @click="setActiveItem(item)">
@@ -149,10 +156,6 @@ watch(items, () => {
         </div>
       </div>
     </div>
+    <ItemsTree :item="activeItem" v-if="isShowItemTree" @close="isShowItemTree = false" />
   </main>
 </template>
-<style>
-.mirror {
-  transform: scaleX(-1);
-}
-</style>

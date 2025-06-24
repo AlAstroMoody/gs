@@ -5,13 +5,20 @@
     "vue/setup-compiler-macros": true,
     "node": true
   },
-  "extends": ["eslint:recommended", "plugin:vue/essential", "prettier"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:vue/essential",
+    "prettier"
+  ],
   "parser": "vue-eslint-parser",
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["import", "vue"],
+  "plugins": [
+    "import",
+    "vue"
+  ],
   "rules": {
     "import/newline-after-import": [
       "error",
@@ -42,7 +49,9 @@
       "error",
       {
         "code": 120,
-        "ignoreTemplateLiterals": true
+        "ignoreTemplateLiterals": true,
+        "ignoreStrings": true,
+        "ignoreComments": true
       }
     ],
     "padding-line-between-statements": [
@@ -53,8 +62,24 @@
         "next": "return"
       }
     ],
-    "semi": ["error", "never"],
-    "object-curly-spacing": ["error", "always"],
+    "semi": [
+      "error",
+      "never"
+    ],
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ],
     "vue/no-multiple-template-root": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "*.vue"
+      ],
+      "rules": {
+        "max-len": "off"
+      }
+    }
+  ]
 }

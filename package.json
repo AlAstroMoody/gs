@@ -8,7 +8,7 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
-    "@vueuse/core": "^10.5.0",
+    "@vueuse/core": "^13.1.0",
     "firebase": "10.4.0",
     "gsap": "^3.12.2",
     "markdown-it": "^14.1.0",
@@ -38,5 +38,15 @@
     "vite": "^4.4.9",
     "vue-eslint-parser": "^9.3.1",
     "yandex-metrika-vue3": "^1.1.7"
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "*.vue"
+      ],
+      "rules": {
+        "max-len": "off"
+      }
+    }
+  ]
 }

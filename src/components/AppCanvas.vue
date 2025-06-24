@@ -120,15 +120,10 @@ onMounted(async () => {
 
   start.value()
 })
-const mask = computed(() => 'radial-gradient(circle, transparent, black);')
 </script>
 
 <template>
-  <div
-    class="pointer-events-none fixed bottom-0 left-0 right-0 top-0"
-    style="z-index: -1"
-    :style="`mask-image: ${mask};--webkit-mask-image: ${mask};`"
-  >
+  <div class="pointer-events-none fixed bottom-0 left-0 right-0 top-0" style="z-index: -1">
     <canvas ref="el" width="400" height="400" />
   </div>
 </template>

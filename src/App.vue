@@ -42,7 +42,7 @@ onMounted(() => {
 <template>
   <AppCanvas />
   <Suspense>
-    <div class="relative m-auto flex h-screen w-full overflow-y-scroll scrollbar-custom">
+    <div class="relative m-auto flex h-screen w-full scrollbar-custom">
       <router-view v-slot="{ Component }">
         <CustomLayout class="m-auto justify-between flex relative">
           <component :is="Component" :key="route.path" />

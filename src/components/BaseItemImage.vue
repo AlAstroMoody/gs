@@ -17,5 +17,6 @@ defineProps({ url: String })
     :width="64"
     :height="64"
     onerror="this.src='/gs/images/slot.png';"
+    loading="lazy"
   />
 </template>

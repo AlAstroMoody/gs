@@ -4,6 +4,6 @@
 
 @layer components {
   .scrollbar-custom {
-    @apply scrollbar-thin scrollbar-track-primary scrollbar-thumb-silver overflow-y-auto;
+    @apply overflow-y-auto;
   }
 }

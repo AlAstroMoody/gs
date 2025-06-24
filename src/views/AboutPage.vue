@@ -51,6 +51,12 @@
         </a>
         <br /><br />
         <div class="text-lg font-semibold">Удачной игры, гоблины!</div>
+        <br />
+        псс, зацени
+        <a href="https://alastromoody.github.io/radio/" class="hover:text-active text-purple">
+          интернет-радио
+        </a>
+        и подкинь интересных волн и идей для развития
       </div>
       <img
         class="mx-auto w-1/3"
