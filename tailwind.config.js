@@ -102,8 +102,4 @@ module.exports = {
       30: 30,
     },
   },
-  plugins: [
-    require('tailwindcss-animation-delay'),
-    require('tailwind-scrollbar')({ nocompatible: true }),
-  ],
 }
