@@ -1,25 +1,32 @@
-import tailwindConfig from 'tailwind.config.js'
-import resolveConfig from 'tailwindcss/resolveConfig'
 import { ref, readonly } from 'vue'
 
-// получаем размеры из конфига тайлвинда
-const fullConfig = resolveConfig(tailwindConfig)
-const screens = fullConfig.theme.screens
+// Захардкоженные брейкпоинты (px)
+const breakpoints = {
+  xxs: 320,
+  xs: 460,
+  sm: 576,
+  md: 768,
+  lg: 992,
+  xl: 1280,
+  xxl: 1440,
+}
 
 const size = ref({})
 const width = ref(0)
-// размеры экрана
+const breakpoint = ref('')
+
 export function useSizeState() {
   const setSize = (newState) => {
     size.value = newState
-    let max = 0
-    Object.entries(screens).forEach((screen) => {
-      if (screen[1].replace('px', '') <= size.value.width) {
-        max = screen
+    let current = 'xxs'
+    for (const [name, px] of Object.entries(breakpoints)) {
+      if (size.value.width >= px) {
+        current = name
       }
-    })
-    width.value = max[0]
+    }
+    width.value = breakpoints[current]
+    breakpoint.value = current
   }
 
-  return { size: readonly(size), width: readonly(width), setSize }
+  return { size: readonly(size), width: readonly(width), breakpoint: readonly(breakpoint), setSize }
 }

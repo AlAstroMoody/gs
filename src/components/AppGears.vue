@@ -6,7 +6,7 @@
     xmlns="http://www.w3.org/2000/svg"
     @click="isGearsTurn = !isGearsTurn"
     :class="[positions[index], `${isGearsTurn ? angle[0] : angle[1]}`]"
-    class="fill-second transition duration-[2000ms] absolute"
+    class="fill-second transition duration-2000 absolute"
     v-for="(angle, index) in angles"
     :key="index"
   >
@@ -42,8 +42,8 @@ const positions = [
 // углы поворота шестеренок
 const angles = [
   ['rotate-90', 'rotate-0'],
-  ['rotate-[-55deg]', 'rotate-[30deg]'],
-  ['rotate-[-66deg]', 'rotate-[30deg]'],
-  ['rotate-[-66deg]', 'rotate-[30deg]'],
+  ['rotate-[-55deg]', 'rotate-30'],
+  ['rotate-[-66deg]', 'rotate-30'],
+  ['rotate-[-66deg]', 'rotate-30'],
 ]
 </script>

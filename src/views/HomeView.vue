@@ -61,7 +61,7 @@ watch(
       <div class="w-1/2">
         <div class="text-active text-3xl my-4 px-4 w-fit">{{ user.goblin.name }}</div>
         <div
-          class="w-full animate-leftToRight rounded-r-xl border border-l-0 border-second p-4 text-2xl h-fit"
+          class="w-full animate-left-to-right rounded-r-xl border border-l-0 border-second p-4 text-2xl h-fit"
         >
           {{ user.goblin.description }}
         </div>

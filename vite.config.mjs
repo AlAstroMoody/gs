@@ -1,4 +1,3 @@
-import path from 'path'
 import { fileURLToPath, URL } from 'url'
 
 import vue from '@vitejs/plugin-vue'
@@ -10,18 +9,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      'tailwind.config.js': path.resolve(
-        path.dirname(fileURLToPath(import.meta.url)),
-        'tailwind.config.js'
-      ),
     },
-  },
-  optimizeDeps: {
-    include: ['tailwind.config.js'],
   },
   build: {
     commonjsOptions: {
-      include: ['tailwind.config.js', 'node_modules/**'],
+      include: ['node_modules/**'],
     },
     rollupOptions: {
       output: {

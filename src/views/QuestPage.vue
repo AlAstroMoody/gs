@@ -55,7 +55,7 @@ const showMap = () => {
     <div class="flex w-full flex-col gap-4">
       <div v-for="quest in quests" :key="quest.id" class="p-2 last:mb-20">
         <span class="text-xl">{{ quest.name }}</span>
-        <div class="rounded bg-silver p-4 px-4 text-lg text-primary opacity-75">
+        <div class="rounded-sm bg-silver p-4 px-4 text-lg text-primary opacity-75">
           <div>
             {{ quest.description }}
           </div>
@@ -201,7 +201,7 @@ const showMap = () => {
     </div>
     <TheModal ref="modal">
       <template #default>
-        <BigMap class="absolute inset-0 z-10 flex w-fit flex-col gap-2 rounded m-auto" />
+        <BigMap class="absolute inset-0 z-10 flex w-fit flex-col gap-2 rounded-sm m-auto" />
       </template>
     </TheModal>
   </main>

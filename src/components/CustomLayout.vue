@@ -82,24 +82,24 @@ function setActiveSkill(skill) {
 </script>
 <template>
   <main class="flex h-screen flex-col items-center justify-between w-full">
-    <div class="fixed top-0 z-20 flex animate-topToBottom items-start">
+    <div class="fixed top-0 z-20 flex animate-top-to-bottom items-start">
       <img src="/images/t1.png" style="margin-left: -512px" />
       <img src="/images/t1.png" />
       <img src="/images/t2.png" />
       <img src="/images/t3.png" />
       <img src="/images/t4.png" />
       <img src="/images/t1.png" style="margin-right: -512px; height: 61px" />
-      <div class="absolute w-128">
+      <div class="absolute w-lg">
         <!-- сделать отдельные блоки под меню и центрировать в них ссылки? -->
         <BaseLink title="Главная" link="/" class="absolute left-10 top-2 z-1" />
         <BaseLink title="Крафт" link="/craft" class="absolute top-2 z-1 left-56" />
         <BaseLink title="Боссы" link="/boss" class="absolute right-12 top-2 z-1" />
       </div>
-      <div class="absolute ml-128 w-128">
+      <div class="absolute ml-128 w-lg">
         <BaseLink title="Квесты" link="/quest" class="absolute left-12 top-2 z-1" />
         <BaseLink title="О проекте" link="/about" class="absolute -right-4 top-2 z-1" />
       </div>
-      <div class="absolute ml-256 w-128">
+      <div class="absolute ml-256 w-lg">
         <!-- <BaseLink title="Test craft" link="/test" class="absolute left-24 top-2 z-1" /> -->
         <div class="absolute left-20 top-2 text-orange font-extrabold text-xl">Version 1.5b3+</div>
         <a
@@ -120,13 +120,13 @@ function setActiveSkill(skill) {
       ref="inventory"
       class="fixed bottom-0 items-end z-10 flex"
       v-if="route.path === '/'"
-      :class="showBottom ? 'animate-bottomToTop' : 'animate-footer'"
+      :class="showBottom ? 'animate-bottom-to-top' : 'animate-footer'"
     >
       <TheMap class="absolute left-5 bottom-3 aspect-auto w-[280px] h-[280px]" />
       <div class="bg-black absolute left-5 w-[280px] h-14" />
       <img src="/images/1.png" />
       <!-- панель иконок -->
-      <div class="absolute z-1 ml-[19rem] top-16">
+      <div class="absolute z-1 ml-76 top-16">
         <button class="px-3 group" @click="openPopup">
           <BinocularsIcon :width="32" color="silver" class="group-hover:fill-purple" />
         </button>
@@ -142,7 +142,7 @@ function setActiveSkill(skill) {
         <div class="text-green mt-1 flex justify-center">{{ hp }}/{{ hp }}</div>
         <div class="text-purple mt-1 flex justify-center">{{ mp }}/{{ mp }}</div>
       </div> -->
-      <div class="absolute z-1 ml-96 w-128 left-9 -bottom-16">
+      <div class="absolute z-1 ml-96 w-lg left-9 -bottom-16">
         <!-- <div class="ml-auto h-56 w-92 text-red">Раздел в переработке</div> -->
         <!-- <GoblinParams class="ml-auto mr-6 h-56 w-92" /> -->
         <!-- гоблины -->
@@ -168,7 +168,7 @@ function setActiveSkill(skill) {
           />
         </button>
       </div>
-      <div class="absolute z-1 ml-256 w-128 h-full top-[82px]">
+      <div class="absolute z-1 ml-256 w-lg h-full top-[82px]">
         <!-- инвентарь -->
         <RouterLink
           v-for="(item, index) in items"
@@ -241,7 +241,7 @@ function setActiveSkill(skill) {
 
     <TheModal ref="modal">
       <template #default>
-        <BigMap class="absolute inset-0 z-10 flex w-fit flex-col gap-2 rounded m-auto" />
+        <BigMap class="absolute inset-0 z-10 flex w-fit flex-col gap-2 rounded-sm m-auto" />
       </template>
     </TheModal>
   </main>

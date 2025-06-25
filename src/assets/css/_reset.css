@@ -2,33 +2,10 @@
 *::before,
 *::after {
   box-sizing: border-box;
-  margin: 0;
-  position: relative;
-  font-weight: normal;
 }
 
 body {
   margin: unset;
-}
-
-p,
-button,
-ul,
-li,
-h1,
-h2,
-h3,
-input {
-  margin: unset;
-  padding: unset;
-}
-
-button,
-input {
-  /* appearance: unset; */
-  background: unset;
-  border: unset;
-  outline: unset;
 }
 
 ul,
@@ -38,9 +15,8 @@ ol {
   list-style: unset;
 }
 
+button,
 a {
-  color: unset;
-  text-decoration: unset;
   cursor: pointer;
 }
 
@@ -48,10 +24,12 @@ a {
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
-  margin: 0;
 }
 
 /* Firefox */
 input[type='number'] {
   -moz-appearance: textfield;
+}
+input:focus {
+  outline: none;
 }

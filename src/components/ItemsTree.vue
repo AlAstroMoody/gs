@@ -225,9 +225,6 @@ function fixOverlaps() {
         const minYDistance = (nodeAHeight + nodeBHeight) / 2 + 20
 
         if (xDiff < minXDistance && yDiff < minYDistance) {
-          console.log(
-            `🔍 OVERLAP FIX: ${nodeA.name} vs ${nodeB.name} - xDiff: ${xDiff.toFixed(1)}, yDiff: ${yDiff.toFixed(1)}`
-          )
           hasOverlaps = true
 
           // Простое разделение - двигаем узлы в противоположные стороны
@@ -252,12 +249,6 @@ function fixOverlaps() {
         }
       }
     }
-  }
-
-  if (iterations >= maxIterations) {
-    console.log(`⚠️ Overlap fixing stopped after ${maxIterations} iterations`)
-  } else {
-    console.log(`✅ Overlap fixing completed in ${iterations} iterations`)
   }
 }
 
@@ -319,8 +310,6 @@ function distributeNodesByLevel() {
         belowNodes[i].y = startY + i * spacing
       }
     }
-
-    console.log(`📊 Level ${level}: ${levelNodes.length} nodes distributed`)
   }
 }
 

@@ -10,7 +10,7 @@ const craftItems = ref(items.value)
 </script>
 
 <template>
-  <div class="flex -translate-y-full animate-topToBottom">
+  <div class="flex -translate-y-full animate-top-to-bottom">
     <div
       class="h-fit w-72 animate-filter rounded-2xl border border-second bg-primary p-2 opacity-0"
     >

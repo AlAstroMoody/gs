@@ -7,7 +7,6 @@ import AppCanvas from '@/components/AppCanvas.vue'
 import { store } from '@/components/composables/store.js'
 import { useSizeState } from '@/components/composables/useSizeState'
 import CustomLayout from '@/components/CustomLayout.vue'
-import AppSidebar from '@/components/layouts/AppSidebar.vue'
 import TheModal from '@/components/TheModal.vue'
 
 const route = useRoute()
@@ -46,7 +45,6 @@ onMounted(() => {
       <router-view v-slot="{ Component }">
         <CustomLayout class="m-auto justify-between flex relative">
           <component :is="Component" :key="route.path" />
-          <AppSidebar class="px-1 pb-2 ml-4 z-10" v-if="route.name === 'item'" />
         </CustomLayout>
         <TheModal ref="modal">
           <template #default>
@@ -58,8 +56,11 @@ onMounted(() => {
 
               <div>
                 Вы по-прежнему можете пользоваться старой версией
-                <a href="https://alastromoody.github.io/gs-old/" class="text-link hover:text-active"
-                  >тут</a
+                <a
+                  href="https://alastromoody.github.io/gs-old/"
+                  class="text-link hover:text-active"
+                >
+                  тут </a
                 >.
               </div>
               <div>Там можно найти рецепты для карт 1.4+ и 1.5+</div>

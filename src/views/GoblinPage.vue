@@ -29,7 +29,7 @@ const skillStyle = (index) => `animation-delay: ${index / 8 + 0.1}s`
 <template>
   <main v-if="goblin" class="flex h-full gap-4">
     <div
-      class="w-1/3 animate-leftToRight rounded-r-xl border border-l-0 border-second p-4 text-2xl h-fit"
+      class="w-1/3 animate-left-to-right rounded-r-xl border border-l-0 border-second p-4 text-2xl h-fit"
     >
       {{ goblin.description }}
     </div>
