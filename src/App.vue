@@ -4,12 +4,15 @@ import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import AppCanvas from '@/components/AppCanvas.vue'
+import BaseTooltip from '@/components/BaseTooltip.vue'
 import { store } from '@/components/composables/store.js'
 import { useSizeState } from '@/components/composables/useSizeState'
-import CustomLayout from '@/components/CustomLayout.vue'
+import { useTooltip } from '@/components/composables/useTooltip.js'
+import CustomLayout from '@/components/layouts/CustomLayout.vue'
 import TheModal from '@/components/TheModal.vue'
 
 const route = useRoute()
+const { content, position, visible, tooltipStyle } = useTooltip()
 
 const { width } = useWindowSize()
 const { setSize } = useSizeState({})
@@ -75,4 +78,7 @@ onMounted(() => {
       </router-view>
     </div>
   </Suspense>
+
+  <!-- Глобальный тултип -->
+  <BaseTooltip :content="content" :position="position" :visible="visible" :style="tooltipStyle" />
 </template>

@@ -6,6 +6,7 @@ import { baseUrl } from '@/common/constants'
 import BaseLink from '@/components/BaseLink.vue'
 import BigMap from '@/components/BigMap.vue'
 import { store } from '@/components/composables/store.js'
+import { useTooltipStore } from '@/components/composables/tooltipStore.js'
 import { useGoblinState } from '@/components/composables/useGoblinState'
 // import GoblinParams from '@/components/GoblinParams.vue'
 import BinocularsIcon from '@/components/icons/BinocularsIcon.vue'
@@ -17,6 +18,7 @@ import TheModal from '@/components/TheModal.vue'
 const route = useRoute()
 const router = useRouter()
 const { user, setGoblin, setSkill } = useGoblinState()
+const tooltipStore = useTooltipStore()
 
 const goblinIconSize = 84
 const itemIconSize = 64
@@ -28,33 +30,72 @@ await store.setItems('goblins')
 const goblins = computed(() => store.entities.goblins)
 const items = computed(() => user.inventory)
 
-const goblinPositionStyle = (index) => {
-  const sizes = `height:${goblinIconSize}px; width:${goblinIconSize}px;`
-  if (index < 4) return sizes + `transform: translate(${(goblinIconSize + 4) * index}px, 0)`
-
-  return (
-    sizes + `transform: translate(${(goblinIconSize + 4) * (index - 4)}px, -${goblinIconSize}px)`
-  )
-}
-
-const itemPositionStyle = (index, icon) => {
-  const sizes = icon ? `height:${itemIconSize}px; width:${itemIconSize}px;` : ''
-  if (index < 2) return sizes + `transform: translate(${(itemIconSize + 13) * index + 1}px, 0)`
-  if (index < 4)
-    return (
-      sizes +
-      `transform: translate(${(itemIconSize + 13) * (index - 2) + 1}px, ${itemIconSize + 13}px)`
-    )
-
-  return (
-    sizes +
-    `transform: translate(${(itemIconSize + 13) * (index - 4) + 1}px, ${(itemIconSize + 13) * 2}px)`
-  )
-}
-
 const showBottom = computed(() => ['item', 'home', 'goblin'].includes(route.name))
 
 const activeItem = ref(null)
+
+// Позиционирование гоблинов (4x2 сетка)
+const goblinPositionStyle = (index) => {
+  const size = goblinIconSize
+  const gap = 4
+  const row = index < 4 ? 0 : 1
+  const col = index % 4
+
+  // Базовые координаты: left-52 (208px) + bottom-24 (96px)
+  const baseLeft = 208
+  const baseBottom = 96
+
+  return {
+    position: 'absolute',
+    left: `${baseLeft + col * (size + gap)}px`,
+    bottom: `${baseBottom + row * (size + gap)}px`,
+    width: `${size}px`,
+    height: `${size}px`,
+    zIndex: 1,
+  }
+}
+
+// Позиционирование предметов (сетка 4x2)
+const itemPositionStyle = (index) => {
+  const size = itemIconSize
+  const gap = 4
+  const row = Math.floor(index / 4)
+  const col = index % 4
+
+  // Базовые координаты для инвентаря
+  const baseLeft = 8 // left-2
+  const baseBottom = 160 // bottom-40
+
+  return {
+    position: 'absolute',
+    left: `${baseLeft + col * (size + gap)}px`,
+    bottom: `${baseBottom + row * (size + gap)}px`,
+    width: `${size}px`,
+    height: `${size}px`,
+    zIndex: 1,
+  }
+}
+
+// Позиционирование скиллов (4x2 сетка)
+const skillPositionStyle = (index) => {
+  const size = goblinIconSize
+  const gap = 4
+  const row = index < 4 ? 0 : 1
+  const col = index % 4
+
+  // Базовые координаты для скиллов
+  const baseLeft = 208 // left-52
+  const baseBottom = 96 // bottom-24
+
+  return {
+    position: 'absolute',
+    left: `${baseLeft + col * (size + gap)}px`,
+    bottom: `${baseBottom + row * (size + gap)}px`,
+    width: `${size}px`,
+    height: `${size}px`,
+    zIndex: 1,
+  }
+}
 
 const removeItem = (index) => {
   useGoblinState().removeItem(index)
@@ -79,10 +120,27 @@ function chooseGoblin(goblin) {
 function setActiveSkill(skill) {
   setSkill(skill)
 }
+
+// Функции для тултипов
+const showGoblinTooltip = (goblin, event) => {
+  tooltipStore.showTooltip(`Гоблин: ${goblin.name}`, event, 'top', 200)
+}
+
+const showItemTooltip = (item, event) => {
+  tooltipStore.showTooltip(`Предмет: ${item.name}`, event, 'top', 200)
+}
+
+const showSkillTooltip = (skill, event) => {
+  tooltipStore.showTooltip(`Скилл: ${skill.name}`, event, 'top', 200)
+}
+
+const hideTooltip = () => {
+  tooltipStore.hideTooltip()
+}
 </script>
 <template>
   <main class="flex h-screen flex-col items-center justify-between w-full">
-    <div class="fixed top-0 z-20 flex animate-top-to-bottom items-start">
+    <div class="fixed top-0 z-20 flex animate-top-to-bottom-bounce items-start">
       <img src="/images/t1.png" style="margin-left: -512px" />
       <img src="/images/t1.png" />
       <img src="/images/t2.png" />
@@ -119,8 +177,8 @@ function setActiveSkill(skill) {
     <div
       ref="inventory"
       class="fixed bottom-0 items-end z-10 flex"
-      v-if="route.path === '/'"
-      :class="showBottom ? 'animate-bottom-to-top' : 'animate-footer'"
+      v-show="route.path === '/'"
+      :class="showBottom ? 'animate-bottom-to-top-bounc' : 'animate-footer'"
     >
       <TheMap class="absolute left-5 bottom-3 aspect-auto w-[280px] h-[280px]" />
       <div class="bg-black absolute left-5 w-[280px] h-14" />
@@ -150,7 +208,10 @@ function setActiveSkill(skill) {
           @click="chooseGoblin(goblin)"
           v-for="(goblin, index) in goblins"
           :key="goblin.id"
-          class="absolute bottom-24 left-52"
+          :style="goblinPositionStyle(index)"
+          class="group transition-all duration-200 hover:scale-105"
+          @mouseenter="showGoblinTooltip(goblin, $event)"
+          @mouseleave="hideTooltip"
         >
           <img
             :src="
@@ -160,10 +221,10 @@ function setActiveSkill(skill) {
                 .replace('CommandButtons/', '')
                 .replace('.blp', '.png')
             "
-            :style="goblinPositionStyle(index)"
-            class="z-1"
+            class="w-full h-full rounded border-2 transition-all duration-200 group-hover:border-yellow-400 group-hover:shadow-[0_0_16px_gold]"
             :class="{
-              'border-2 border-white': user.goblin.id === goblin.id,
+              'border-white': user.goblin.id === goblin.id,
+              'border-transparent': user.goblin.id !== goblin.id,
             }"
           />
         </button>
@@ -174,38 +235,38 @@ function setActiveSkill(skill) {
           v-for="(item, index) in items"
           :to="`/item/${item.id}`"
           :key="item.id"
-          class="absolute bottom-40 left-2 group"
-          @mouseenter="activeItem = item.name"
-          @mouseleave="activeItem = null"
+          :style="itemPositionStyle(index)"
+          class="group transition-all duration-200 hover:scale-105"
+          @mouseenter="showItemTooltip(item, $event)"
+          @mouseleave="hideTooltip"
         >
           <button
-            class="group-hover:block hidden absolute top-0 right-0 z-10"
+            class="group-hover:block hidden absolute -top-2 -right-2 z-10"
             @click="removeItem(index)"
-            :style="itemPositionStyle(index)"
           >
             <ExitIcon
               color="white"
-              :width="40"
-              :height="40"
-              class="hover:rotate-90 transition-all"
+              :width="24"
+              :height="24"
+              class="hover:rotate-90 transition-all bg-red-500 rounded-full p-1"
             />
           </button>
           <img
             v-if="item.src"
             :src="item.src"
-            :style="itemPositionStyle(index, true)"
-            class="z-1"
+            class="w-full h-full rounded border-2 transition-all duration-200 group-hover:border-yellow-400 group-hover:shadow-[0_0_12px_gold]"
             :class="{
-              'border-2 border-white': +route.params.id === item.id,
+              'border-white': +route.params.id === item.id,
+              'border-transparent': +route.params.id !== item.id,
             }"
           />
           <div
             v-else
+            class="w-full h-full rounded border-2 transition-all duration-200 group-hover:border-yellow-400 group-hover:shadow-[0_0_12px_gold] bg-silver flex items-center justify-center"
             :class="{
-              'border-2 border-white': +route.params.id === item.id,
+              'border-white': +route.params.id === item.id,
+              'border-transparent': +route.params.id !== item.id,
             }"
-            class="z-1 h-16 w-16 bg-silver"
-            :style="itemPositionStyle(index, true)"
           >
             <QuestionIcon class="m-auto" />
           </div>
@@ -217,7 +278,10 @@ function setActiveSkill(skill) {
             @click="setActiveSkill(skill)"
             v-for="(skill, index) in user.goblin.abilities"
             :key="skill.id"
-            class="absolute bottom-24 left-52"
+            :style="skillPositionStyle(index)"
+            class="group transition-all duration-200 hover:scale-105"
+            @mouseenter="showSkillTooltip(skill, $event)"
+            @mouseleave="hideTooltip"
           >
             <img
               :src="
@@ -227,10 +291,10 @@ function setActiveSkill(skill) {
                   .replace('CommandButtons/', '')
                   .replace('.blp', '.png')
               "
-              :style="goblinPositionStyle(index)"
-              class="z-1"
+              class="w-full h-full rounded border-2 transition-all duration-200 group-hover:border-yellow-400 group-hover:shadow-[0_0_16px_gold]"
               :class="{
-                'border-2 border-white': user.activeSkill?.id === skill.id,
+                'border-white': user.activeSkill?.id === skill.id,
+                'border-transparent': user.activeSkill?.id !== skill.id,
               }"
             />
           </button>
