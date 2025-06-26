@@ -370,7 +370,7 @@ function resetFilters() {
     </div>
 
     <div
-      class="w-1/2 pt-8 animate-on-mount-right"
+      class="w-1/2 pt-8 animate-on-mount-right max-h-screen overflow-y-auto"
       :class="{ 'slide-in-right delay-300': animationsLoaded }"
     >
       <div
@@ -433,12 +433,7 @@ function resetFilters() {
         </BaseAccordeon>
       </div>
 
-      <div
-        ref="rightBlockContent"
-        v-if="futureCraft.length"
-        class="scrollbar-custom mt-6"
-        :style="{ height: rightBlockHeight }"
-      >
+      <div ref="rightBlockContent" v-if="futureCraft.length" class="mt-6">
         <div class="py-2 text-lg font-semibold text-gray-200 mb-3">⚔️ Используется в:</div>
         <div class="flex flex-wrap gap-2">
           <div v-for="item in futureCraft" :key="item.code" class="group relative">
