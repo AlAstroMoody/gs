@@ -3,7 +3,7 @@
     <!-- Кнопка выхода -->
     <button
       @click="closeTree"
-      class="absolute top-4 right-4 z-10 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
+      class="absolute top-4 right-4 z-10 warcraft-btn warcraft-btn-red"
       style="pointer-events: auto"
     >
       ✕ Закрыть
@@ -20,18 +20,8 @@
     <!-- Кнопки навигации -->
     <div class="absolute bottom-4 left-4 z-10 flex items-center gap-4" style="pointer-events: auto">
       <div class="flex gap-2">
-        <button
-          @click="resetView"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors"
-        >
-          🔄 Сброс
-        </button>
-        <button
-          @click="centerOnItem"
-          class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg transition-colors"
-        >
-          🎯 Центр
-        </button>
+        <button @click="resetView" class="warcraft-btn warcraft-btn-blue">🔄 Сброс</button>
+        <button @click="centerOnItem" class="warcraft-btn warcraft-btn-green">🎯 Центр</button>
       </div>
       <span class="ml-3 text-xs text-gray-200 opacity-80 select-none"
         >даблклик для перехода на предмет</span
@@ -51,7 +41,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, onUnmounted } from 'vue'
+import { useEventListener } from '@vueuse/core'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { store } from '@/components/composables/store.js'
@@ -703,19 +694,13 @@ function handleDblClick(event) {
 onMounted(() => {
   ctx.value = canvas.value.getContext('2d')
   resizeCanvas()
-  window.addEventListener('resize', resizeCanvas)
 
-  // Добавляем обработчики на уровне документа для более надежного перетаскивания
-  document.addEventListener('mousemove', handleMouseMove)
-  document.addEventListener('mouseup', handleMouseUp)
+  // Используем композаблы VueUse вместо нативных addEventListener
+  useEventListener(window, 'resize', resizeCanvas)
+  useEventListener(document, 'mousemove', handleMouseMove)
+  useEventListener(document, 'mouseup', handleMouseUp)
 
   redrawCanvas()
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', resizeCanvas)
-  document.removeEventListener('mousemove', handleMouseMove)
-  document.removeEventListener('mouseup', handleMouseUp)
 })
 </script>
 
@@ -729,5 +714,56 @@ canvas {
 
 canvas:active {
   cursor: grabbing;
+}
+
+.warcraft-btn {
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: 2px solid #bfa76a;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.18),
+    0 0 0 1px #222 inset;
+  background: linear-gradient(135deg, #444 0%, #222 100%);
+  color: #f8e7b7;
+  padding: 0.5rem 1.2rem;
+  transition: all 0.18s;
+}
+.warcraft-btn:hover {
+  background: linear-gradient(135deg, #666 0%, #333 100%);
+  border-color: #ffe066;
+  color: #fffbe6;
+  box-shadow:
+    0 4px 16px gold,
+    0 0 0 1px #444 inset;
+}
+.warcraft-btn-red {
+  background: linear-gradient(135deg, #a94442 0%, #7b1e1e 100%);
+  border-color: #ffb3b3;
+  color: #fff0f0;
+}
+.warcraft-btn-red:hover {
+  background: linear-gradient(135deg, #c0392b 0%, #922b21 100%);
+  border-color: #ffd6d6;
+  color: #fff;
+}
+.warcraft-btn-blue {
+  background: linear-gradient(135deg, #3b5998 0%, #223366 100%);
+  border-color: #b3c6ff;
+  color: #e6f0ff;
+}
+.warcraft-btn-blue:hover {
+  background: linear-gradient(135deg, #4169e1 0%, #27408b 100%);
+  border-color: #e6e6ff;
+  color: #fff;
+}
+.warcraft-btn-green {
+  background: linear-gradient(135deg, #3fa34d 0%, #1e5631 100%);
+  border-color: #b3ffb3;
+  color: #e6ffe6;
+}
+.warcraft-btn-green:hover {
+  background: linear-gradient(135deg, #43c06e 0%, #228b22 100%);
+  border-color: #e6ffe6;
+  color: #fff;
 }
 </style>

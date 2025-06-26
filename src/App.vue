@@ -8,6 +8,7 @@ import BaseTooltip from '@/components/BaseTooltip.vue'
 import { store } from '@/components/composables/store.js'
 import { useSizeState } from '@/components/composables/useSizeState'
 import { useTooltip } from '@/components/composables/useTooltip.js'
+import { tooltipActions } from '@/components/composables/useTooltipStore.js'
 import CustomLayout from '@/components/layouts/CustomLayout.vue'
 import TheModal from '@/components/TheModal.vue'
 
@@ -29,6 +30,14 @@ watch(width, () => {
     ticking.value = true
   }
 })
+
+// Глобальная очистка тултипа при смене маршрута
+watch(
+  () => route.path,
+  () => {
+    tooltipActions.hide()
+  }
+)
 
 const modal = ref(null)
 onMounted(() => {

@@ -6,11 +6,13 @@ import BaseButton from '@/components/BaseButton.vue'
 import BaseInfoPopup from '@/components/BaseInfoPopup.vue'
 import { store } from '@/components/composables/store.js'
 import { useGoblinState } from '@/components/composables/useGoblinState'
+import { tooltipActions } from '@/components/composables/useTooltipStore.js'
 import QuestionIcon from '@/components/icons/QuestionIcon.vue'
 import ItemParams from '@/components/ItemParams.vue'
 import ThePreloader from '@/components/ThePreloader.vue'
 
 const { user, addItem } = useGoblinState()
+const { show, hide } = tooltipActions
 
 const route = useRoute()
 const itemsLoaded = ref(true)
@@ -61,6 +63,22 @@ const craftColor = (forge) => {
 
   return ''
 }
+
+const getButtonTooltipText = () => {
+  if (cantBeAdded.value) return 'Невозможно добавить предмет, так как он уже есть в инвентаре'
+  if (itemNotFit.value) return 'Невозможно добавить предмет, так как он не подходит вашему гоблину'
+  if (user.inventory.length === 6) return 'Инвентарь переполнен, невозможно добавить новый предмет'
+  if (tooMuchSameItems.value)
+    return `Невозможно добавить предмет, так как у вас уже есть максимальное количество (${currentItem.value.max_count || 1} шт.)`
+
+  return 'Добавить предмет в инвентарь'
+}
+
+const getItemTooltipText = (item) => {
+  const count = parentsCount(item.id)
+
+  return count ? `${count} ${item.name}` : item.name
+}
 </script>
 
 <template>
@@ -73,10 +91,22 @@ const craftColor = (forge) => {
 
       <div class="my-2 flex flex-wrap items-center">
         <div class="flex w-full flex-wrap items-center xs:w-auto">
-          <img :src="currentItem.src" alt="logo" v-if="currentItem.src" class="h-24 w-24" />
+          <img
+            :src="currentItem.src"
+            alt="logo"
+            v-if="currentItem.src"
+            class="h-24 w-24 cursor-pointer"
+            @mouseenter="show(currentItem.name, $event)"
+            @mouseleave="hide"
+          />
           <QuestionIcon v-else color="red" />
           <div class="text-md ml-2 flex h-fit flex-1 justify-end whitespace-nowrap text-second">
-            <BaseButton @click="add" :text="buttonText" />
+            <BaseButton
+              @click="add"
+              :text="buttonText"
+              @mouseenter="show(getButtonTooltipText(), $event)"
+              @mouseleave="hide"
+            />
           </div>
           <div class="ml-4 flex flex-col content-center justify-center">
             <div v-if="currentItem?.level > 1">требуемый уровень: {{ currentItem.level }}</div>
@@ -132,7 +162,11 @@ const craftColor = (forge) => {
             :key="item.id"
           >
             <router-link :to="`/item/${item.code}`">
-              <span class="text-red hover:border-b">
+              <span
+                class="text-red hover:border-b"
+                @mouseenter="show(getItemTooltipText(item), $event)"
+                @mouseleave="hide"
+              >
                 {{ parentsCount(item.id) }} {{ item.name }}
               </span>
               <span v-if="index !== currentItem.notUsed.length - 1">, </span>
@@ -153,7 +187,13 @@ const craftColor = (forge) => {
               :key="child.id"
             >
               <router-link :to="`/item/${child.id}`">
-                <span class="text-red hover:border-b"> {{ child.name }} </span>
+                <span
+                  class="text-red hover:border-b"
+                  @mouseenter="show(child.name, $event)"
+                  @mouseleave="hide"
+                >
+                  {{ child.name }}
+                </span>
                 <span v-if="index !== currentItem.children.length - 1">, </span>
                 <span v-else>; </span>
               </router-link>
@@ -169,7 +209,11 @@ const craftColor = (forge) => {
             :key="parent.id"
           >
             <router-link :to="`/item/${parent.id}`">
-              <span class="text-red hover:border-b">
+              <span
+                class="text-red hover:border-b"
+                @mouseenter="show(getItemTooltipText(parent), $event)"
+                @mouseleave="hide"
+              >
                 {{ parentsCount(parent.id) }} {{ parent.name }}
               </span>
               <span v-if="index !== currentItem.parents.length - 1">, </span>

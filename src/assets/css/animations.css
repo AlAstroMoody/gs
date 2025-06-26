@@ -1,0 +1,316 @@
+/* Анимации в стиле Warcraft */
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Существующие анимации из tailwind.css */
+@keyframes opacity {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes footer {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes show {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes leftToRight {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes increase {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes goblin {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translateY(-2px) rotate(1deg) scale(1.02);
+  }
+  50% {
+    transform: translateY(-1px) rotate(-1deg) scale(1.01);
+  }
+  75% {
+    transform: translateY(-3px) rotate(0.5deg) scale(1.03);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes skill {
+  0% {
+    transform: translateY(-20px);
+  }
+  70% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes topToBottomBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(-32px) scale(0.98);
+    filter: drop-shadow(0 0 0px gold);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(4px) scale(1.02);
+    filter: drop-shadow(0 0 6px gold);
+  }
+  80% {
+    transform: translateY(-2px) scale(1.01);
+    filter: drop-shadow(0 0 2px gold);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 0px gold);
+  }
+}
+
+@keyframes bottomToTopBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(32px) scale(0.98);
+    filter: drop-shadow(0 0 0px gold);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.02);
+    filter: drop-shadow(0 0 6px gold);
+  }
+  80% {
+    transform: translateY(2px) scale(1.01);
+    filter: drop-shadow(0 0 2px gold);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 0 0px gold);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+/* Классы для анимаций */
+.slide-in-left {
+  animation: slideInFromLeft 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.slide-in-right {
+  animation: slideInFromRight 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.slide-in-top {
+  animation: slideInFromTop 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.slide-in-bottom {
+  animation: slideInFromBottom 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.fade-in-scale {
+  animation: fadeInScale 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Задержки для последовательного появления */
+.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+.delay-400 {
+  animation-delay: 0.4s;
+}
+
+/* Начальное состояние для анимаций */
+.animate-on-mount {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
+.animate-on-mount-right {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+.animate-on-mount-top {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+.animate-on-mount-bottom {
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+.animate-on-mount-scale {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.animate-on-mount-opacity {
+  opacity: 0;
+}
+
+/* Существующие классы анимаций */
+.animate-top-to-bottom-bounce {
+  animation: topToBottomBounce 0.8s cubic-bezier(0.22, 1.61, 0.36, 1) both;
+}
+
+.animate-bottom-to-top-bounce {
+  animation: bottomToTopBounce 0.8s cubic-bezier(0.22, 1.61, 0.36, 1) both;
+}
+
+.animate-goblin {
+  animation: goblin 3s ease-in-out infinite;
+}
+
+.animate-left-to-right {
+  animation: leftToRight 1s ease-out forwards;
+}
+
+/* View Transition API - только для поддерживающих браузеров */
+@supports (view-transition-name: none) {
+  ::view-transition-old(active-item-icon-*),
+  ::view-transition-new(active-item-icon-*) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  ::view-transition-old(active-item-icon-*) {
+    z-index: 1;
+  }
+
+  ::view-transition-new(active-item-icon-*) {
+    z-index: 2;
+  }
+}
+
+/* Fallback анимации для браузеров без поддержки View Transition API */
+@supports not (view-transition-name: none) {
+  [style*='view-transition-name'] {
+    transition:
+      opacity 0.2s ease-in-out,
+      transform 0.2s ease-in-out;
+  }
+}
+
+/* Классы для анимации opacity */
+.fade-in-opacity {
+  animation: opacity 0.8s ease-out forwards;
+}

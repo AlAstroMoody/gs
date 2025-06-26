@@ -1,12 +1,10 @@
 <script setup>
 import { useWindowSize, useRafFn } from '@vueuse/core'
-import { onMounted, ref, reactive } from 'vue'
+import { onMounted, ref, reactive, watch } from 'vue'
 
 const r180 = Math.PI
 const r90 = Math.PI / 2
 const r15 = Math.PI / 12
-// const color = '#220d75'
-const color = 'black'
 
 const el = ref(null)
 
@@ -49,10 +47,18 @@ function polar2cart(x = 0, y = 0, r = 0, theta = 0) {
   return [x + dx, y + dy]
 }
 
+let controls
+let canvas
+let ctx
+let canvasWidth
+let canvasHeight
+
 onMounted(async () => {
-  const canvas = el.value
-  const { ctx } = initCanvas(canvas, size.width, size.height)
-  const { width, height } = canvas
+  canvas = el.value
+  const canvasInit = initCanvas(canvas, size.width, size.height)
+  ctx = canvasInit.ctx
+  canvasWidth = size.width
+  canvasHeight = size.height
 
   let steps = []
   let prevSteps = []
@@ -67,21 +73,23 @@ onMounted(async () => {
     ctx.beginPath()
     ctx.moveTo(x, y)
     ctx.lineTo(nx, ny)
+    ctx.strokeStyle = '#4a4a8a'
+    ctx.lineWidth = random() * 1.2 + 0.8
+    ctx.globalAlpha = random() * 0.6 + 0.3
     ctx.stroke()
+    ctx.globalAlpha = 1
 
     const rad1 = rad + random() * r15
     const rad2 = rad - random() * r15
 
-    if (nx < -100 || nx > size.width + 100 || ny < -100 || ny > size.height + 100) return
+    if (nx < -100 || nx > canvasWidth + 100 || ny < -100 || ny > canvasHeight + 100) return
 
     if (iterations <= init.value || random() > 0.5) steps.push(() => step(nx, ny, rad1))
     if (iterations <= init.value || random() > 0.5) steps.push(() => step(nx, ny, rad2))
   }
 
   let lastTime = performance.now()
-  const interval = 1000 / 40
-
-  let controls
+  const interval = 1000 / 30
 
   const frame = () => {
     if (performance.now() - lastTime < interval) return
@@ -94,7 +102,10 @@ onMounted(async () => {
     if (!prevSteps.length) {
       controls.pause()
       stopped.value = true
+
+      return
     }
+
     prevSteps.forEach((i) => i())
   }
 
@@ -103,23 +114,42 @@ onMounted(async () => {
   start.value = () => {
     controls.pause()
     iterations = 0
-    ctx.clearRect(0, 0, width, height)
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight)
     ctx.lineWidth = 1
-    ctx.strokeStyle = color
     prevSteps = []
     steps = [
-      () => step(random() * size.width, 0, r90),
-      () => step(random() * size.width, size.height, -r90),
-      () => step(0, random() * size.height, 0),
-      () => step(size.width, random() * size.height, r180),
+      () => step(random() * canvasWidth, 0, r90),
+      () => step(random() * canvasWidth, canvasHeight, -r90),
+      () => step(0, random() * canvasHeight, 0),
+      () => step(canvasWidth, random() * canvasHeight, r180),
     ]
-    if (size.width < 500) steps = steps.slice(0, 2)
+    if (canvasWidth < 500) steps = steps.slice(0, 2)
     controls.resume()
     stopped.value = false
   }
 
   start.value()
 })
+
+// Следим за изменением размера окна и перезапускаем анимацию
+watch(
+  [() => size.width, () => size.height],
+  () => {
+    if (canvas && ctx) {
+      // Переинициализируем canvas с новым размером
+      const canvasInit = initCanvas(canvas, size.width, size.height)
+      ctx = canvasInit.ctx
+      canvasWidth = size.width
+      canvasHeight = size.height
+
+      // Перезапускаем анимацию
+      if (start.value) {
+        start.value()
+      }
+    }
+  },
+  { flush: 'post' }
+)
 </script>
 
 <template>

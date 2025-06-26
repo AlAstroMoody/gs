@@ -42,7 +42,14 @@ function getItem(code) {
 }
 
 function setActive(item) {
-  emit('choice', item)
+  // Используем нативный View Transition API
+  if (document.startViewTransition) {
+    document.startViewTransition(() => {
+      emit('choice', item)
+    })
+  } else {
+    emit('choice', item)
+  }
 }
 
 const isActive = computed(() => item.value.name === route.query.name)
@@ -57,7 +64,11 @@ const isActive = computed(() => item.value.name === route.query.name)
       class="flex items-center group"
     >
       <button @click="setActive(item)">
-        <BaseItemImage :url="item.src" class="mr-2 mb-1" />
+        <BaseItemImage
+          :url="item.src"
+          class="mr-2 mb-1"
+          :transitionName="`active-item-icon-${item.code}`"
+        />
       </button>
       <!-- </router-link> -->
       <div
