@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch, onMounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 
 import BaseAccordeon from '@/components/BaseAccordeon.vue'
@@ -30,6 +30,9 @@ import {
 } from '@/components/icons/bosses'
 
 const route = useRoute()
+const isContentVisible = ref(true)
+const showSidebar = ref(false)
+const animationsLoaded = ref(false)
 
 const bosses = computed(() => store.entities.bosses)
 const items = computed(() => store.entities.items)
@@ -64,80 +67,223 @@ const bossIcons = {
 const currentBossItems = computed(() => {
   return items.value.filter((item) => currentBoss.value.items.some((i) => i.name === item.name))
 })
+
+// Проверка наличия контента для босса
+const hasAbilities = computed(() => currentBoss.value?.ability?.length > 0)
+const hasUpgrade = computed(() => currentBoss.value?.upgrade)
+const hasItems = computed(() => currentBossItems.value.length > 0)
+
+// Анимация при смене босса
+watch(
+  () => route.query.name,
+  () => {
+    isContentVisible.value = false
+    setTimeout(() => {
+      isContentVisible.value = true
+    }, 150)
+    // Закрываем сайдбар на мобильных после выбора босса
+    showSidebar.value = false
+  }
+)
+
+// Переключение сайдбара
+const toggleSidebar = () => {
+  showSidebar.value = !showSidebar.value
+}
+
+// Запуск анимаций после монтирования
+onMounted(() => {
+  nextTick(() => {
+    setTimeout(() => {
+      animationsLoaded.value = true
+    }, 100)
+  })
+})
 </script>
 <template>
-  <main class="flex w-full z-10">
-    <div class="pt-12 animate-opacity w-60" />
-    <div class="fixed border-r border-red h-full w-60">
-      <router-link
-        v-for="boss in bosses"
-        :key="boss.id"
-        :to="`/boss?name=${boss.name}`"
-        class="mx-2 my-1 whitespace-nowrap text-lg opacity-75 lg:text-xl block text-link hover:text-active w-max"
-        :class="[{ ' underline': boss.id === currentBoss?.id }]"
-      >
-        {{ boss.name }}
-      </router-link>
-    </div>
-    <div class="flex w-full flex-1 mb-8" v-if="currentBoss">
-      <div class="w-2/3 px-4 pt-10">
-        <BaseAccordeon>
-          <template v-slot:button>Скилы</template>
-          <template v-slot:content>
-            <div v-if="!currentBoss?.ability?.length">
-              Пока отсутствуют. Есть инфа? Пиши по ссылкам из раздела
-              <BaseLink title="«О проекте»" link="/about" class="test-red" />
-            </div>
-            <ul v-for="(ability, index) in currentBoss.ability" :key="ability.id" class="py-2">
-              <ol>
-                {{
-                  index + 1
-                }}.
-                <span v-if="ability.name">
-                  <span v-html="ability.name" class="font-extrabold" />:
-                </span>
-                <span v-html="ability.description.replaceAll('.', '.<br/>')" class="indent-1" />
-              </ol>
-            </ul>
-          </template>
-        </BaseAccordeon>
+  <main class="flex w-full z-10 overflow-x-hidden h-screen">
+    <!-- Мобильная кнопка меню -->
+    <button
+      @click="toggleSidebar"
+      class="fixed top-20 left-4 z-50 md:hidden bg-purple text-white p-2 rounded-lg shadow-lg"
+      title="Показать боссов"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        ></path>
+      </svg>
+    </button>
 
-        <BaseAccordeon class="pb-8">
-          <template v-slot:button>Квест по апгрейду способностей</template>
-          <template v-slot:content>
-            <div v-if="!currentBoss?.upgrade">
-              Пока отсутствует. Есть инфа? Пиши по ссылкам из раздела
-              <BaseLink title="«О проекте»" link="/about" class="test-red" />
-            </div>
-            <div class="content" ref="upgrade" v-else>
-              <div class="min-h-0">
-                <BaseMarkdownWrapper :source="currentBoss.upgrade" />
-              </div>
-            </div>
-          </template>
-        </BaseAccordeon>
+    <!-- Сайдбар -->
+    <div
+      class="fixed border-r border-gray-600 h-full w-72 overflow-y-auto bg-gray-800 z-40 transition-transform duration-300 animate-on-mount"
+      :class="[
+        showSidebar ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
+        { 'slide-in-left': animationsLoaded },
+      ]"
+    >
+      <div class="p-4">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-bold text-center text-gray-200">Боссы</h2>
+          <button
+            @click="toggleSidebar"
+            class="md:hidden text-gray-300 hover:text-white"
+            title="Закрыть"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- Иконка босса -->
+        <div class="flex justify-center mb-4">
+          <div class="bg-gray-900 bg-opacity-80 p-4 backdrop-blur-sm rounded-lg">
+            <component
+              :is="currentIcon"
+              class="w-16 h-16 opacity-40 transition-opacity duration-300"
+            />
+          </div>
+        </div>
+
+        <!-- Список боссов -->
+        <div class="space-y-2">
+          <router-link
+            v-for="boss in bosses"
+            :key="boss.id"
+            :to="`/boss?name=${boss.name}`"
+            class="block text-lg opacity-75 lg:text-xl text-white hover:text-active transition-all duration-200 hover:translate-x-1 py-1"
+            :class="[{ 'underline font-semibold opacity-100': boss.id === currentBoss?.id }]"
+          >
+            {{ boss.name }}
+          </router-link>
+        </div>
       </div>
-      <div class="w-1/3">
-        <div class="my-4 text-xl font-semibold px-4">Дроп:</div>
+    </div>
 
-        <router-link
-          :to="`/craft/?name=${item.name}`"
-          class="flex items-center mb-1"
-          v-for="item in currentBossItems"
-          :key="item.id"
+    <!-- Затемнение для мобильных -->
+    <div
+      v-if="showSidebar"
+      @click="toggleSidebar"
+      class="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+    ></div>
+
+    <!-- Основной контент с анимацией -->
+    <div class="flex-1 md:ml-72 h-full min-h-0 flex flex-col">
+      <Transition name="fade" mode="out-in">
+        <div
+          v-if="isContentVisible && currentBoss"
+          key="content"
+          class="flex flex-col lg:flex-row w-full mb-8 h-full min-h-0"
         >
-          <BaseItemImage :url="item.src" class="mr-2" />
-          {{ item.name }}
-        </router-link>
-      </div>
+          <div
+            class="w-full lg:flex-1 min-w-0 px-4 pt-10 relative lg:pr-20 overflow-y-auto max-h-[calc(100%-24px)] h-full min-h-0"
+          >
+            <div
+              class="mb-6 animate-on-mount-opacity"
+              :class="{ 'fade-in-opacity': animationsLoaded }"
+            >
+              <h1 class="text-2xl lg:text-3xl font-bold text-white mb-2">{{ currentBoss.name }}</h1>
+              <p
+                v-if="currentBoss.catchPhrase"
+                class="text-base lg:text-lg text-gray-300 italic mb-4"
+              >
+                "{{ currentBoss.catchPhrase }}"
+              </p>
+            </div>
+
+            <div
+              class="animate-on-mount-left mb-8"
+              :class="{ 'slide-in-left delay-200': animationsLoaded }"
+            >
+              <BaseAccordeon>
+                <template v-slot:button>
+                  <div id="abilities" class="flex items-center">
+                    <span>Скилы</span>
+                    <div v-if="hasAbilities" class="ml-2 w-2 h-2 bg-blue-500 rounded-full"></div>
+                  </div>
+                </template>
+                <template v-slot:content>
+                  <div v-if="!hasAbilities" class="text-gray-500">
+                    Пока отсутствуют. Есть инфа? Пиши по ссылкам из раздела
+                    <BaseLink title="«О проекте»" link="/about" class="test-red" />
+                  </div>
+                  <ul
+                    v-for="(ability, index) in currentBoss.ability"
+                    :key="ability.id"
+                    class="py-2"
+                  >
+                    <li class="hover:bg-gray-50 p-2 rounded transition-colors">
+                      <span class="font-bold text-purple">{{ index + 1 }}.</span>
+                      <span v-if="ability.name">
+                        <span v-html="ability.name" class="font-extrabold" />:
+                      </span>
+                      <span
+                        v-html="ability.description.replaceAll('.', '.<br/>')"
+                        class="indent-1"
+                      />
+                    </li>
+                  </ul>
+                </template>
+              </BaseAccordeon>
+
+              <BaseAccordeon class="pb-8">
+                <template v-slot:button>
+                  <div id="upgrade" class="flex items-center">
+                    <span>Квест по апгрейду способностей</span>
+                    <div v-if="hasUpgrade" class="ml-2 w-2 h-2 bg-green-500 rounded-full"></div>
+                  </div>
+                </template>
+                <template v-slot:content>
+                  <div v-if="!hasUpgrade" class="text-gray-500">
+                    Пока отсутствует. Есть инфа? Пиши по ссылкам из раздела
+                    <BaseLink title="«О проекте»" link="/about" class="test-red" />
+                  </div>
+                  <div class="content" ref="upgrade" v-else>
+                    <div class="min-h-0">
+                      <BaseMarkdownWrapper :source="currentBoss.upgrade" />
+                    </div>
+                  </div>
+                </template>
+              </BaseAccordeon>
+            </div>
+          </div>
+          <div
+            class="w-full lg:w-auto min-w-[290px] max-w-xs px-4 animate-on-mount-right sticky lg:top-16 right-0 mt-0 ml-8 z-20"
+            :class="{ 'slide-in-top delay-300': animationsLoaded }"
+          >
+            <div id="items" class="my-4 text-xl font-semibold text-purple flex items-center">
+              Дроп:
+              <div v-if="hasItems" class="ml-2 w-2 h-2 bg-yellow-500 rounded-full"></div>
+            </div>
+            <div class="grid grid-cols-1 gap-2">
+              <router-link
+                :to="`/craft/?name=${item.name}`"
+                class="flex items-center rounded-lg border-2 border-gray-500 bg-gray-700 hover:border-yellow-400 hover:shadow-[0_0_12px_gold] hover:bg-gray-600 transition-all duration-200 p-2"
+                v-for="item in currentBossItems"
+                :key="item.id"
+              >
+                <BaseItemImage :url="item.src" class="mr-3" />
+                <span class="text-link text-sm lg:text-base">{{ item.name }}</span>
+              </router-link>
+            </div>
+          </div>
+        </div>
+      </Transition>
     </div>
-    <div class="fixed bottom-10 right-10" v-if="currentBoss?.catchPhrase">
-      {{ currentBoss.catchPhrase }}
-    </div>
-    <Teleport to="body">
-      <div ref="bossWrapper" class="pointer-events-none absolute inset-0">
-        <component :is="currentIcon" class="absolute inset-0 m-auto w-72 opacity-20 md:w-96" />
-      </div>
-    </Teleport>
   </main>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.15s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

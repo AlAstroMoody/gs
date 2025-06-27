@@ -163,16 +163,6 @@
   transform: translateY(-1px);
 }
 
-/* Предотвращение появления скроллбара во время загрузки */
-html {
-  scrollbar-gutter: stable;
-}
-
 body {
   overflow-x: hidden;
-}
-
-/* Плавная прокрутка */
-html {
-  scroll-behavior: smooth;
 }

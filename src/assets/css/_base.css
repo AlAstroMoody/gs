@@ -1,11 +1,17 @@
 @import './_reset.css';
 
+html {
+  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: Inter, system-ui, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   cursor: url(/images/cursor_gauntlet.png), auto;
+  overflow-x: hidden;
 }
 
 a:hover,
@@ -55,5 +61,36 @@ input:not(:placeholder-shown) + label {
 }
 
 .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background: #d4cece;
+}
+
+/* Кастомный скроллбар слева */
+.scrollbar-left {
+  direction: rtl;
+  overflow-y: auto;
+  height: 100%;
+  scrollbar-width: 14px;
+  scrollbar-color: #800080 #222222;
+}
+
+.scrollbar-left > * {
+  direction: ltr;
+}
+
+.scrollbar-left::-webkit-scrollbar {
+  width: 14px;
+}
+
+.scrollbar-left::-webkit-scrollbar-track {
+  background: #222222;
+  border-radius: 8px;
+}
+
+.scrollbar-left::-webkit-scrollbar-thumb {
+  background: #800080;
+  border-radius: 8px;
+}
+
+.scrollbar-left::-webkit-scrollbar-thumb:hover {
   background: #d4cece;
 }

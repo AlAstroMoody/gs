@@ -258,6 +258,11 @@
   transform: translateY(100%);
 }
 
+.animate-on-mount-left {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
 .animate-on-mount-scale {
   opacity: 0;
   transform: scale(0.8);

@@ -13,7 +13,7 @@ await store.setItems('goblins')
     <NavigationPanel />
 
     <!-- Основной контент -->
-    <div class="pt-16 flex justify-between w-full relative max-h-screen h-full">
+    <div class="pt-13 flex justify-between w-full relative max-h-screen h-full">
       <slot></slot>
     </div>
 
