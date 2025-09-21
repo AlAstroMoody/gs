@@ -70,7 +70,6 @@ const isActive = computed(() => item.value.name === route.query.name)
           :transitionName="`active-item-icon-${item.code}`"
         />
       </button>
-      <!-- </router-link> -->
       <div
         class="border rounded-r-lg p-3 h-16 group-hover:border-orange"
         :class="[{ 'border-orange': isActive }, { 'border-purple': activeChild }]"
@@ -82,7 +81,10 @@ const isActive = computed(() => item.value.name === route.query.name)
           <span v-if="hasParents" class="text-orange"> [ {{ isOpen ? '-' : '+' }} ] </span>
         </button>
         <div class="text-sm flex justify-between">
-          <span class="text-silver text-left mr-4" v-if="item.level !== '0'">
+          <span
+            class="text-silver text-left mr-4"
+            v-if="item.level && item.level !== '0' && item.level !== 0"
+          >
             {{ item.level }} lvl
           </span>
           <div v-if="item.forge" class="text-right ml-auto">

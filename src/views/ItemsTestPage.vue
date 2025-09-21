@@ -18,10 +18,11 @@ const items = computed(() => store.entities.items)
 const activeItem = ref(null)
 const previousItem = ref(null)
 
-// Refs для измерения высоты
+// для измерения высоты
 const leftBlockHeader = ref(null)
 const rightBlockHeader = ref(null)
 const rightBlockContent = ref(null)
+const leftBlockScrollContainer = ref(null)
 
 // Динамическая высота блоков
 const leftBlockHeight = ref('calc(100vh - 200px)')
@@ -52,6 +53,7 @@ const luck = ref(false)
 const upSort = ref(false)
 const auraFilter = ref(false)
 const selectedGoblinClass = ref('')
+const showAllSuitable = ref(false)
 
 const goblins = computed(() => store.entities.goblins || [])
 
@@ -71,62 +73,13 @@ function normalizeText(text) {
     .trim()
 }
 
-// Функция для проверки соответствия класса гоблина в описании
-function checkGoblinClassInDescription(desc, goblinName) {
-  const normalizedDesc = normalizeText(desc)
-  const normalizedGoblinName = normalizeText(goblinName)
-
-  // Простая проверка: если есть "только" и название класса, то подходит
-  if (normalizedDesc.includes('только') && normalizedDesc.includes(normalizedGoblinName)) {
-    return true
-  }
-
-  // Дополнительная проверка для случаев без "только"
-  if (normalizedDesc.includes(`для ${normalizedGoblinName}`)) {
-    return true
-  }
-
-  // Проверяем частичное совпадение по словам с учетом окончаний
-  const words = normalizedGoblinName.split(' ')
-
-  return words.some((word) => {
-    if (word.length <= 2) return false
-
-    // Проверяем точное совпадение
-    if (normalizedDesc.includes(word)) return true
-
-    // Проверяем различные окончания для русского языка
-    const baseWord = word.replace(/[аяеёиыоуьъ]$/, '') // Убираем возможные окончания
-    if (baseWord.length >= 3) {
-      // Проверяем с различными окончаниями
-      const endings = [
-        '',
-        'а',
-        'я',
-        'е',
-        'ё',
-        'и',
-        'ы',
-        'ом',
-        'ой',
-        'ой',
-        'у',
-        'ю',
-        'ем',
-        'ем',
-        'и',
-        'ы',
-      ]
-
-      return endings.some((ending) => {
-        const fullWord = baseWord + ending
-
-        return normalizedDesc.includes(fullWord)
-      })
-    }
-
-    return false
-  })
+// Функция для проверки соответствия класса гоблина (теперь используем готовые поля)
+function checkGoblinClassInDescription(item, goblinName) {
+  // Проверяем, есть ли выбранный класс в списке классов предмета
+  return (
+    item.goblinClasses &&
+    item.goblinClasses.some((className) => normalizeText(className) === normalizeText(goblinName))
+  )
 }
 
 const filteredItems = computed(() => {
@@ -140,11 +93,37 @@ const filteredItems = computed(() => {
   if (auraFilter.value) arr = arr.filter((item) => item.desc.includes('Аура'))
 
   if (selectedGoblinClass.value) {
-    arr = arr.filter((item) => checkGoblinClassInDescription(item.desc, selectedGoblinClass.value))
+    if (showAllSuitable.value) {
+      // Показываем все предметы для выбранного класса + все предметы без ограничений по классу
+      arr = arr.filter((item) => {
+        // Если предмет подходит всем классам - показываем
+        if (item.isForAllClasses) {
+          return true
+        }
+
+        // Если предмет имеет ограничения по классу - проверяем, подходит ли выбранный класс
+        if (item.goblinClasses && item.goblinClasses.length > 0) {
+          return checkGoblinClassInDescription(item, selectedGoblinClass.value)
+        }
+
+        // Если нет ограничений - показываем
+        return true
+      })
+    } else {
+      // Показываем только предметы для выбранного класса
+      arr = arr.filter((item) => checkGoblinClassInDescription(item, selectedGoblinClass.value))
+    }
   }
 
-  if (!upSort.value) arr = arr.sort((a, b) => b.level - a.level)
-  else arr = arr.sort((a, b) => a.level - b.level)
+  if (!upSort.value) arr = arr.sort((a, b) => Number(b.level) - Number(a.level))
+  else arr = arr.sort((a, b) => Number(a.level) - Number(b.level))
+
+  // Прокручиваем к началу списка при смене фильтра
+  nextTick(() => {
+    if (leftBlockScrollContainer.value) {
+      leftBlockScrollContainer.value.scrollTop = 0
+    }
+  })
 
   return arr
 })
@@ -207,6 +186,13 @@ function goBack() {
 function openItemDesc() {
   if (!items.value.length) return
   activeItem.value = items.value.find((item) => item.name === route.query.name)
+
+  // Прокручиваем к выбранному предмету после небольшой задержки
+  if (activeItem.value) {
+    setTimeout(() => {
+      scrollToActiveItem()
+    }, 300)
+  }
 }
 
 const isShowItemTree = ref(false)
@@ -262,6 +248,12 @@ watch(
 
 watch(items, () => {
   openItemDesc()
+  // Прокручиваем к активному предмету после загрузки данных
+  if (activeItem.value) {
+    setTimeout(() => {
+      scrollToActiveItem()
+    }, 500)
+  }
 })
 
 function resetFilters() {
@@ -270,6 +262,28 @@ function resetFilters() {
   upSort.value = false
   auraFilter.value = false
   selectedGoblinClass.value = ''
+  showAllSuitable.value = false
+}
+
+// Функция для прокрутки к выбранному предмету
+function scrollToActiveItem() {
+  if (!activeItem.value || !leftBlockScrollContainer.value) return
+
+  nextTick(() => {
+    // Находим элемент с активным предметом
+    const activeElement = leftBlockScrollContainer.value.querySelector(
+      `[data-item-code="${activeItem.value.code}"]`
+    )
+
+    if (activeElement) {
+      // Прокручиваем к элементу с плавной анимацией
+      activeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest',
+      })
+    }
+  })
 }
 </script>
 <template>
@@ -288,15 +302,21 @@ function resetFilters() {
           </span>
           <div v-if="selectedGoblinClass" class="text-xs text-gray-400 mt-1">
             Поиск по классу: "{{ selectedGoblinClass }}"
+            <span v-if="showAllSuitable" class="text-green-400"> + всё подходящее</span>
           </div>
         </div>
       </div>
-      <div class="scrollbar-custom" :style="{ height: leftBlockHeight }">
+      <div
+        ref="leftBlockScrollContainer"
+        class="scrollbar-custom"
+        :style="{ height: leftBlockHeight }"
+      >
         <AppCraftTestItem
           class="pl-2"
           v-for="item in filteredItems"
           :key="item.code"
           :item="item"
+          :data-item-code="item.code"
           @choice="changeItem($event)"
           :count="item.count"
         />
@@ -350,13 +370,24 @@ function resetFilters() {
             <span class="text-sm block mb-2">👹 По классу гоблина</span>
             <select
               v-model="selectedGoblinClass"
-              class="w-full bg-gray-600 text-gray-200 text-sm p-1 rounded border border-gray-500"
+              class="w-full bg-gray-600 text-gray-200 text-sm p-1 rounded border border-gray-500 mb-2"
             >
               <option value="">Все классы</option>
               <option v-for="goblin in goblins" :key="goblin.code" :value="goblin.name">
                 {{ goblin.name }}
               </option>
             </select>
+            <label
+              v-if="selectedGoblinClass"
+              class="flex items-center justify-between p-2 bg-gray-600 rounded border border-gray-400"
+            >
+              <span class="text-xs text-gray-300">✨ Всё подходящее</span>
+              <input
+                type="checkbox"
+                class="h-3 w-3 bg-gray-500 accent-green"
+                v-model="showAllSuitable"
+              />
+            </label>
           </div>
           <!-- Кнопка сброса фильтров -->
           <button
@@ -391,7 +422,10 @@ function resetFilters() {
             <div class="text-xl font-bold text-white leading-5">
               {{ activeItem.name }}
             </div>
-            <div class="text-sm text-gray-300" v-if="activeItem.level !== '0'">
+            <div
+              class="text-sm text-gray-300"
+              v-if="activeItem.level && activeItem.level !== '0' && activeItem.level !== 0"
+            >
               Требуемый уровень:
               <span class="text-purple font-semibold">{{ activeItem.level }}</span>
             </div>
@@ -422,7 +456,7 @@ function resetFilters() {
           <div v-html="replacedDesc(activeItem.desc)" class="leading-6" />
         </div>
 
-        <BaseAccordeon v-if="activeItem.extended" class="-my-4 mb-4">
+        <BaseAccordeon v-if="activeItem.extended" class="mb-4">
           <template v-slot:button>📖 Подробнее</template>
           <template v-slot:content>
             <div
