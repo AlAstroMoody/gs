@@ -1,7 +1,7 @@
 @import './_reset.css';
 
 html {
-  scrollbar-gutter: stable;
+  /* scrollbar-gutter: stable; */
   scroll-behavior: smooth;
 }
 

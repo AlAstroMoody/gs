@@ -8,11 +8,15 @@ import BaseItemImage from '@/components/BaseItemImage.vue'
 import { store } from '@/components/composables/store.js'
 import { tooltipActions } from '@/components/composables/useTooltipStore.js'
 import ItemsTree from '@/components/ItemsTree.vue'
+import ItemsV16Page from '@/views/ItemsV16Page.vue'
 import ThePreloader from '@/components/ThePreloader.vue'
 
 const router = useRouter()
 const route = useRoute()
 const { show, hide } = tooltipActions
+
+// Переключатель источника данных: 'items' или 'itemsV16'
+const dataSource = ref('items')
 
 const items = computed(() => store.entities.items)
 const activeItem = ref(null)
@@ -150,9 +154,17 @@ function setActiveItem(el) {
   }
 }
 
+// Флаг для отключения прокрутки при программном выборе
+const skipScroll = ref(false)
+
 function changeItem(el) {
+  skipScroll.value = true // Отключаем прокрутку при клике из списка
   activeItem.value = el
   changeRoute(el.name)
+  // Сбрасываем флаг после небольшой задержки
+  setTimeout(() => {
+    skipScroll.value = false
+  }, 100)
 }
 
 function changeRoute(name) {
@@ -187,8 +199,8 @@ function openItemDesc() {
   if (!items.value.length) return
   activeItem.value = items.value.find((item) => item.name === route.query.name)
 
-  // Прокручиваем к выбранному предмету после небольшой задержки
-  if (activeItem.value) {
+  // Прокручиваем к выбранному предмету только если это не программный выбор
+  if (activeItem.value && !skipScroll.value) {
     setTimeout(() => {
       scrollToActiveItem()
     }, 300)
@@ -200,9 +212,21 @@ const isShowItemTree = ref(false)
 // Состояние для анимаций
 const animationsLoaded = ref(false)
 
-onMounted(() => {
+onMounted(async () => {
   // Очищаем тултип при загрузке страницы
   hide()
+
+  // Проверяем версию в URL и переключаемся если нужно
+  if (route.query.v === '1.6') {
+    if (dataSource.value !== 'itemsV16') {
+      // Загружаем данные, если еще не загружены
+      if (store.entities.itemsV16.length === 0) {
+        await store.getItemsV16()
+      }
+      dataSource.value = 'itemsV16'
+    }
+  }
+
   if (route.query.name) openItemDesc()
 
   // Запускаем анимации после монтирования
@@ -256,6 +280,23 @@ watch(items, () => {
   }
 })
 
+// Следим за изменением параметра v в URL
+watch(
+  () => route.query.v,
+  async (newV) => {
+    if (newV === '1.6' && dataSource.value !== 'itemsV16') {
+      // Загружаем данные, если еще не загружены
+      if (store.entities.itemsV16.length === 0) {
+        await store.getItemsV16()
+      }
+      dataSource.value = 'itemsV16'
+    } else if (newV !== '1.6' && dataSource.value === 'itemsV16') {
+      dataSource.value = 'items'
+    }
+  },
+  { immediate: false }
+)
+
 function resetFilters() {
   search.value = ''
   luck.value = false
@@ -265,18 +306,15 @@ function resetFilters() {
   showAllSuitable.value = false
 }
 
-// Функция для прокрутки к выбранному предмету
 function scrollToActiveItem() {
   if (!activeItem.value || !leftBlockScrollContainer.value) return
 
   nextTick(() => {
-    // Находим элемент с активным предметом
     const activeElement = leftBlockScrollContainer.value.querySelector(
       `[data-item-code="${activeItem.value.code}"]`
     )
 
     if (activeElement) {
-      // Прокручиваем к элементу с плавной анимацией
       activeElement.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
@@ -285,211 +323,265 @@ function scrollToActiveItem() {
     }
   })
 }
+
+async function switchDataSource(source) {
+  if (dataSource.value === source) return // Уже выбран этот источник
+
+  // Загружаем данные, если еще не загружены
+  if (source === 'itemsV16' && store.entities.itemsV16.length === 0) {
+    await store.getItemsV16()
+  }
+
+  dataSource.value = source
+
+  activeItem.value = null
+  resetFilters()
+
+  // Очищаем URL при смене версии
+  router.push({ name: route.name, query: {} })
+}
 </script>
 <template>
-  <ThePreloader v-if="!items.length" class="mt-20" />
-  <main class="flex w-full max-h-screen gap-6 h-full pr-8 z-20 overflow-hidden">
-    <div class="w-1/2 animate-on-mount" :class="{ 'slide-in-left': animationsLoaded }">
-      <div
-        ref="leftBlockHeader"
-        class="bg-gray-800 text-white p-4 rounded-lg border-2 border-gray-600 shadow-lg mb-4"
-      >
-        <h2 class="text-xl font-bold mb-2">📜 Список предметов</h2>
-        <div class="text-sm text-gray-300">
-          Найдено: {{ filteredItems.length }} из {{ items.length }} предметов
-          <span v-if="luck || auraFilter || selectedGoblinClass" class="text-yellow-400">
-            (фильтры активны)
-          </span>
-          <div v-if="selectedGoblinClass" class="text-xs text-gray-400 mt-1">
-            Поиск по классу: "{{ selectedGoblinClass }}"
-            <span v-if="showAllSuitable" class="text-green-400"> + всё подходящее</span>
+  <ItemsV16Page v-if="dataSource === 'itemsV16'" @switch="switchDataSource" />
+
+  <template v-else>
+    <ThePreloader v-if="!items.length" class="mt-20" />
+    <main class="flex w-full max-h-screen gap-6 h-full pr-8 z-20 overflow-hidden">
+      <div class="w-1/2 animate-on-mount" :class="{ 'slide-in-left': animationsLoaded }">
+        <div
+          ref="leftBlockHeader"
+          class="bg-gray-800 text-white p-4 rounded-lg border-2 border-gray-600 shadow-lg mb-4"
+        >
+          <h2 class="text-xl font-bold mb-2">📜 Список предметов</h2>
+          <div class="text-sm text-gray-300">
+            Найдено: {{ filteredItems.length }} из {{ items.length }} предметов
+            <span v-if="luck || auraFilter || selectedGoblinClass" class="text-yellow-400">
+              (фильтры активны)
+            </span>
+            <div v-if="selectedGoblinClass" class="text-xs text-gray-400 mt-1">
+              Поиск по классу: "{{ selectedGoblinClass }}"
+              <span v-if="showAllSuitable" class="text-green-400"> + всё подходящее</span>
+            </div>
           </div>
         </div>
-      </div>
-      <div
-        ref="leftBlockScrollContainer"
-        class="scrollbar-custom"
-        :style="{ height: leftBlockHeight }"
-      >
-        <AppCraftTestItem
-          class="pl-2"
-          v-for="item in filteredItems"
-          :key="item.code"
-          :item="item"
-          :data-item-code="item.code"
-          @choice="changeItem($event)"
-          :count="item.count"
-        />
-      </div>
-    </div>
-
-    <div
-      class="w-1/3 pt-14 animate-on-mount-top"
-      :class="{ 'slide-in-top delay-200': animationsLoaded }"
-    >
-      <div class="bg-gray-800 text-white p-4 rounded-lg border-2 border-gray-600 shadow-lg">
-        <h3 class="text-lg font-bold mb-4">🔍 Фильтры</h3>
-
-        <div class="mb-4">
-          <div
-            class="flex w-full rounded-lg border border-gray-500 bg-gray-700 px-3 text-gray-200 ease-out"
-          >
-            <input
-              autocomplete="off"
-              v-model="search"
-              placeholder=" "
-              id="input"
-              class="relative z-10 w-full py-3 bg-transparent outline-none"
-            />
-            <label for="input" class="absolute p-2 duration-300 ease-out">
-              поиск по названию
-            </label>
-          </div>
+        <div
+          ref="leftBlockScrollContainer"
+          class="scrollbar-custom"
+          :style="{ height: leftBlockHeight }"
+        >
+          <AppCraftTestItem
+            class="pl-2"
+            v-for="item in filteredItems"
+            :key="item.code"
+            :item="item"
+            :data-item-code="item.code"
+            @choice="changeItem($event)"
+            :count="item.count"
+          />
         </div>
+      </div>
 
-        <div class="space-y-3">
-          <label
-            class="flex items-center justify-between p-2 bg-gray-700 rounded border border-gray-500"
-          >
-            <span class="text-sm">🎲 С удачей</span>
-            <input type="checkbox" class="h-4 w-4 bg-gray-600 accent-green" v-model="luck" />
-          </label>
-          <label
-            class="flex items-center justify-between p-2 bg-gray-700 rounded border border-gray-500"
-          >
-            <span class="text-sm">📈 По возрастанию уровня</span>
-            <input type="checkbox" class="h-4 w-4 bg-gray-600 accent-green" v-model="upSort" />
-          </label>
-          <label
-            class="flex items-center justify-between p-2 bg-gray-700 rounded border border-gray-500"
-          >
-            <span class="text-sm">🔮 По ауре</span>
-            <input type="checkbox" class="h-4 w-4 bg-gray-600 accent-green" v-model="auraFilter" />
-          </label>
-          <div class="p-2 bg-gray-700 rounded border border-gray-500">
-            <span class="text-sm block mb-2">👹 По классу гоблина</span>
-            <select
-              v-model="selectedGoblinClass"
-              class="w-full bg-gray-600 text-gray-200 text-sm p-1 rounded border border-gray-500 mb-2"
+      <div
+        class="w-1/3 pt-14 animate-on-mount-top"
+        :class="{ 'slide-in-top delay-200': animationsLoaded }"
+      >
+        <div class="bg-gray-800 text-white p-4 rounded-lg border-2 border-gray-600 shadow-lg">
+          <h3 class="text-lg font-bold mb-4">🔍 Фильтры</h3>
+
+          <!-- Переключатель версии -->
+          <div class="mb-4 p-2 bg-gray-700 rounded border border-gray-500">
+            <span class="text-sm block mb-2">📦 Версия данных</span>
+            <div class="flex gap-2">
+              <button
+                @click="switchDataSource('items')"
+                :class="[
+                  'flex-1 px-3 py-2 rounded-lg font-medium text-xs transition-all duration-200 border',
+                  dataSource === 'items'
+                    ? 'bg-gradient-to-r from-purple-500 to-purple-600 border-purple-400 text-white shadow-md'
+                    : 'bg-gray-600 border-gray-500 text-gray-300 hover:bg-gray-500',
+                ]"
+              >
+                1.5
+              </button>
+              <button
+                @click="switchDataSource('itemsV16')"
+                :class="[
+                  'flex-1 px-3 py-2 rounded-lg font-medium text-xs transition-all duration-200 border',
+                  dataSource === 'itemsV16'
+                    ? 'bg-gradient-to-r from-purple-500 to-purple-600 border-purple-400 text-white shadow-md'
+                    : 'bg-gray-600 border-gray-500 text-gray-300 hover:bg-gray-500',
+                ]"
+              >
+                1.6
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div
+              class="flex w-full rounded-lg border border-gray-500 bg-gray-700 px-3 text-gray-200 ease-out"
             >
-              <option value="">Все классы</option>
-              <option v-for="goblin in goblins" :key="goblin.code" :value="goblin.name">
-                {{ goblin.name }}
-              </option>
-            </select>
+              <input
+                autocomplete="off"
+                v-model="search"
+                placeholder=" "
+                id="input"
+                class="relative z-10 w-full py-3 bg-transparent outline-none"
+              />
+              <label for="input" class="absolute p-2 duration-300 ease-out">
+                поиск по названию
+              </label>
+            </div>
+          </div>
+
+          <div class="space-y-3">
             <label
-              v-if="selectedGoblinClass"
-              class="flex items-center justify-between p-2 bg-gray-600 rounded border border-gray-400"
+              class="flex items-center justify-between p-2 bg-gray-700 rounded border border-gray-500"
             >
-              <span class="text-xs text-gray-300">✨ Всё подходящее</span>
+              <span class="text-sm">🎲 С удачей</span>
+              <input type="checkbox" class="h-4 w-4 bg-gray-600 accent-green" v-model="luck" />
+            </label>
+            <label
+              class="flex items-center justify-between p-2 bg-gray-700 rounded border border-gray-500"
+            >
+              <span class="text-sm">📈 По возрастанию уровня</span>
+              <input type="checkbox" class="h-4 w-4 bg-gray-600 accent-green" v-model="upSort" />
+            </label>
+            <label
+              class="flex items-center justify-between p-2 bg-gray-700 rounded border border-gray-500"
+            >
+              <span class="text-sm">🔮 По ауре</span>
               <input
                 type="checkbox"
-                class="h-3 w-3 bg-gray-500 accent-green"
-                v-model="showAllSuitable"
+                class="h-4 w-4 bg-gray-600 accent-green"
+                v-model="auraFilter"
               />
             </label>
+            <div class="p-2 bg-gray-700 rounded border border-gray-500">
+              <span class="text-sm block mb-2">👹 По классу гоблина</span>
+              <select
+                v-model="selectedGoblinClass"
+                class="w-full bg-gray-600 text-gray-200 text-sm p-1 rounded border border-gray-500 mb-2"
+              >
+                <option value="">Все классы</option>
+                <option v-for="goblin in goblins" :key="goblin.code" :value="goblin.name">
+                  {{ goblin.name }}
+                </option>
+              </select>
+              <label
+                v-if="selectedGoblinClass"
+                class="flex items-center justify-between p-2 bg-gray-600 rounded border border-gray-400"
+              >
+                <span class="text-xs text-gray-300">✨ Всё подходящее</span>
+                <input
+                  type="checkbox"
+                  class="h-3 w-3 bg-gray-500 accent-green"
+                  v-model="showAllSuitable"
+                />
+              </label>
+            </div>
+            <!-- Кнопка сброса фильтров -->
+            <button
+              @click="resetFilters"
+              class="w-full bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white px-3 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200 border border-gray-500 text-sm"
+            >
+              🔄 Сбросить фильтры
+            </button>
           </div>
-          <!-- Кнопка сброса фильтров -->
-          <button
-            @click="resetFilters"
-            class="w-full bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white px-3 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200 border border-gray-500 text-sm"
-          >
-            🔄 Сбросить фильтры
-          </button>
         </div>
       </div>
-    </div>
 
-    <div
-      class="w-1/2 pt-8 animate-on-mount-right max-h-screen overflow-y-auto"
-      :class="{ 'slide-in-right delay-300': animationsLoaded }"
-    >
       <div
-        ref="rightBlockHeader"
-        class="p-4 bg-gray-800 text-white rounded-2xl pl-8 border-2 border-gray-600 shadow-lg"
-        v-if="activeItem"
+        class="w-1/2 pt-8 animate-on-mount-right max-h-screen overflow-y-auto"
+        :class="{ 'slide-in-right delay-300': animationsLoaded }"
       >
-        <!-- Заголовок с иконкой -->
-        <div class="flex items-center gap-4 mb-4">
-          <div class="flex-shrink-0">
-            <BaseItemImage
-              :url="activeItem.src"
-              class="w-16 h-16"
-              :transitionName="`active-item-icon-${activeItem.code}`"
-            />
-          </div>
-          <div class="flex-1">
-            <div class="text-xl font-bold text-white leading-5">
-              {{ activeItem.name }}
+        <div
+          ref="rightBlockHeader"
+          class="p-4 bg-gray-800 text-white rounded-2xl pl-8 border-2 border-gray-600 shadow-lg"
+          v-if="activeItem"
+        >
+          <!-- Заголовок с иконкой -->
+          <div class="flex items-center gap-4 mb-4">
+            <div class="flex-shrink-0">
+              <BaseItemImage
+                :url="activeItem.src"
+                class="w-16 h-16"
+                :transitionName="`active-item-icon-${activeItem.code}`"
+              />
             </div>
-            <div
-              class="text-sm text-gray-300"
-              v-if="activeItem.level && activeItem.level !== '0' && activeItem.level !== 0"
-            >
-              Требуемый уровень:
-              <span class="text-purple font-semibold">{{ activeItem.level }}</span>
+            <div class="flex-1">
+              <div class="text-xl font-bold text-white leading-5">
+                {{ activeItem.name }}
+              </div>
+              <div
+                class="text-sm text-gray-300"
+                v-if="activeItem.level && activeItem.level !== '0' && activeItem.level !== 0"
+              >
+                Требуемый уровень:
+                <span class="text-purple font-semibold">{{ activeItem.level }}</span>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <!-- Кнопка назад -->
+              <button
+                v-if="previousItem"
+                @click="goBack"
+                class="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-3 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200 border border-gray-400 text-sm"
+              >
+                ⬅️ Назад
+              </button>
+              <!-- Кнопка дерева крафта -->
+              <button
+                @click="isShowItemTree = true"
+                @mouseenter="show('Схема крафта', $event)"
+                @mouseleave="hide"
+                class="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-3 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200 border border-purple-400 text-sm"
+              >
+                🧪 Эксперимент
+              </button>
             </div>
           </div>
-          <div class="flex gap-2">
-            <!-- Кнопка назад -->
-            <button
-              v-if="previousItem"
-              @click="goBack"
-              class="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-3 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200 border border-gray-400 text-sm"
-            >
-              ⬅️ Назад
-            </button>
-            <!-- Кнопка дерева крафта -->
-            <button
-              @click="isShowItemTree = true"
-              @mouseenter="show('Схема крафта', $event)"
-              @mouseleave="hide"
-              class="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-3 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200 border border-purple-400 text-sm"
-            >
-              🧪 Эксперимент
-            </button>
+
+          <!-- Описание -->
+          <div class="bg-silver p-4 rounded-lg border border-gray-300 mb-4 text-black">
+            <div v-html="replacedDesc(activeItem.desc)" class="leading-6" />
           </div>
+
+          <BaseAccordeon v-if="activeItem.extended" class="mb-4">
+            <template v-slot:button>📖 Подробнее</template>
+            <template v-slot:content>
+              <div
+                v-html="replacedDesc(activeItem.extended)"
+                class="leading-6 bg-silver p-3 rounded border border-gray-200 text-black"
+              ></div>
+            </template>
+          </BaseAccordeon>
         </div>
 
-        <!-- Описание -->
-        <div class="bg-silver p-4 rounded-lg border border-gray-300 mb-4 text-black">
-          <div v-html="replacedDesc(activeItem.desc)" class="leading-6" />
-        </div>
-
-        <BaseAccordeon v-if="activeItem.extended" class="mb-4">
-          <template v-slot:button>📖 Подробнее</template>
-          <template v-slot:content>
-            <div
-              v-html="replacedDesc(activeItem.extended)"
-              class="leading-6 bg-silver p-3 rounded border border-gray-200 text-black"
-            ></div>
-          </template>
-        </BaseAccordeon>
-      </div>
-
-      <div ref="rightBlockContent" v-if="futureCraft.length" class="mt-6">
-        <div class="py-2 text-lg font-semibold text-gray-200 mb-3">⚔️ Используется в:</div>
-        <div class="flex flex-wrap gap-2">
-          <div v-for="item in futureCraft" :key="item.code" class="group relative">
-            <button
-              class="flex items-center rounded-lg border-2 border-gray-500 bg-gray-700 hover:border-yellow-400 hover:shadow-[0_0_12px_gold] hover:bg-gray-600 transition-all duration-200"
-              @click="setActiveItem(item)"
-              @mouseenter="show(item.name, $event)"
-              @mouseleave="hide"
-            >
-              <BaseItemImage :url="item.src" :transitionName="`active-item-icon-${item.code}`" />
-            </button>
+        <div ref="rightBlockContent" v-if="futureCraft.length" class="mt-6">
+          <div class="py-2 text-lg font-semibold text-gray-200 mb-3">⚔️ Используется в:</div>
+          <div class="flex flex-wrap gap-2">
+            <div v-for="item in futureCraft" :key="item.code" class="group relative">
+              <button
+                class="flex items-center rounded-lg border-2 border-gray-500 bg-gray-700 hover:border-yellow-400 hover:shadow-[0_0_12px_gold] hover:bg-gray-600 transition-all duration-200"
+                @click="setActiveItem(item)"
+                @mouseenter="show(item.name, $event)"
+                @mouseleave="hide"
+              >
+                <BaseItemImage :url="item.src" :transitionName="`active-item-icon-${item.code}`" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <ItemsTree
-      :item="activeItem"
-      v-if="isShowItemTree"
-      @close="isShowItemTree = false"
-      class="z-20"
-    />
-  </main>
+      <ItemsTree
+        :item="activeItem"
+        v-if="isShowItemTree"
+        @close="isShowItemTree = false"
+        class="z-20"
+      />
+    </main>
+  </template>
 </template>
 
 <style scoped>

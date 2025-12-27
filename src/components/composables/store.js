@@ -14,7 +14,7 @@ const db = getDatabase(firebaseApp)
 const baseIconPath = `https://raw.githubusercontent.com/AlAstroMoody/gs-icons/main/`
 
 export const store = reactive({
-  entities: { items: {}, bosses: [], goblins: [], quests: [], craft: [] },
+  entities: { items: [], itemsV16: [], bosses: [], goblins: [], quests: [], craft: [] },
   version: '1.5а',
   maxLevel: version === '1.5а' ? 200 : 150,
 
@@ -180,18 +180,32 @@ export const store = reactive({
       // Отладочная информация для проблемных предметов
       if (item.name === 'Душитель X-8') {
         const normalizedDesc = this.normalizeText(item.desc)
-        console.log('Душитель X-8:', {
-          originalDesc: item.desc,
-          normalizedDesc: normalizedDesc,
-          goblinClasses,
-          isForAllClasses: item.isForAllClasses,
-          allGoblinClasses: this.entities.goblins?.length
-            ? this.entities.goblins.map((g) => g.name)
-            : 'fallback list',
-        })
       }
     })
 
     store.entities.items = items
+  },
+
+  async getItemsV16() {
+    if (this.entities.itemsV16.length > 0) return
+
+    const response = await fetch(baseUrl + 'craft1_6.json')
+    const items = await response.json()
+
+    items.forEach((item) => {
+      if (item.icon) {
+        item.iconPath = item.icon
+      }
+
+      // Нормализуем уровень если нужно
+      if (item.level === '0' || item.level === 0) {
+        const levelFromDesc = this.extractLevelFromDescription(item.desc)
+        if (levelFromDesc) {
+          item.level = levelFromDesc.toString()
+        }
+      }
+    })
+
+    store.entities.itemsV16 = items
   },
 })
