@@ -6,7 +6,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix",
-    "deploy": "npm run build && git add dist -f && git commit -m \"Deploy to production\" && git subtree push --prefix dist origin gh-pages"
+    "deploy": "npm run build && git add -A -f -- dist && (git diff --cached --quiet -- dist || git commit -m \"Deploy to production\" -- dist) && git push --force origin \"$(git subtree split --prefix dist HEAD)\":gh-pages"
   },
   "dependencies": {
     "@vueuse/core": "^13.4.0",
