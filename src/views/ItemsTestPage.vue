@@ -2,20 +2,21 @@
 import { computed, onMounted, ref, watch, nextTick, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
+import { itemsV155QueryValue, itemsV155VersionLabel } from '@/common/constants'
 import AppCraftTestItem from '@/components/AppCraftTestItem.vue'
 import BaseAccordeon from '@/components/BaseAccordeon.vue'
 import BaseItemImage from '@/components/BaseItemImage.vue'
 import { store } from '@/components/composables/store.js'
 import { tooltipActions } from '@/components/composables/useTooltipStore.js'
 import ItemsTree from '@/components/ItemsTree.vue'
-import ItemsV16Page from '@/views/ItemsV16Page.vue'
 import ThePreloader from '@/components/ThePreloader.vue'
+import ItemsV155Page from '@/views/ItemsV155Page.vue'
 
 const router = useRouter()
 const route = useRoute()
 const { show, hide } = tooltipActions
 
-// Переключатель источника данных: 'items' или 'itemsV16'
+// Переключатель источника данных: 'items' или 'itemsV155'
 const dataSource = ref('items')
 
 const items = computed(() => store.entities.items)
@@ -217,13 +218,13 @@ onMounted(async () => {
   hide()
 
   // Проверяем версию в URL и переключаемся если нужно
-  if (route.query.v === '1.6') {
-    if (dataSource.value !== 'itemsV16') {
+  if (route.query.v === itemsV155QueryValue) {
+    if (dataSource.value !== 'itemsV155') {
       // Загружаем данные, если еще не загружены
-      if (store.entities.itemsV16.length === 0) {
-        await store.getItemsV16()
+      if (store.entities.itemsV155.length === 0) {
+        await store.getItemsV155()
       }
-      dataSource.value = 'itemsV16'
+      dataSource.value = 'itemsV155'
     }
   }
 
@@ -251,6 +252,10 @@ watch(
   (newName) => {
     // Очищаем тултип при смене маршрута
     hide()
+
+    // В версии 1.5.5fix15+ переход иконки запускает сам ItemsV155Page.
+    // Второй View Transition из этого watcher отменял бы его.
+    if (dataSource.value === 'itemsV155') return
 
     // Принудительно активируем View Transition API при смене query
     if (newName && document.startViewTransition) {
@@ -284,13 +289,13 @@ watch(items, () => {
 watch(
   () => route.query.v,
   async (newV) => {
-    if (newV === '1.6' && dataSource.value !== 'itemsV16') {
+    if (newV === itemsV155QueryValue && dataSource.value !== 'itemsV155') {
       // Загружаем данные, если еще не загружены
-      if (store.entities.itemsV16.length === 0) {
-        await store.getItemsV16()
+      if (store.entities.itemsV155.length === 0) {
+        await store.getItemsV155()
       }
-      dataSource.value = 'itemsV16'
-    } else if (newV !== '1.6' && dataSource.value === 'itemsV16') {
+      dataSource.value = 'itemsV155'
+    } else if (newV !== itemsV155QueryValue && dataSource.value === 'itemsV155') {
       dataSource.value = 'items'
     }
   },
@@ -328,8 +333,8 @@ async function switchDataSource(source) {
   if (dataSource.value === source) return // Уже выбран этот источник
 
   // Загружаем данные, если еще не загружены
-  if (source === 'itemsV16' && store.entities.itemsV16.length === 0) {
-    await store.getItemsV16()
+  if (source === 'itemsV155' && store.entities.itemsV155.length === 0) {
+    await store.getItemsV155()
   }
 
   dataSource.value = source
@@ -338,11 +343,14 @@ async function switchDataSource(source) {
   resetFilters()
 
   // Очищаем URL при смене версии
-  router.push({ name: route.name, query: {} })
+  router.push({
+    name: route.name,
+    query: source === 'itemsV155' ? { v: itemsV155QueryValue } : {},
+  })
 }
 </script>
 <template>
-  <ItemsV16Page v-if="dataSource === 'itemsV16'" @switch="switchDataSource" />
+  <ItemsV155Page v-if="dataSource === 'itemsV155'" @switch="switchDataSource" />
 
   <template v-else>
     <ThePreloader v-if="!items.length" class="mt-20" />
@@ -404,15 +412,15 @@ async function switchDataSource(source) {
                 1.5
               </button>
               <button
-                @click="switchDataSource('itemsV16')"
+                @click="switchDataSource('itemsV155')"
                 :class="[
                   'flex-1 px-3 py-2 rounded-lg font-medium text-xs transition-all duration-200 border',
-                  dataSource === 'itemsV16'
+                  dataSource === 'itemsV155'
                     ? 'bg-gradient-to-r from-purple-500 to-purple-600 border-purple-400 text-white shadow-md'
                     : 'bg-gray-600 border-gray-500 text-gray-300 hover:bg-gray-500',
                 ]"
               >
-                1.6
+                {{ itemsV155VersionLabel }} (стащил у коллег)
               </button>
             </div>
           </div>

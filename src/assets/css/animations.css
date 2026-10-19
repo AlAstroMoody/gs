@@ -291,6 +291,21 @@
 
 /* View Transition API - только для поддерживающих браузеров */
 @supports (view-transition-name: none) {
+  ::view-transition-group(v155-item-icon-*) {
+    animation-duration: 260ms;
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  ::view-transition-old(v155-item-icon-*) {
+    animation: 160ms ease-out both v155-icon-out;
+    mix-blend-mode: normal;
+  }
+
+  ::view-transition-new(v155-item-icon-*) {
+    animation: 200ms ease-in both v155-icon-in;
+    mix-blend-mode: normal;
+  }
+
   ::view-transition-old(active-item-icon-*),
   ::view-transition-new(active-item-icon-*) {
     animation: none;
@@ -303,6 +318,18 @@
 
   ::view-transition-new(active-item-icon-*) {
     z-index: 2;
+  }
+}
+
+@keyframes v155-icon-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes v155-icon-in {
+  from {
+    opacity: 0;
   }
 }
 

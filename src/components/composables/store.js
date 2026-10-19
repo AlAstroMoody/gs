@@ -5,7 +5,12 @@ import { reactive } from 'vue'
 
 import { config } from './firebaseConfig'
 
-import { baseUrl } from '@/common/constants'
+import {
+  baseUrl,
+  itemsV155DataUrl,
+  itemsV155IconUrl,
+  itemsV155VersionLabel,
+} from '@/common/constants'
 import { useGoblinState } from '@/components/composables/useGoblinState'
 
 const version = useStorage('version')
@@ -13,8 +18,65 @@ const firebaseApp = initializeApp(config)
 const db = getDatabase(firebaseApp)
 const baseIconPath = `https://raw.githubusercontent.com/AlAstroMoody/gs-icons/main/`
 
+function getV155IconPath(icon) {
+  if (!icon) return ''
+
+  return /^https?:\/\//.test(icon) ? icon : itemsV155IconUrl + icon
+}
+
+const V155_MIN_ITEM_COUNT = 400
+const V155_REQUEST_TIMEOUT_MS = 15_000
+
+function assertV155Items(items) {
+  if (!Array.isArray(items) || items.length < V155_MIN_ITEM_COUNT) {
+    throw new Error(`Некорректный формат данных ${itemsV155VersionLabel}`)
+  }
+
+  return items
+}
+
+function normalizeV155Items(items) {
+  return items
+    .filter((item) => !item.hidden)
+    .map((item) => {
+      const level = Number(item.level)
+
+      return {
+        ...item,
+        id: item.id || item.mapObjectIds?.[0] || item.name,
+        name: item.name || item.mapName || '',
+        level: Number.isFinite(level) && level > 0 ? level : null,
+        desc: item.mapDescription || item.description || '',
+        iconPath: getV155IconPath(item.icon),
+        classes: Array.isArray(item.classes) ? item.classes : [],
+        ingredients: Array.isArray(item.ingredients) ? item.ingredients : [],
+      }
+    })
+}
+
+async function fetchV155RemoteItems() {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), V155_REQUEST_TIMEOUT_MS)
+
+  try {
+    const response = await fetch(itemsV155DataUrl, {
+      cache: 'no-cache',
+      signal: controller.signal,
+    })
+
+    if (!response.ok) {
+      throw new Error(`GitHub Raw вернул ${response.status}`)
+    }
+
+    return assertV155Items(await response.json())
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
 export const store = reactive({
-  entities: { items: [], itemsV16: [], bosses: [], goblins: [], quests: [], craft: [] },
+  entities: { items: [], itemsV155: [], bosses: [], goblins: [], quests: [], craft: [] },
+  itemsV155Error: '',
   version: '1.5а',
   maxLevel: version === '1.5а' ? 200 : 150,
 
@@ -176,36 +238,23 @@ export const store = reactive({
       const goblinClasses = this.extractGoblinClassesFromDescription(item.desc)
       item.goblinClasses = goblinClasses
       item.isForAllClasses = goblinClasses.length === 0
-
-      // Отладочная информация для проблемных предметов
-      if (item.name === 'Душитель X-8') {
-        const normalizedDesc = this.normalizeText(item.desc)
-      }
     })
 
     store.entities.items = items
   },
 
-  async getItemsV16() {
-    if (this.entities.itemsV16.length > 0) return
+  async getItemsV155() {
+    if (this.entities.itemsV155.length > 0) return
 
-    const response = await fetch(baseUrl + 'craft1_6.json')
-    const items = await response.json()
+    this.itemsV155Error = ''
 
-    items.forEach((item) => {
-      if (item.icon) {
-        item.iconPath = item.icon
-      }
+    try {
+      const items = await fetchV155RemoteItems()
 
-      // Нормализуем уровень если нужно
-      if (item.level === '0' || item.level === 0) {
-        const levelFromDesc = this.extractLevelFromDescription(item.desc)
-        if (levelFromDesc) {
-          item.level = levelFromDesc.toString()
-        }
-      }
-    })
-
-    store.entities.itemsV16 = items
+      this.entities.itemsV155 = normalizeV155Items(items)
+    } catch (error) {
+      this.itemsV155Error = `Не удалось загрузить данные ${itemsV155VersionLabel}: ${error.message}`
+      console.error(`Не удалось загрузить данные ${itemsV155VersionLabel}:`, error)
+    }
   },
 })
